@@ -7,3 +7,4 @@ from emmykit.paths_ensure import *
 from emmykit.options import *
 from emmykit.text_constants import *
 from emmykit.numeric_helpers import *
+from emmykit.inflect_utils import *
