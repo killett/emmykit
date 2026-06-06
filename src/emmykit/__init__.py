@@ -20,3 +20,4 @@ from emmykit.json_io import *
 from emmykit.diff_view import *
 from emmykit.text import *
 from emmykit.hosts import *
+from emmykit.network import *
