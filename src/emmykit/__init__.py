@@ -8,6 +8,7 @@ import logging
 import os
 import re
 import sys
+from collections.abc import Callable, Iterable, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field, replace
 from enum import Enum
@@ -15,12 +16,9 @@ from itertools import chain
 from pathlib import Path
 from typing import (
     Any,
-    Callable,
     Final,
-    Iterable,
     Literal,
     Protocol,
-    Sequence,
     TextIO,
     Type,
     TypeAlias,
