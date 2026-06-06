@@ -1,7 +1,9 @@
 # emmykit
 
-Personal Python utility kit: 184 importable functions, classes, and constants spread across
-32 submodules in 9 dependency layers. Base install is stdlib-only; heavier helpers
+Personal Python utility kit: 184 importable functions, classes, and constants across 32 submodules
+in 9 dependency layers (README highlights the user-facing surface — internal punctuation, frozenset
+aliases, probe-target lists, and translation tables are referenced by section rather than enumerated).
+Base install is stdlib-only; heavier helpers
 (datetime parsing via numpy/pandas/dateutil, mojibake fixing via ftfy, lint runners,
 LLM wrappers, ffmpeg/VLC controls) are gated behind optional extras so a bare
 `import emmykit` is fast and side-effect-free.
@@ -35,70 +37,31 @@ print(ek.my_capitalize("hello world"))   # "Hello world"
 ## Table of contents
 
 - [`constants` — ANSI colors, unicode punctuation, default encoding, ignore-lists](#m-constants)
-  - [`ANSI_CYAN`](#ansi_cyan)
-  - [`ANSI_GREEN`](#ansi_green)
-  - [`ANSI_RED`](#ansi_red)
-  - [`ANSI_RESET`](#ansi_reset)
-  - [`ANSI_YELLOW`](#ansi_yellow)
-  - [`BACKTICK`](#backtick)
   - [`DEFAULT_ENCODING`](#default_encoding)
   - [`DEFAULT_EXCLUDE_DIRS`](#default_exclude_dirs)
-  - [`EM_DASH`](#em_dash)
-  - [`HORIZONTAL_ELLIPSIS`](#horizontal_ellipsis)
-  - [`IGNORE_THESE_ERRORS`](#ignore_these_errors)
-  - [`IGNORED_CODES`](#ignored_codes)
-  - [`LDQUOTE`](#ldquote)
-  - [`LSQUOTE`](#lsquote)
-  - [`RDQUOTE`](#rdquote)
-  - [`RSQUOTE`](#rsquote)
+  - [`ANSI color escapes`](#c-constants-ansi-color-escapes)
+  - [`IGNORED_CODES`](#c-constants-ignored-codes)
+  - [`IGNORE_THESE_ERRORS`](#c-constants-ignore-these-errors)
 - [`extensions` — File-extension lookup tables (audio / video / image / book / text / html / playlist / archive / subtitle)](#m-extensions)
   - [`ALL_KNOWN_EXTENSIONS`](#all_known_extensions)
-  - [`ALL_KNOWN_EXTENSIONS_SET`](#all_known_extensions_set)
   - [`ARCHIVE_EXTENSIONS`](#archive_extensions)
-  - [`ARCHIVE_EXTENSIONS_SET`](#archive_extensions_set)
   - [`AUDIO_EXTENSIONS`](#audio_extensions)
-  - [`AUDIO_EXTENSIONS_SET`](#audio_extensions_set)
   - [`BOOK_EXTENSIONS`](#book_extensions)
-  - [`BOOK_EXTENSIONS_SET`](#book_extensions_set)
   - [`HTML_EXTENSIONS`](#html_extensions)
-  - [`HTML_EXTENSIONS_SET`](#html_extensions_set)
   - [`IMAGE_EXTENSIONS`](#image_extensions)
-  - [`IMAGE_EXTENSIONS_SET`](#image_extensions_set)
   - [`PLAYLIST_EXTENSIONS`](#playlist_extensions)
-  - [`PLAYLIST_EXTENSIONS_SET`](#playlist_extensions_set)
   - [`PYTHON_EXTENSIONS`](#python_extensions)
-  - [`PYTHON_EXTENSIONS_SET`](#python_extensions_set)
   - [`SUBTITLE_EXTENSIONS`](#subtitle_extensions)
-  - [`SUBTITLE_EXTENSIONS_SET`](#subtitle_extensions_set)
   - [`TEXT_ENCODINGS`](#text_encodings)
-  - [`TEXT_ENCODINGS_SET`](#text_encodings_set)
   - [`TEXT_EXTENSIONS`](#text_extensions)
-  - [`TEXT_EXTENSIONS_SET`](#text_extensions_set)
   - [`VIDEO_EXTENSIONS`](#video_extensions)
-  - [`VIDEO_EXTENSIONS_SET`](#video_extensions_set)
-- [`net_targets` — Network-diagnostic probe targets](#m-net_targets)
-  - [`DNS_TEST_NAMES`](#dns_test_names)
-  - [`HTTP_PROBES`](#http_probes)
-  - [`IPV4_TARGETS`](#ipv4_targets)
-  - [`IPV6_TARGETS`](#ipv6_targets)
 - [`embedded_scripts` — Pre-packaged helper-script source-strings](#m-embedded_scripts)
-  - [`MULTIREPLACE_SCRIPT`](#multireplace_script)
-  - [`MYAUDIT_SCRIPT`](#myaudit_script)
-  - [`MYDIFF_SCRIPT`](#mydiff_script)
-  - [`PRINTALL_SCRIPT`](#printall_script)
-  - [`SETUP_CARTOPY_SCRIPT`](#setup_cartopy_script)
-  - [`TREEVIEW_SCRIPT`](#treeview_script)
-  - [`UNIV_DEFS_SYS_PATH_SCRIPT`](#univ_defs_sys_path_script)
+  - [`7 embedded helper scripts`](#c-embedded_scripts-7-embedded-helper-scripts)
 - [`_version` — Package and Python version constants](#m-_version)
   - [`PY_VERSION`](#py_version)
 - [`options` — Options dataclasses for configuration](#m-options)
   - [`Options`](#options)
   - [`PlotOptions`](#plotoptions)
-- [`text_constants` — Translation tables for text normalization](#m-text_constants)
-  - [`CHARACTERS_TO_SPACE`](#characters_to_space)
-  - [`QUOTES_TO_DELETE`](#quotes_to_delete)
-  - [`REPLACE_WITH_SPACE`](#replace_with_space)
-  - [`TRANSLATION_TABLE`](#translation_table)
 - [`numeric_helpers` — Numeric parsing + unit-to-seconds conversion](#m-numeric_helpers)
   - [`is_float`](#is_float)
   - [`seconds_in_unit`](#seconds_in_unit)
@@ -147,7 +110,6 @@ print(ek.my_capitalize("hello world"))   # "Hello world"
   - [`sci_exp`](#sci_exp)
 - [`datetime_utils` — Date / time parsing, formatting, timezone handling](#m-datetime_utils)
   - [`adaptive_date_labels`](#adaptive_date_labels)
-  - [`ADAPTIVE_FORMAT_LEVELS`](#adaptive_format_levels)
   - [`AdaptiveDateFormatter`](#adaptivedateformatter)
   - [`AnyDateTimeType`](#anydatetimetype)
   - [`decimal_year_to_datetime`](#decimal_year_to_datetime)
@@ -187,8 +149,7 @@ print(ek.my_capitalize("hello world"))   # "Hello world"
   - [`get_hostname_subprocess_hostname`](#get_hostname_subprocess_hostname)
   - [`get_hostname_subprocess_scutil`](#get_hostname_subprocess_scutil)
   - [`IS_NASA_COMPUTER`](#is_nasa_computer)
-  - [`NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES`](#nasa_casefolded_computer_name_prefixes)
-  - [`NASA_COMPUTER_NAME_PREFIXES`](#nasa_computer_name_prefixes)
+  - [`NASA computer-name prefixes`](#c-hosts-nasa-computer-name-prefixes)
 - [`network` — Internet-connectivity probes](#m-network)
   - [`CheckResult`](#checkresult)
   - [`is_internet_available`](#is_internet_available)
@@ -260,78 +221,6 @@ _Layer 0._  `from emmykit.constants import …`
 
 Terminal escape codes, curly quotes, the em-dash, the package's UTF-8 default, the set of errno codes treated as benign by `safe_*`, and the flake8/autopep8 codes Emmy deliberately ignores.
 
-<a id="ansi_cyan"></a>
-<details>
-<summary><code>ANSI_CYAN</code> — this is blue on Linux but cyan on my Mac</summary>
-
-```python
-ANSI_CYAN: str = '\x1b[94m'
-```
-
-[source ↗](src/emmykit/constants.py#L16)
-
-</details>
-
-<a id="ansi_green"></a>
-<details>
-<summary><code>ANSI_GREEN</code> — this is bold/bright green on Linux but orange on my Mac</summary>
-
-```python
-ANSI_GREEN: str = '\x1b[92m'
-```
-
-[source ↗](src/emmykit/constants.py#L12)
-
-</details>
-
-<a id="ansi_red"></a>
-<details>
-<summary><code>ANSI_RED</code> — str = '\x1b[91m'</summary>
-
-```python
-ANSI_RED: str = '\x1b[91m'
-```
-
-[source ↗](src/emmykit/constants.py#L10)
-
-</details>
-
-<a id="ansi_reset"></a>
-<details>
-<summary><code>ANSI_RESET</code> — str = '\x1b[0m'</summary>
-
-```python
-ANSI_RESET: str = '\x1b[0m'
-```
-
-[source ↗](src/emmykit/constants.py#L18)
-
-</details>
-
-<a id="ansi_yellow"></a>
-<details>
-<summary><code>ANSI_YELLOW</code> — str = '\x1b[93m'</summary>
-
-```python
-ANSI_YELLOW: str = '\x1b[93m'
-```
-
-[source ↗](src/emmykit/constants.py#L14)
-
-</details>
-
-<a id="backtick"></a>
-<details>
-<summary><code>BACKTICK</code> — U+0060 "GRAVE ACCENT" (the backtick)</summary>
-
-```python
-BACKTICK = '`'
-```
-
-[source ↗](src/emmykit/constants.py#L44)
-
-</details>
-
 <a id="default_encoding"></a>
 <details>
 <summary><code>DEFAULT_ENCODING</code> — str = 'utf-8'</summary>
@@ -340,7 +229,7 @@ BACKTICK = '`'
 DEFAULT_ENCODING: str = 'utf-8'
 ```
 
-[source ↗](src/emmykit/constants.py#L8)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/constants.py#L8)
 
 </details>
 
@@ -352,104 +241,37 @@ DEFAULT_ENCODING: str = 'utf-8'
 DEFAULT_EXCLUDE_DIRS: set[str] = {'.git', '.venv', '__pycache__', 'build', 'dist', 'venv'}
 ```
 
-[source ↗](src/emmykit/constants.py#L65)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/constants.py#L65)
 
 </details>
 
-<a id="em_dash"></a>
+<a id="c-constants-ansi-color-escapes"></a>
 <details>
-<summary><code>EM_DASH</code> — U+2014 "EM DASH"</summary>
+<summary><code>ANSI color escapes</code> — 5 terminal-escape strings: ANSI_CYAN / GREEN / RED / RESET / YELLOW.</summary>
 
-```python
-EM_DASH = '—'
-```
+**Includes:** `ANSI_CYAN`, `ANSI_GREEN`, `ANSI_RED`, `ANSI_RESET`, `ANSI_YELLOW`.
 
-[source ↗](src/emmykit/constants.py#L56)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/constants.py#L16)
 
 </details>
 
-<a id="horizontal_ellipsis"></a>
+<a id="c-constants-ignored-codes"></a>
 <details>
-<summary><code>HORIZONTAL_ELLIPSIS</code> — U+2026 "HORIZONTAL ELLIPSIS" (three closely spaced periods)</summary>
+<summary><code>IGNORED_CODES</code> — flake8 + autopep8 codes Emmy deliberately ignores.</summary>
 
-```python
-HORIZONTAL_ELLIPSIS = '…'
-```
+**Includes:** `IGNORED_CODES`.
 
-[source ↗](src/emmykit/constants.py#L54)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/constants.py#L20)
 
 </details>
 
-<a id="ignore_these_errors"></a>
+<a id="c-constants-ignore-these-errors"></a>
 <details>
-<summary><code>IGNORE_THESE_ERRORS</code> — Final[frozenset[int]] (6 items)</summary>
+<summary><code>IGNORE_THESE_ERRORS</code> — errno codes treated as benign by safe_* helpers.</summary>
 
-```python
-IGNORE_THESE_ERRORS: Final[frozenset[int]] = frozenset({1, 116, 13, 2, 20, 40})
-```
+**Includes:** `IGNORE_THESE_ERRORS`.
 
-[source ↗](src/emmykit/constants.py#L58)
-
-</details>
-
-<a id="ignored_codes"></a>
-<details>
-<summary><code>IGNORED_CODES</code> — list[str] (21 items)</summary>
-
-```python
-IGNORED_CODES: list[str] = ['W503', 'W504', 'E117', 'E127', 'E122', 'E128', 'E201', 'E202', 'E203', 'E211', 'E221',
- 'E222', 'E226', 'E227', 'E241', 'E251', 'E262', 'E271', 'E272', 'E701', 'E702']
-```
-
-[source ↗](src/emmykit/constants.py#L20)
-
-</details>
-
-<a id="ldquote"></a>
-<details>
-<summary><code>LDQUOTE</code> — U+201C "LEFT  DOUBLE QUOTATION MARK"</summary>
-
-```python
-LDQUOTE = '“'
-```
-
-[source ↗](src/emmykit/constants.py#L50)
-
-</details>
-
-<a id="lsquote"></a>
-<details>
-<summary><code>LSQUOTE</code> — U+2018 "LEFT  SINGLE QUOTATION MARK" (curly apostrophe)</summary>
-
-```python
-LSQUOTE = '‘'
-```
-
-[source ↗](src/emmykit/constants.py#L46)
-
-</details>
-
-<a id="rdquote"></a>
-<details>
-<summary><code>RDQUOTE</code> — U+201D "RIGHT DOUBLE QUOTATION MARK"</summary>
-
-```python
-RDQUOTE = '”'
-```
-
-[source ↗](src/emmykit/constants.py#L52)
-
-</details>
-
-<a id="rsquote"></a>
-<details>
-<summary><code>RSQUOTE</code> — U+2019 "RIGHT SINGLE QUOTATION MARK" (curly apostrophe)</summary>
-
-```python
-RSQUOTE = '’'
-```
-
-[source ↗](src/emmykit/constants.py#L48)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/constants.py#L58)
 
 </details>
 
@@ -459,6 +281,8 @@ RSQUOTE = '’'
 _Layer 0._  `from emmykit.extensions import …`
 
 Lists and frozensets of common file extensions per media kind, plus an `ALL_KNOWN_EXTENSIONS` umbrella and the canonical `TEXT_ENCODINGS` ordering used by `my_fopen` when sniffing.
+
+Each `*_EXTENSIONS` list has a `*_EXTENSIONS_SET` frozenset alias for fast membership tests.
 
 <a id="all_known_extensions"></a>
 <details>
@@ -470,19 +294,7 @@ ALL_KNOWN_EXTENSIONS: Final[tuple[str, ...]] = ('.py', '.pyw', '.html', '.htm', 
  '.properties', '.rtf', '.rst', ...)
 ```
 
-[source ↗](src/emmykit/extensions.py#L319)
-
-</details>
-
-<a id="all_known_extensions_set"></a>
-<details>
-<summary><code>ALL_KNOWN_EXTENSIONS_SET</code> — Final[frozenset[str]] (979 items)</summary>
-
-```python
-ALL_KNOWN_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.001', '.002', '.003', '.004', '.005', '.006', '.007', '.008', '.009', '.010', '.011', '.012', '.013', '.014', '.015', '.016', '.017', '.018', '.019', '.020', '.021', '.022', '.023', '...
-```
-
-[source ↗](src/emmykit/extensions.py#L323)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L319)
 
 </details>
 
@@ -496,19 +308,7 @@ ARCHIVE_EXTENSIONS: Final[tuple[str, ...]] = ('.zip', '.rar', '.7z', '.tar', '.g
  '.ear', '.iso', ...)
 ```
 
-[source ↗](src/emmykit/extensions.py#L308)
-
-</details>
-
-<a id="archive_extensions_set"></a>
-<details>
-<summary><code>ARCHIVE_EXTENSIONS_SET</code> — Final[frozenset[str]] (376 items)</summary>
-
-```python
-ARCHIVE_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.001', '.002', '.003', '.004', '.005', '.006', '.007', '.008', '.009', '.010', '.011', '.012', '.013', '.014', '.015', '.016', '.017', '.018', '.019', '.020', '.021', '.022', '.023', '...
-```
-
-[source ↗](src/emmykit/extensions.py#L312)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L308)
 
 </details>
 
@@ -522,19 +322,7 @@ AUDIO_EXTENSIONS: Final[tuple[str, ...]] = ('.mp3', '.wav', '.flac', '.aac', '.o
  '.ra', '.rm', '.oga', ...)
 ```
 
-[source ↗](src/emmykit/extensions.py#L206)
-
-</details>
-
-<a id="audio_extensions_set"></a>
-<details>
-<summary><code>AUDIO_EXTENSIONS_SET</code> — Final[frozenset[str]] (112 items)</summary>
-
-```python
-AUDIO_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.3g2', '.3ga', '.3gp', '.669', '.aa', '.aac', '.aax', '.aaxc', '.abc', '.ac3', '.adts', '.adx', '.aif', '.aifc', '.aiff', '.alac', '.amr', '.ape', '.asf', '.ast', '.au', '.awb', '.bcst...
-```
-
-[source ↗](src/emmykit/extensions.py#L228)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L206)
 
 </details>
 
@@ -548,19 +336,7 @@ BOOK_EXTENSIONS: Final[tuple[str, ...]] = ('.epub', '.pdf', '.txt', '.rtf', '.ht
  '.fb2', '.fbz', ...)
 ```
 
-[source ↗](src/emmykit/extensions.py#L80)
-
-</details>
-
-<a id="book_extensions_set"></a>
-<details>
-<summary><code>BOOK_EXTENSIONS_SET</code> — Final[frozenset[str]] (63 items)</summary>
-
-```python
-BOOK_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.azw', '.azw1', '.azw3', '.azw4', '.azw6', '.cb7', '.cba', '.cbr', '.cbt', '.cbz', '.ceb', '.chm', '.djv', '.djvu', '.doc', '.docx', '.dvi', '.epub', '.fb2', '.fbz', '.htm', '.html', '...
-```
-
-[source ↗](src/emmykit/extensions.py#L175)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L80)
 
 </details>
 
@@ -572,19 +348,7 @@ BOOK_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.azw', '.azw1', '.azw3'
 HTML_EXTENSIONS: Final[tuple[str, ...]] = ('.html', '.htm', '.xhtml')
 ```
 
-[source ↗](src/emmykit/extensions.py#L47)
-
-</details>
-
-<a id="html_extensions_set"></a>
-<details>
-<summary><code>HTML_EXTENSIONS_SET</code> — Final[frozenset[str]] (3 items)</summary>
-
-```python
-HTML_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.htm', '.html', '.xhtml'})
-```
-
-[source ↗](src/emmykit/extensions.py#L49)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L47)
 
 </details>
 
@@ -598,19 +362,7 @@ IMAGE_EXTENSIONS: Final[tuple[str, ...]] = ('.bmp', '.dib', '.gif', '.jpeg', '.j
  '.hdr', '.exr', '.webp', ...)
 ```
 
-[source ↗](src/emmykit/extensions.py#L243)
-
-</details>
-
-<a id="image_extensions_set"></a>
-<details>
-<summary><code>IMAGE_EXTENSIONS_SET</code> — Final[frozenset[str]] (127 items)</summary>
-
-```python
-IMAGE_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.3fr', '.afphoto', '.ai', '.apng', '.arw', '.ase', '.aseprite', '.avif', '.basis', '.bil', '.bip', '.bmp', '.bpg', '.bsq', '.cdr', '.cgm', '.clip', '.cr2', '.cr3', '.crw', '.dcm', '.dc...
-```
-
-[source ↗](src/emmykit/extensions.py#L268)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L243)
 
 </details>
 
@@ -624,19 +376,7 @@ PLAYLIST_EXTENSIONS: Final[tuple[str, ...]] = ('.m3u', '.m3u8', '.pls', '.xspf',
  '.aimppl4', '.pla', '.xml', ...)
 ```
 
-[source ↗](src/emmykit/extensions.py#L270)
-
-</details>
-
-<a id="playlist_extensions_set"></a>
-<details>
-<summary><code>PLAYLIST_EXTENSIONS_SET</code> — Final[frozenset[str]] (28 items)</summary>
-
-```python
-PLAYLIST_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.aimppl', '.aimppl4', '.asx', '.b4s', '.cue', '.dpl', '.f4m', '.fpl', '.ism', '.ismc', '.isml', '.ismv', '.m3u', '.m3u8', '.mpcpl', '.mpd', '.pla', '.pls', '.ram', '.smi', '.smil', '.w...
-```
-
-[source ↗](src/emmykit/extensions.py#L278)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L270)
 
 </details>
 
@@ -648,19 +388,7 @@ PLAYLIST_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.aimppl', '.aimppl4
 PYTHON_EXTENSIONS: Final[tuple[str, ...]] = ('.py', '.pyw')
 ```
 
-[source ↗](src/emmykit/extensions.py#L43)
-
-</details>
-
-<a id="python_extensions_set"></a>
-<details>
-<summary><code>PYTHON_EXTENSIONS_SET</code> — Final[frozenset[str]] (2 items)</summary>
-
-```python
-PYTHON_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.py', '.pyw'})
-```
-
-[source ↗](src/emmykit/extensions.py#L45)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L43)
 
 </details>
 
@@ -674,19 +402,7 @@ SUBTITLE_EXTENSIONS: Final[tuple[str, ...]] = ('.srt', '.sub', '.idx', '.ass', '
  '.mpl2', '.sbt', ...)
 ```
 
-[source ↗](src/emmykit/extensions.py#L230)
-
-</details>
-
-<a id="subtitle_extensions_set"></a>
-<details>
-<summary><code>SUBTITLE_EXTENSIONS_SET</code> — Final[frozenset[str]] (47 items)</summary>
-
-```python
-SUBTITLE_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.890', '.aqt', '.asc', '.ass', '.cap', '.cin', '.dfxp', '.dks', '.ebu', '.gsub', '.idx', '.itt', '.jss', '.lrc', '.mcc', '.mks', '.mpl', '.mpl2', '.onl', '.pac', '.pjs', '.psb', '.rt',...
-```
-
-[source ↗](src/emmykit/extensions.py#L241)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L230)
 
 </details>
 
@@ -700,19 +416,7 @@ TEXT_ENCODINGS: Final[tuple[str, ...]] = ('utf-8', 'latin-1', 'ascii', 'iso-8859
  'cp1253', 'cp1254', ...)
 ```
 
-[source ↗](src/emmykit/extensions.py#L8)
-
-</details>
-
-<a id="text_encodings_set"></a>
-<details>
-<summary><code>TEXT_ENCODINGS_SET</code> — sets are faster</summary>
-
-```python
-TEXT_ENCODINGS_SET: Final[frozenset[str]] = frozenset({'ascii', 'base64', 'big5', 'big5hkscs', 'bz2', 'charmap', 'cp037', 'cp1006', 'cp1026', 'cp1125', 'cp1140', 'cp1250', 'cp1251', 'cp1252', 'cp1253', 'cp1254', 'cp1255', 'cp1256', 'cp1257'...
-```
-
-[source ↗](src/emmykit/extensions.py#L41)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L8)
 
 </details>
 
@@ -726,19 +430,7 @@ TEXT_EXTENSIONS: Final[tuple[str, ...]] = ('.txt', '.html', '.htm', '.csv', '.js
  '.sgml', '.tex', ...)
 ```
 
-[source ↗](src/emmykit/extensions.py#L51)
-
-</details>
-
-<a id="text_extensions_set"></a>
-<details>
-<summary><code>TEXT_EXTENSIONS_SET</code> — Final[frozenset[str]] (143 items)</summary>
-
-```python
-TEXT_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.adoc', '.asciidoc', '.ass', '.atom', '.aux', '.bash', '.bat', '.bib', '.c', '.cff', '.cfg', '.cjs', '.cls', '.cmd', '.conf', '.cpp', '.cs', '.css', '.csv', '.cue', '.desktop', '.diff'...
-```
-
-[source ↗](src/emmykit/extensions.py#L78)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L51)
 
 </details>
 
@@ -752,74 +444,7 @@ VIDEO_EXTENSIONS: Final[tuple[str, ...]] = ('.mp4', '.mkv', '.mov', '.avi', '.mp
  '.asf', '.f4v', '.mxf', ...)
 ```
 
-[source ↗](src/emmykit/extensions.py#L177)
-
-</details>
-
-<a id="video_extensions_set"></a>
-<details>
-<summary><code>VIDEO_EXTENSIONS_SET</code> — Final[frozenset[str]] (133 items)</summary>
-
-```python
-VIDEO_EXTENSIONS_SET: Final[frozenset[str]] = frozenset({'.264', '.3g2', '.3gp', '.3gpp', '.amv', '.arf', '.asf', '.av1', '.avi', '.b5t', '.b6t', '.bik', '.bin', '.bk2', '.braw', '.bup', '.bvr', '.bwt', '.ccd', '.cine', '.cue', '.dav', '.dcr'...
-```
-
-[source ↗](src/emmykit/extensions.py#L204)
-
-</details>
-
-<a id="m-net_targets"></a>
-### `net_targets` — Network-diagnostic probe targets
-
-_Layer 0._  `from emmykit.net_targets import …`
-
-IPv4, IPv6, HTTP, and DNS endpoint lists used by `is_internet_available` to verify connectivity beyond DNS resolution.
-
-<a id="dns_test_names"></a>
-<details>
-<summary><code>DNS_TEST_NAMES</code> — list[str] (5 items)</summary>
-
-```python
-DNS_TEST_NAMES: list[str] = ['example.com', 'cloudflare.com', 'google.com', 'one.one.one.one', 'dns.google']
-```
-
-[source ↗](src/emmykit/net_targets.py#L40)
-
-</details>
-
-<a id="http_probes"></a>
-<details>
-<summary><code>HTTP_PROBES</code> — list[dict[str, Any]] (3 items)</summary>
-
-```python
-HTTP_PROBES: list[dict[str, Any]] = [{'url': 'https://www.gstatic.com/generate_204', 'method': 'GET', 'expect': {'status': 204}, 'note': 'Android/gstatic 204 probe'}, {'url': 'http://www.gstatic.com/generate_204', 'method': 'GET', '...
-```
-
-[source ↗](src/emmykit/net_targets.py#L19)
-
-</details>
-
-<a id="ipv4_targets"></a>
-<details>
-<summary><code>IPV4_TARGETS</code> — list[tuple[str, int]] (4 items)</summary>
-
-```python
-IPV4_TARGETS: list[tuple[str, int]] = [('1.1.1.1', 443), ('8.8.8.8', 853), ('9.9.9.9', 443), ('208.67.222.222', 443)]
-```
-
-[source ↗](src/emmykit/net_targets.py#L7)
-
-</details>
-
-<a id="ipv6_targets"></a>
-<details>
-<summary><code>IPV6_TARGETS</code> — list[tuple[str, int]] (2 items)</summary>
-
-```python
-IPV6_TARGETS: list[tuple[str, int]] = [('2606:4700:4700::1111', 443), ('2001:4860:4860::8888', 53)]
-```
-
-[source ↗](src/emmykit/net_targets.py#L14)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L177)
 
 </details>
 
@@ -830,87 +455,13 @@ _Layer 0._  `from emmykit.embedded_scripts import …`
 
 Multi-kilobyte Python script literals shipped as importable strings — used by Emmy's external automation to drop drop-in helpers into other projects.
 
-<a id="multireplace_script"></a>
+<a id="c-embedded_scripts-7-embedded-helper-scripts"></a>
 <details>
-<summary><code>MULTIREPLACE_SCRIPT</code> — str (2742 chars)</summary>
+<summary><code>7 embedded helper scripts</code> — Multi-KB Python script source strings shipped as importable constants.</summary>
 
-```python
-MULTIREPLACE_SCRIPT: str = '<2,742-char Python script source, 61 lines>'
-```
+**Includes:** `MULTIREPLACE_SCRIPT`, `MYAUDIT_SCRIPT`, `MYDIFF_SCRIPT`, `PRINTALL_SCRIPT`, `SETUP_CARTOPY_SCRIPT`, `TREEVIEW_SCRIPT`, `UNIV_DEFS_SYS_PATH_SCRIPT`.
 
-[source ↗](src/emmykit/embedded_scripts.py#L156)
-
-</details>
-
-<a id="myaudit_script"></a>
-<details>
-<summary><code>MYAUDIT_SCRIPT</code> — str (3021 chars)</summary>
-
-```python
-MYAUDIT_SCRIPT: str = '<3,021-char Python script source, 64 lines>'
-```
-
-[source ↗](src/emmykit/embedded_scripts.py#L91)
-
-</details>
-
-<a id="mydiff_script"></a>
-<details>
-<summary><code>MYDIFF_SCRIPT</code> — str (3373 chars)</summary>
-
-```python
-MYDIFF_SCRIPT: str = '<3,373-char Python script source, 72 lines>'
-```
-
-[source ↗](src/emmykit/embedded_scripts.py#L18)
-
-</details>
-
-<a id="printall_script"></a>
-<details>
-<summary><code>PRINTALL_SCRIPT</code> — str (9957 chars)</summary>
-
-```python
-PRINTALL_SCRIPT: str = '<9,957-char Python script source, 261 lines>'
-```
-
-[source ↗](src/emmykit/embedded_scripts.py#L283)
-
-</details>
-
-<a id="setup_cartopy_script"></a>
-<details>
-<summary><code>SETUP_CARTOPY_SCRIPT</code> — str (532 chars)</summary>
-
-```python
-SETUP_CARTOPY_SCRIPT: str = '<532-char Python script source, 16 lines>'
-```
-
-[source ↗](src/emmykit/embedded_scripts.py#L545)
-
-</details>
-
-<a id="treeview_script"></a>
-<details>
-<summary><code>TREEVIEW_SCRIPT</code> — str (2913 chars)</summary>
-
-```python
-TREEVIEW_SCRIPT: str = '<2,913-char Python script source, 64 lines>'
-```
-
-[source ↗](src/emmykit/embedded_scripts.py#L218)
-
-</details>
-
-<a id="univ_defs_sys_path_script"></a>
-<details>
-<summary><code>UNIV_DEFS_SYS_PATH_SCRIPT</code> — str (373 chars)</summary>
-
-```python
-UNIV_DEFS_SYS_PATH_SCRIPT: str = '<373-char Python script source, 10 lines>'
-```
-
-[source ↗](src/emmykit/embedded_scripts.py#L7)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/embedded_scripts.py#L156)
 
 </details>
 
@@ -929,7 +480,7 @@ Single source of truth for `emmykit.__version__` (read by hatchling at build-tim
 PY_VERSION: Final[float] = 3.12
 ```
 
-[source ↗](src/emmykit/_version.py#L13)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/_version.py#L13)
 
 </details>
 
@@ -952,7 +503,7 @@ Options() -> 'None'
 Class that has all global options in one place.
 ```
 
-[source ↗](src/emmykit/options.py#L8)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/options.py#L8)
 
 </details>
 
@@ -968,73 +519,7 @@ PlotOptions() -> 'None'
 Global figure options.
 ```
 
-[source ↗](src/emmykit/options.py#L25)
-
-</details>
-
-<a id="m-text_constants"></a>
-### `text_constants` — Translation tables for text normalization
-
-_Layer 1._  `from emmykit.text_constants import …`
-
-Character maps used by `normalize_for_search` to fold quotes, ellipses, and other punctuation into ASCII equivalents.
-
-<a id="characters_to_space"></a>
-<details>
-<summary><code>CHARACTERS_TO_SPACE</code> — str = '._-—…'</summary>
-
-```python
-CHARACTERS_TO_SPACE = '._-—…'
-```
-
-[source ↗](src/emmykit/text_constants.py#L15)
-
-</details>
-
-<a id="quotes_to_delete"></a>
-<details>
-<summary><code>QUOTES_TO_DELETE</code> — str = '"\'`‘’“”'</summary>
-
-```python
-QUOTES_TO_DELETE = '"\'`‘’“”'
-```
-
-[source ↗](src/emmykit/text_constants.py#L19)
-
-</details>
-
-<a id="replace_with_space"></a>
-<details>
-<summary><code>REPLACE_WITH_SPACE</code> — str = '     '</summary>
-
-```python
-REPLACE_WITH_SPACE = '     '
-```
-
-[source ↗](src/emmykit/text_constants.py#L17)
-
-</details>
-
-<a id="translation_table"></a>
-<details>
-<summary><code>TRANSLATION_TABLE</code> — dict (12 entries)</summary>
-
-```python
-TRANSLATION_TABLE = {34: None,
- 39: None,
- 45: 32,
- 46: 32,
- 95: 32,
- 96: None,
- 8212: 32,
- 8216: None,
- 8217: None,
- 8220: None,
- 8221: None,
- 8230: 32}
-```
-
-[source ↗](src/emmykit/text_constants.py#L21)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/options.py#L25)
 
 </details>
 
@@ -1057,7 +542,7 @@ is_float(s: 'str') -> 'bool'
 Check if a string can be parsed as a float.
 ```
 
-[source ↗](src/emmykit/numeric_helpers.py#L56)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/numeric_helpers.py#L56)
 
 </details>
 
@@ -1073,7 +558,7 @@ seconds_in_unit(unit: 'str') -> 'float'
 Return the number of seconds in a given time unit.
 ```
 
-[source ↗](src/emmykit/numeric_helpers.py#L49)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/numeric_helpers.py#L49)
 
 </details>
 
@@ -1103,7 +588,7 @@ Returns:
     A Path object (expanded for "~"). If absolute=True, it's absolute; otherwise it may be relative.
 ```
 
-[source ↗](src/emmykit/paths_ensure.py#L10)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/paths_ensure.py#L10)
 
 </details>
 
@@ -1128,7 +613,7 @@ Protocol for the 'inflect' library's engine interface.
 
 **Public methods:** `plural`, `plural_noun`.
 
-[source ↗](src/emmykit/inflect_utils.py#L8)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/inflect_utils.py#L8)
 
 </details>
 
@@ -1164,7 +649,7 @@ Raises:
     None.
 ```
 
-[source ↗](src/emmykit/inflect_utils.py#L42)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/inflect_utils.py#L42)
 
 </details>
 
@@ -1199,7 +684,7 @@ Raises:
     None (file creation errors are caught and logged to stdout).
 ```
 
-[source ↗](src/emmykit/logging_utils.py#L63)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L63)
 
 </details>
 
@@ -1220,7 +705,7 @@ Args:
     rawlog : If True, use a simple log format without timestamps or levels.
 ```
 
-[source ↗](src/emmykit/logging_utils.py#L46)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L46)
 
 </details>
 
@@ -1238,7 +723,7 @@ A logging handler that flushes the stream after emitting each log so the logs ar
 
 **Public methods:** `acquire`, `addFilter`, `close`, `createLock`, `emit`, `filter`, `flush`, `format`, `get_name`, `handle`, `handleError`, `release`, `removeFilter`, `setFormatter`, `setLevel`, `setStream`, `set_name`.
 
-[source ↗](src/emmykit/logging_utils.py#L25)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L25)
 
 </details>
 
@@ -1256,7 +741,7 @@ A logging filter that only allows logs up to a certain level to pass through, so
 
 **Public methods:** `filter`.
 
-[source ↗](src/emmykit/logging_utils.py#L35)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L35)
 
 </details>
 
@@ -1274,7 +759,7 @@ A logging handler that stores logs in memory so the errors can be printed at the
 
 **Public methods:** `acquire`, `addFilter`, `close`, `createLock`, `emit`, `filter`, `flush`, `format`, `get_name`, `handle`, `handleError`, `release`, `removeFilter`, `setFormatter`, `setLevel`, `set_name`.
 
-[source ↗](src/emmykit/logging_utils.py#L12)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L12)
 
 </details>
 
@@ -1290,7 +775,7 @@ print_all_errors(memory_handler: 'MemoryHandler', rawlog: 'bool' = False) -> 'No
 Print all the captured error messages.
 ```
 
-[source ↗](src/emmykit/logging_utils.py#L147)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L147)
 
 </details>
 
@@ -1323,7 +808,7 @@ Raises:
           if sys._getframe or inspect fails.
 ```
 
-[source ↗](src/emmykit/logging_utils.py#L157)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L157)
 
 </details>
 
@@ -1361,7 +846,7 @@ Raises:
     NotADirectoryError: If the path exists but is not a directory.
 ```
 
-[source ↗](src/emmykit/safe_paths.py#L63)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L63)
 
 </details>
 
@@ -1396,7 +881,7 @@ Raises:
     ValueError:        If raise_on_empty is True and the file is empty (or bad permissions, etc.)
 ```
 
-[source ↗](src/emmykit/safe_paths.py#L14)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L14)
 
 </details>
 
@@ -1423,7 +908,7 @@ Returns:
     The ctime of the file in seconds or nanoseconds, or None if an error occurred.
 ```
 
-[source ↗](src/emmykit/safe_paths.py#L296)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L296)
 
 </details>
 
@@ -1447,7 +932,7 @@ Returns:
     For certain access/loop issues, returns True to avoid misclassifying as 'missing'.
 ```
 
-[source ↗](src/emmykit/safe_paths.py#L122)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L122)
 
 </details>
 
@@ -1475,7 +960,7 @@ Raises:
     some OSError variations. But not all.
 ```
 
-[source ↗](src/emmykit/safe_paths.py#L194)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L194)
 
 </details>
 
@@ -1503,7 +988,7 @@ Raises:
     some OSError variations. But not all.
 ```
 
-[source ↗](src/emmykit/safe_paths.py#L162)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L162)
 
 </details>
 
@@ -1528,7 +1013,7 @@ Returns:
     The mtime of the file in seconds or nanoseconds, or None if an error occurred.
 ```
 
-[source ↗](src/emmykit/safe_paths.py#L276)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L276)
 
 </details>
 
@@ -1552,7 +1037,7 @@ Returns:
     The size of the file in bytes or None if an error occurred.
 ```
 
-[source ↗](src/emmykit/safe_paths.py#L260)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L260)
 
 </details>
 
@@ -1580,7 +1065,7 @@ Raises:
     some OSError variations. But not all.
 ```
 
-[source ↗](src/emmykit/safe_paths.py#L226)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L226)
 
 </details>
 
@@ -1620,7 +1105,7 @@ Raises:
     RuntimeError: If the lock cannot be acquired within the specified timeout.
 ```
 
-[source ↗](src/emmykit/file_io.py#L13)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/file_io.py#L13)
 
 </details>
 
@@ -1643,7 +1128,7 @@ my_critical_error(message: 'str' = 'A critical error occurred.', choose_breakpoi
 Log a critical error message and either exit the program or enter a breakpoint.
 ```
 
-[source ↗](src/emmykit/io_subprocess.py#L20)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L20)
 
 </details>
 
@@ -1674,7 +1159,7 @@ Returns:
      - cannot be read with any of the specified encodings
 ```
 
-[source ↗](src/emmykit/io_subprocess.py#L124)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L124)
 
 </details>
 
@@ -1690,7 +1175,7 @@ my_popen(command_list: 'list', suppress_info: 'bool' = False, suppress_error: 'b
 Execute a command using subprocess.Popen and capture the output line by line using threads.
 ```
 
-[source ↗](src/emmykit/io_subprocess.py#L49)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L49)
 
 </details>
 
@@ -1706,7 +1191,7 @@ MyPopenResult(stdout: 'str', stderr: 'str', returncode: 'int') -> 'None'
 A class to store the results of a customized subprocess.Popen call.
 ```
 
-[source ↗](src/emmykit/io_subprocess.py#L39)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L39)
 
 </details>
 
@@ -1740,7 +1225,7 @@ Raises:
     None: If the user input is invalid, it will keep prompting until a valid choice is made.
 ```
 
-[source ↗](src/emmykit/prompts.py#L15)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/prompts.py#L15)
 
 </details>
 
@@ -1756,7 +1241,7 @@ prompt_then_confirm(prompt: 'str') -> 'bool'
 Prompt the user with the given message and return True if the user enters 'yes', False otherwise.
 ```
 
-[source ↗](src/emmykit/prompts.py#L10)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/prompts.py#L10)
 
 </details>
 
@@ -1791,7 +1276,7 @@ Raises:
     TypeError:   If 'source_or_filepath' is not a string or a file path.
 ```
 
-[source ↗](src/emmykit/introspection.py#L427)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L427)
 
 </details>
 
@@ -1840,7 +1325,7 @@ Notes:
     result in an empty string.
 ```
 
-[source ↗](src/emmykit/introspection.py#L321)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L321)
 
 </details>
 
@@ -1869,7 +1354,7 @@ Raises:
     ValueError:        If the value of the variable cannot be evaluated as a literal expression.
 ```
 
-[source ↗](src/emmykit/introspection.py#L20)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L20)
 
 </details>
 
@@ -1885,7 +1370,7 @@ normalize_to_dict(value: 'Any', var_name: 'str', script_path: 'str | os.PathLike
 Ensure that 'value' is a dict. If it's a JSON-style string, try to parse it. Otherwise, log a warning and return an empty dict.
 ```
 
-[source ↗](src/emmykit/introspection.py#L300)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L300)
 
 </details>
 
@@ -1933,7 +1418,7 @@ Raises:
     TypeError: If the resolved object isn't suitable for source extraction.
 ```
 
-[source ↗](src/emmykit/introspection.py#L133)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L133)
 
 </details>
 
@@ -1979,7 +1464,7 @@ Raises:
     None.
 ```
 
-[source ↗](src/emmykit/humanize.py#L6)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L6)
 
 </details>
 
@@ -2006,7 +1491,7 @@ Returns:
     float: The rounded number, or the original number if it is smaller than 10^(-max_digits).
 ```
 
-[source ↗](src/emmykit/humanize.py#L124)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L124)
 
 </details>
 
@@ -2023,7 +1508,7 @@ Return floor(log10(|x|)), clamped to -max_digits for very small |x|.
 For x == 0, returns -max_digits.
 ```
 
-[source ↗](src/emmykit/humanize.py#L110)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L110)
 
 </details>
 
@@ -2063,19 +1548,7 @@ Returns:
     for NaT/NaN values.
 ```
 
-[source ↗](src/emmykit/datetime_utils.py#L667)
-
-</details>
-
-<a id="adaptive_format_levels"></a>
-<details>
-<summary><code>ADAPTIVE_FORMAT_LEVELS</code> — Final[list[str]] (5 items)</summary>
-
-```python
-ADAPTIVE_FORMAT_LEVELS: Final[list[str]] = ['%Y', '%Y-%m', '%Y-%m-%d', '%Y-%m-%d %H:%M', '%Y-%m-%d %H:%M:%S']
-```
-
-[source ↗](src/emmykit/datetime_utils.py#L629)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L667)
 
 </details>
 
@@ -2106,7 +1579,7 @@ Example:
 
 **Public methods:** `format_ticks`.
 
-[source ↗](src/emmykit/datetime_utils.py#L723)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L723)
 
 </details>
 
@@ -2118,7 +1591,7 @@ Example:
 AnyDateTimeType: TypeAlias = 'str | float | int | np.datetime64 | pd.Timestamp | dt.datetime'
 ```
 
-[source ↗](src/emmykit/datetime_utils.py#L324)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L324)
 
 </details>
 
@@ -2136,7 +1609,7 @@ If use_astropy is True, astropy.time is used for sub-second and leap-second–aw
 Usage: new_datetime_datetime_object = decimal_year_to_datetime(2002.291)
 ```
 
-[source ↗](src/emmykit/datetime_utils.py#L282)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L282)
 
 </details>
 
@@ -2152,7 +1625,7 @@ extract_timestamp(the_string: 'str') -> 'str | None'
 Extract timestamp string (in format YYYYMMDD-HHMMSS) from the_string, or None if not found.
 ```
 
-[source ↗](src/emmykit/datetime_utils.py#L122)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L122)
 
 </details>
 
@@ -2181,7 +1654,7 @@ Raises:
     ValueError: If either date1 or date2 is not a datetime.datetime object.
 ```
 
-[source ↗](src/emmykit/datetime_utils.py#L64)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L64)
 
 </details>
 
@@ -2209,7 +1682,7 @@ Raises:
     None.
 ```
 
-[source ↗](src/emmykit/datetime_utils.py#L15)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L15)
 
 </details>
 
@@ -2275,7 +1748,7 @@ Raises:
     TypeError:   If the given_date is not a string, float, int, numpy.datetime64, pandas.Timestamp, or datetime.datetime object.
 ```
 
-[source ↗](src/emmykit/datetime_utils.py#L393)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L393)
 
 </details>
 
@@ -2310,7 +1783,7 @@ Raises:
     ValueError if the string cannot be converted to a valid timezone.
 ```
 
-[source ↗](src/emmykit/datetime_utils.py#L185)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L185)
 
 </details>
 
@@ -2328,7 +1801,7 @@ Integer constants representing date-formatting precision levels.
 Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
 ```
 
-[source ↗](src/emmykit/datetime_utils.py#L617)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L617)
 
 </details>
 
@@ -2352,7 +1825,7 @@ Reconstruct objects encoded with to_jsonable(..., roundtrip=True).
 If input was produced with roundtrip=False, this mostly passes values through.
 ```
 
-[source ↗](src/emmykit/json_io.py#L146)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L146)
 
 </details>
 
@@ -2379,7 +1852,7 @@ Raises:
     ValueError: If the JSON file is invalid or cannot be parsed.
 ```
 
-[source ↗](src/emmykit/json_io.py#L303)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L303)
 
 </details>
 
@@ -2409,7 +1882,7 @@ Raises:
     ValueError: If the options object is invalid.
 ```
 
-[source ↗](src/emmykit/json_io.py#L271)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L271)
 
 </details>
 
@@ -2426,7 +1899,7 @@ Convert arbitrary Python objects into JSON-serializable primitives.
 If roundtrip=True, non-JSON types are wrapped with a small type tag so they can be reconstructed.
 ```
 
-[source ↗](src/emmykit/json_io.py#L17)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L17)
 
 </details>
 
@@ -2472,7 +1945,7 @@ Raises:
     ValueError: If the specified path is not a file. The function which raises this exception is my_fopen().
 ```
 
-[source ↗](src/emmykit/diff_view.py#L300)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/diff_view.py#L300)
 
 </details>
 
@@ -2505,7 +1978,7 @@ Raises:
     None.
 ```
 
-[source ↗](src/emmykit/diff_view.py#L36)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/diff_view.py#L36)
 
 </details>
 
@@ -2534,7 +2007,7 @@ Raises:
     PermissionError:   If the file is not accessible due to permission issues.
 ```
 
-[source ↗](src/emmykit/diff_view.py#L255)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/diff_view.py#L255)
 
 </details>
 
@@ -2568,7 +2041,7 @@ Raises:
     None.
 ```
 
-[source ↗](src/emmykit/diff_view.py#L82)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/diff_view.py#L82)
 
 </details>
 
@@ -2578,6 +2051,8 @@ Raises:
 _Layer 5._  `from emmykit.text import …`
 
 ftfy-based `fix_text`/`fix_mojibake` (with an atomic write-back), explicit UTF-8 / CP-1252 decoders, sentence-aware `my_capitalize`/`my_title_case`, and `normalize_for_search` for diacritic-folded comparisons.
+
+Translation tables live in `emmykit.text_constants` (`CHARACTERS_TO_SPACE` / `QUOTES_TO_DELETE` / `REPLACE_WITH_SPACE` / `TRANSLATION_TABLE`) and feed `normalize_for_search`.
 
 <a id="contains_mojibake"></a>
 <details>
@@ -2591,7 +2066,7 @@ contains_mojibake(text: 'str') -> 'bool'
 Use ftfy.badness.is_bad() to detect any likely mojibake in the text.
 ```
 
-[source ↗](src/emmykit/text.py#L63)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L63)
 
 </details>
 
@@ -2608,7 +2083,7 @@ Attempt to decode CP1252 bytes and return as a string.
 If it fails, return None.
 ```
 
-[source ↗](src/emmykit/text.py#L48)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L48)
 
 </details>
 
@@ -2625,7 +2100,7 @@ If the file at 'path' is valid UTF-8 without lone C1 controls,
 return the decoded string. Otherwise, return None.
 ```
 
-[source ↗](src/emmykit/text.py#L31)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L31)
 
 </details>
 
@@ -2645,7 +2120,7 @@ as an http-equiv Content-Type declaration—normalize it to
 after the opening <head> tag.
 ```
 
-[source ↗](src/emmykit/text.py#L103)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L103)
 
 </details>
 
@@ -2662,7 +2137,7 @@ Fix mojibake in a text file, recoding from CP1252 to UTF-8 if necessary.
 If the file is already valid UTF-8, it will only fix mojibake.
 ```
 
-[source ↗](src/emmykit/text.py#L141)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L141)
 
 </details>
 
@@ -2678,7 +2153,7 @@ fix_text(current_text: 'str', path: 'str | os.PathLike[str]', raw_bytes: 'bytes'
 Fix mojibake in a string using ftfy.fix_encoding().
 ```
 
-[source ↗](src/emmykit/text.py#L77)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L77)
 
 </details>
 
@@ -2694,7 +2169,7 @@ my_capitalize(string_to_capitalize: 'str') -> 'str'
 Capitalize ONLY the first letter of a string and DON'T modify the rest of it.
 ```
 
-[source ↗](src/emmykit/text.py#L18)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L18)
 
 </details>
 
@@ -2710,7 +2185,7 @@ my_title_case(the_title: 'str') -> 'str'
 Capitalize the first letter of each word, but if a word already has ANY uppercase letters, leave it as is. This way, words like "WW2" or "iZombie" won't be modified.
 ```
 
-[source ↗](src/emmykit/text.py#L24)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L24)
 
 </details>
 
@@ -2726,7 +2201,7 @@ normalize_for_search(text: 'str') -> 'str'
 Convert text to ASCII and lowercase for case- and diacritic-insensitive comparison. Also treat some characters such as ._- the same as spaces. Remove quotes (', ", ' and their unicode variants).
 ```
 
-[source ↗](src/emmykit/text.py#L196)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L196)
 
 </details>
 
@@ -2761,7 +2236,7 @@ Raises:
           no names (or differing names) are retrieved.
 ```
 
-[source ↗](src/emmykit/hosts.py#L100)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L100)
 
 </details>
 
@@ -2773,7 +2248,7 @@ Raises:
 COMPUTER_NAME: str = 'b98ed262ead6'
 ```
 
-[source ↗](src/emmykit/hosts.py#L146)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L146)
 
 </details>
 
@@ -2799,7 +2274,7 @@ Raises:
     None: This function does not raise exceptions, but it may log warnings if no names are retrieved.
 ```
 
-[source ↗](src/emmykit/hosts.py#L61)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L61)
 
 </details>
 
@@ -2815,7 +2290,7 @@ get_hostname_os_uname(rawlog: 'bool' = False) -> 'str | None'
 Retrieves the hostname using os.uname().nodename.
 ```
 
-[source ↗](src/emmykit/hosts.py#L31)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L31)
 
 </details>
 
@@ -2831,7 +2306,7 @@ get_hostname_platform(rawlog: 'bool' = False) -> 'str | None'
 Retrieves the hostname using platform.node().
 ```
 
-[source ↗](src/emmykit/hosts.py#L22)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L22)
 
 </details>
 
@@ -2847,7 +2322,7 @@ get_hostname_socket(rawlog: 'bool' = False) -> 'str | None'
 Retrieves the hostname using socket.gethostname().
 ```
 
-[source ↗](src/emmykit/hosts.py#L13)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L13)
 
 </details>
 
@@ -2863,7 +2338,7 @@ get_hostname_subprocess_hostname(rawlog: 'bool' = False) -> 'str | None'
 Retrieves the hostname using the 'hostname' system command via subprocess.
 ```
 
-[source ↗](src/emmykit/hosts.py#L39)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L39)
 
 </details>
 
@@ -2879,7 +2354,7 @@ get_hostname_subprocess_scutil(rawlog: 'bool' = False) -> 'str | None'
 Retrieves the hostname using the 'scutil --get ComputerName' command on macOS via subprocess.
 ```
 
-[source ↗](src/emmykit/hosts.py#L49)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L49)
 
 </details>
 
@@ -2891,31 +2366,17 @@ Retrieves the hostname using the 'scutil --get ComputerName' command on macOS vi
 IS_NASA_COMPUTER: bool = False
 ```
 
-[source ↗](src/emmykit/hosts.py#L153)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L153)
 
 </details>
 
-<a id="nasa_casefolded_computer_name_prefixes"></a>
+<a id="c-hosts-nasa-computer-name-prefixes"></a>
 <details>
-<summary><code>NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES</code> — Final[tuple[str, ...]] (4 items)</summary>
+<summary><code>NASA computer-name prefixes</code> — Prefix lists feeding `IS_NASA_COMPUTER` detection.</summary>
 
-```python
-NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES: Final[tuple[str, ...]] = ('rayl', 'nasa', 'jpl', 'mt')
-```
+**Includes:** `NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES`, `NASA_COMPUTER_NAME_PREFIXES`.
 
-[source ↗](src/emmykit/hosts.py#L150)
-
-</details>
-
-<a id="nasa_computer_name_prefixes"></a>
-<details>
-<summary><code>NASA_COMPUTER_NAME_PREFIXES</code> — Final[tuple[str, ...]] (4 items)</summary>
-
-```python
-NASA_COMPUTER_NAME_PREFIXES: Final[tuple[str, ...]] = ('RAYL', 'NASA', 'JPL', 'MT')
-```
-
-[source ↗](src/emmykit/hosts.py#L148)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L150)
 
 </details>
 
@@ -2925,6 +2386,8 @@ NASA_COMPUTER_NAME_PREFIXES: Final[tuple[str, ...]] = ('RAYL', 'NASA', 'JPL', 'M
 _Layer 5._  `from emmykit.network import …`
 
 `is_internet_available` runs a multi-strategy DNS + HTTP + TCP check against `net_targets` with a captive-portal sniff and a shared `ThreadPoolExecutor`.
+
+Probe targets live in `emmykit.net_targets` (`IPV4_TARGETS` / `IPV6_TARGETS` / `HTTP_PROBES` / `DNS_TEST_NAMES`) and feed `is_internet_available`.
 
 <a id="checkresult"></a>
 <details>
@@ -2940,7 +2403,7 @@ Aggregate results from the multi-strategy connectivity check.
 
 **Fields:** `tcp_ok`, `dns_ok`, `http_ok`, `captive_detected`.
 
-[source ↗](src/emmykit/network.py#L425)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/network.py#L425)
 
 </details>
 
@@ -2984,7 +2447,7 @@ Raises:
     None.
 ```
 
-[source ↗](src/emmykit/network.py#L509)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/network.py#L509)
 
 </details>
 
@@ -3007,7 +2470,7 @@ check_python_version(command: 'str') -> 'bool'
 Check if the given Python command is available and has a version of PY_VERSION or higher.
 ```
 
-[source ↗](src/emmykit/python_env.py#L112)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L112)
 
 </details>
 
@@ -3033,7 +2496,7 @@ Raises:
     subprocess.CalledProcessError or FileNotFoundError.
 ```
 
-[source ↗](src/emmykit/python_env.py#L14)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L14)
 
 </details>
 
@@ -3049,7 +2512,7 @@ find_additional_alias_files(options: 'Options') -> 'None'
 Find additional alias files for the shell.
 ```
 
-[source ↗](src/emmykit/python_env.py#L89)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L89)
 
 </details>
 
@@ -3065,7 +2528,7 @@ find_preferred_python_version() -> 'str | None'
 Find the command for the preferred version of python (stored here as PY_VERSION).
 ```
 
-[source ↗](src/emmykit/python_env.py#L125)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L125)
 
 </details>
 
@@ -3092,7 +2555,7 @@ Raises:
     for the specified shell.
 ```
 
-[source ↗](src/emmykit/python_env.py#L45)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L45)
 
 </details>
 
@@ -3115,7 +2578,7 @@ calculate_checksum(file_path: 'str | os.PathLike[str]') -> 'str'
 Calculate the SHA256 checksum of a file.
 ```
 
-[source ↗](src/emmykit/files.py#L321)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L321)
 
 </details>
 
@@ -3149,7 +2612,7 @@ Raises:
     SystemExit on failure after retries or if insufficient free space is detected.
 ```
 
-[source ↗](src/emmykit/files.py#L19)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L19)
 
 </details>
 
@@ -3190,7 +2653,7 @@ Raises:
     None: If the input text is None, it will return an empty string.
 ```
 
-[source ↗](src/emmykit/files.py#L214)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L214)
 
 </details>
 
@@ -3218,7 +2681,7 @@ Raises:
     OSError:           If the filesystem information cannot be retrieved.
 ```
 
-[source ↗](src/emmykit/files.py#L178)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L178)
 
 </details>
 
@@ -3237,7 +2700,7 @@ Ensure that 'thepath' exists and contains exactly 'thescript'.
 - Otherwise, nothing happens.
 ```
 
-[source ↗](src/emmykit/files.py#L292)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L292)
 
 </details>
 
@@ -3279,7 +2742,7 @@ Raises:
     ValueError: If the specified path is not a file. The function which raises this exception is autopep8.fix_file().
 ```
 
-[source ↗](src/emmykit/lint.py#L520)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L520)
 
 </details>
 
@@ -3316,7 +2779,7 @@ Raises:
     PermissionError: If the file is not accessible due to permission issues.
 ```
 
-[source ↗](src/emmykit/lint.py#L587)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L587)
 
 </details>
 
@@ -3345,7 +2808,7 @@ Raises:
     FileNotFoundError: If the specified file does not exist.
 ```
 
-[source ↗](src/emmykit/lint.py#L252)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L252)
 
 </details>
 
@@ -3365,7 +2828,7 @@ Walks a module AST and collects formatting violations:
 
 **Public methods:** `generic_visit`, `visit`, `visit_AsyncFunctionDef`, `visit_ClassDef`, `visit_Constant`, `visit_FunctionDef`.
 
-[source ↗](src/emmykit/lint.py#L250)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L250)
 
 </details>
 
@@ -3383,7 +2846,7 @@ which Flake8 error‐codes autopep8 knows how to fix.
 Returns a set like {"E101","E111", ...}.
 ```
 
-[source ↗](src/emmykit/lint.py#L492)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L492)
 
 </details>
 
@@ -3417,7 +2880,7 @@ Returns:
     False if the user chose to quit during any replacement prompts, True otherwise.
 ```
 
-[source ↗](src/emmykit/lint.py#L734)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L734)
 
 </details>
 
@@ -3450,7 +2913,7 @@ Raises:
     NotADirectoryError: If the specified path is not a directory.
 ```
 
-[source ↗](src/emmykit/lint.py#L667)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L667)
 
 </details>
 
@@ -3480,7 +2943,7 @@ Raises:
     FileNotFoundError: If the specified file does not exist.
 ```
 
-[source ↗](src/emmykit/lint.py#L335)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L335)
 
 </details>
 
@@ -3503,7 +2966,7 @@ Returns:
     None.
 ```
 
-[source ↗](src/emmykit/lint.py#L791)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L791)
 
 </details>
 
@@ -3550,7 +3013,7 @@ Raises:
           directory or does not exist.
 ```
 
-[source ↗](src/emmykit/treeview.py#L14)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/treeview.py#L14)
 
 </details>
 
@@ -3573,7 +3036,7 @@ ensure_daemon_running() -> 'None'
 Check if the Docker daemon is running; if not, attempt to start it.
 ```
 
-[source ↗](src/emmykit/docker_utils.py#L20)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L20)
 
 </details>
 
@@ -3589,7 +3052,7 @@ ensure_docker_installed() -> 'None'
 Check if the Docker CLI is installed; if not, raise an error.
 ```
 
-[source ↗](src/emmykit/docker_utils.py#L13)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L13)
 
 </details>
 
@@ -3608,7 +3071,7 @@ or a build_cmd (and optionally a build_dir). If both dockerfile and build_cmd ar
 the function will raise an error.
 ```
 
-[source ↗](src/emmykit/docker_utils.py#L48)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L48)
 
 </details>
 
@@ -3637,7 +3100,7 @@ Raises:
     RuntimeError: If all fixes fail and the command still does not succeed.
 ```
 
-[source ↗](src/emmykit/docker_utils.py#L82)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L82)
 
 </details>
 
@@ -3666,7 +3129,7 @@ Returns:
     True if the command exists, False otherwise.
 ```
 
-[source ↗](src/emmykit/system.py#L14)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L14)
 
 </details>
 
@@ -3692,7 +3155,7 @@ Raises:
     ValueError: If the IPINFO_API_TOKEN environment variable is not set.
 ```
 
-[source ↗](src/emmykit/system.py#L163)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L163)
 
 </details>
 
@@ -3708,7 +3171,7 @@ get_effective_free_memory() -> 'float'
 Return the "effective" free memory in bytes: free memory plus buffers plus cache.
 ```
 
-[source ↗](src/emmykit/system.py#L50)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L50)
 
 </details>
 
@@ -3724,7 +3187,7 @@ is_process_running(process_name: 'str') -> 'bool'
 Check if a process with the given name is running.
 ```
 
-[source ↗](src/emmykit/system.py#L108)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L108)
 
 </details>
 
@@ -3740,7 +3203,7 @@ kill_process(pname: 'str') -> 'None'
 Kill a process by its name, then check if it is still running and retry if needed. Make sure the process name is unique to avoid killing unintended processes.
 ```
 
-[source ↗](src/emmykit/system.py#L72)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L72)
 
 </details>
 
@@ -3757,7 +3220,7 @@ Open the file manager with the specified directories.
 Note: Most file managers don't support multiple tabs via command line, so open separate windows.
 ```
 
-[source ↗](src/emmykit/system.py#L135)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L135)
 
 </details>
 
@@ -3774,7 +3237,7 @@ Open a GNOME terminal, source ~/.bashrc (via bash -i), run the_command,
 and optionally close or keep the window open. Optionally, maximize it.
 ```
 
-[source ↗](src/emmykit/system.py#L27)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L27)
 
 </details>
 
@@ -3790,7 +3253,7 @@ start_only_one_instance(process_name: 'str') -> 'None'
 Start a process, but only if it's not already running.
 ```
 
-[source ↗](src/emmykit/system.py#L122)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L122)
 
 </details>
 
@@ -3813,7 +3276,7 @@ ensure_even_dimensions(image_path: 'str | os.PathLike[str]') -> 'None'
 Ensure the image at 'image_path' has dimensions divisible by 2, by resizing if necessary.
 ```
 
-[source ↗](src/emmykit/media.py#L21)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L21)
 
 </details>
 
@@ -3829,7 +3292,7 @@ extract_and_concatenate_segments(input_file: 'str | os.PathLike[str]', timestamp
 Extracts segments from a video file and concatenates them into a new file.
 ```
 
-[source ↗](src/emmykit/media.py#L474)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L474)
 
 </details>
 
@@ -3856,7 +3319,7 @@ Raises:
     None
 ```
 
-[source ↗](src/emmykit/media.py#L41)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L41)
 
 </details>
 
@@ -3888,7 +3351,7 @@ Raises:
     ValueError:        If a probe returns an invalid or non-positive duration.
 ```
 
-[source ↗](src/emmykit/media.py#L315)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L315)
 
 </details>
 
@@ -3904,7 +3367,7 @@ open_dir_in_VLC(the_dir: 'str | os.PathLike[str]', sort_choice: 'str' = 'sort_by
 Create a playlist of the files in the specified directory, then play that playlist in VLC. By default, don't search the directory recursively and sort the files by name. Optional arguments allow recursive loading or sorting by modification time. If no_start is True, don't start playback in VLC.
 ```
 
-[source ↗](src/emmykit/media.py#L245)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L245)
 
 </details>
 
@@ -3931,7 +3394,7 @@ Raises:
     FileNotFoundError: If the specified path does not exist.
 ```
 
-[source ↗](src/emmykit/media.py#L292)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L292)
 
 </details>
 
@@ -3947,7 +3410,7 @@ open_playlist_in_VLC(playlist: 'str | os.PathLike[str]', no_start: 'bool' = Fals
 Open a playlist in VLC. If no_start is True, don't start playback in VLC.
 ```
 
-[source ↗](src/emmykit/media.py#L237)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L237)
 
 </details>
 
@@ -3980,7 +3443,7 @@ Raises:
     RuntimeError: If the volume could not be set or verified.
 ```
 
-[source ↗](src/emmykit/media.py#L111)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L111)
 
 </details>
 
@@ -4019,7 +3482,7 @@ Raises:
     OSError:           If there is an error during file operations.
 ```
 
-[source ↗](src/emmykit/html_files.py#L88)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/html_files.py#L88)
 
 </details>
 
@@ -4049,7 +3512,7 @@ Raises:
     OSError: If the rename operation fails due to an OS error (e.g., permission denied).
 ```
 
-[source ↗](src/emmykit/html_files.py#L15)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/html_files.py#L15)
 
 </details>
 
@@ -4065,7 +3528,7 @@ remove_prefix_from_html_title(filepath: 'str | os.PathLike[str]', prefix: 'str')
 If the given filepath is an HTML file and its title starts with the given prefix, remove the prefix from the title and save the file, then return True. Otherwise, return False.
 ```
 
-[source ↗](src/emmykit/html_files.py#L59)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/html_files.py#L59)
 
 </details>
 
@@ -4087,7 +3550,7 @@ Configuration for LLM selection and usage. Data only.
 
 **Fields:** `only_cleared_models`, `only_local_models`, `allow_local_models`, `ollama_base_url`, `vllm_base_url`, `rate_throttle`, `rate_headroom`, `rate_retry_max_attempts`, `rate_retry_max_wait`, `rate_db_path`, `availability_probe`, `availability_probe_ttl_sec`, `availability_probe_timeout`, `availability_probe_allow_costly`, `selection_strategy`, `min_context_tokens`, `assumed_prompt_tokens`, `assumed_output_tokens`, `candidate_models`, `default_temperature`, `max_tokens`, `model_scores`, `prefer_code`, `prefer_low_TTFT`, `prefer_local`, `max_estimated_cost`, `speed_floor`, `model_filter`, `provider_filter`, `weight_price`, `weight_code_skill`, `weight_general_skill`, `weight_TTFT`, `weight_speed`, `weight_nonlocal_penalty`.
 
-[source ↗](src/emmykit/llm.py#L31)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L31)
 
 </details>
 
@@ -4108,7 +3571,7 @@ LLMs() -> 'None'
 
 **Public methods:** `alternative_model`, `apply_config`, `describe_selection`, `get_config`, `list_candidates`, `refresh_selection`, `register_strategy`, `send_prompt`, `tokenize`.
 
-[source ↗](src/emmykit/llm.py#L143)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L143)
 
 </details>
 
@@ -4125,7 +3588,7 @@ Information about a candidate Large Language Model (LLM).
 
 **Public methods:** `estimate_cost`.
 
-[source ↗](src/emmykit/llm.py#L102)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L102)
 
 </details>
 
@@ -4143,7 +3606,7 @@ Context passed to strategy functions.
 
 **Fields:** `tokens_in`, `tokens_out`, `min_context_tokens`, `require_local`, `require_cleared`, `extras`.
 
-[source ↗](src/emmykit/llm.py#L132)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L132)
 
 </details>
 
@@ -4152,7 +3615,7 @@ Context passed to strategy functions.
 <summary><code>SelectionStrategy</code> — Enumeration of selection strategies for model selection.</summary>
 
 ```python
-SelectionStrategy(value, names=None, *, module=None, qualname=None, type=None, start=1, boundary=None)
+SelectionStrategy(*values)
 ```
 
 ```text
@@ -4161,7 +3624,7 @@ Enumeration of selection strategies for model selection.
 
 **Public methods:** `capitalize`, `casefold`, `center`, `count`, `encode`, `endswith`, `expandtabs`, `find`, `format`, `format_map`, `index`, `isalnum`, `isalpha`, `isascii`, `isdecimal`, `isdigit`, `isidentifier`, `islower`, `isnumeric`, `isprintable`, `isspace`, `istitle`, `isupper`, `join`, `ljust`, `lower`, `lstrip`, `maketrans`, `partition`, `removeprefix`, `removesuffix`, `replace`, `rfind`, `rindex`, `rjust`, `rpartition`, `rsplit`, `rstrip`, `split`, `splitlines`, `startswith`, `strip`, `swapcase`, `title`, `translate`, `upper`, `zfill`.
 
-[source ↗](src/emmykit/llm.py#L20)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L20)
 
 </details>
 
@@ -4173,7 +3636,7 @@ Enumeration of selection strategies for model selection.
 StrategyFn: TypeAlias = collections.abc.Callable[[collections.abc.Sequence[emmykit.llm.ModelInfo], emmykit.llm.SelectionContext], emmykit.llm.ModelInfo]
 ```
 
-[source ↗](src/emmykit/llm.py#L141)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L141)
 
 </details>
 
