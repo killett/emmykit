@@ -83,7 +83,7 @@
   },
   "Enum": {
     "kind": "EnumType",
-    "signature": "(value, names=None, *, module=None, qualname=None, type=None, start=1, boundary=None)"
+    "signature": "(new_class_name, /, names, *, module=None, qualname=None, type=None, start=1, boundary=None)"
   },
   "Final": {
     "kind": "_SpecialForm",
@@ -153,7 +153,7 @@
     "kind": "str"
   },
   "Literal": {
-    "kind": "_LiteralSpecialForm",
+    "kind": "_TypedCacheSpecialForm",
     "signature": "(*args, **kwds)"
   },
   "MULTIREPLACE_SCRIPT": {
@@ -252,7 +252,7 @@
   },
   "SelectionStrategy": {
     "kind": "EnumType",
-    "signature": "(value, names=None, *, module=None, qualname=None, type=None, start=1, boundary=None)"
+    "signature": "(*values)"
   },
   "Sequence": {
     "kind": "ABCMeta",
@@ -260,7 +260,7 @@
   },
   "StrategyFn": {
     "kind": "_CallableGenericAlias",
-    "signature": null
+    "signature": "(*args, **kwargs)"
   },
   "TEXT_ENCODINGS": {
     "kind": "tuple"
@@ -330,7 +330,7 @@
   },
   "chain": {
     "kind": "type",
-    "signature": null
+    "signature": "(*iterables)"
   },
   "check_if_command_exists": {
     "kind": "function",
@@ -441,7 +441,7 @@
   },
   "field": {
     "kind": "function",
-    "signature": "(*, default=<dataclasses._MISSING_TYPE object at 0x716818873dd0>, default_factory=<dataclasses._MISSING_TYPE object at 0x716818873dd0>, init=True, repr=True, hash=None, compare=True, metadata=None, kw_only=<dataclasses._MISSING_TYPE object at 0x716818873dd0>)"
+    "signature": "(*, default=<dataclasses._MISSING_TYPE object at 0x7d827d61cd70>, default_factory=<dataclasses._MISSING_TYPE object at 0x7d827d61cd70>, init=True, repr=True, hash=None, compare=True, metadata=None, kw_only=<dataclasses._MISSING_TYPE object at 0x7d827d61cd70>)"
   },
   "filename_format": {
     "kind": "function",

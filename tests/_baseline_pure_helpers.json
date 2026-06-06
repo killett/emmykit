@@ -25,6 +25,12 @@
         "no_ts.txt"
       ],
       "result": "None"
+    },
+    {
+      "args": [
+        "20240101-123456.pkl"
+      ],
+      "result": "'20240101-123456'"
     }
   ],
   "human_bytesize": [
@@ -139,21 +145,21 @@
         3.14159,
         3
       ],
-      "error": "ModuleNotFoundError: No module named 'numpy'"
+      "result": "np.float64(3.15)"
     },
     {
       "args": [
         -2.5,
         0
       ],
-      "error": "ModuleNotFoundError: No module named 'numpy'"
+      "result": "np.float64(-10.0)"
     },
     {
       "args": [
         1.0,
         5
       ],
-      "error": "ModuleNotFoundError: No module named 'numpy'"
+      "result": "np.float64(1.0)"
     }
   ],
   "sci_exp": [
