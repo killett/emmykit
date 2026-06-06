@@ -5,12 +5,42 @@ build-backend = "hatchling.build"
 [project]
 name = "emmykit"
 version = "0.3.0"
-description = "Personal Python utilities — historically known as univ_defs.py."
+description = "Layered Python utility package — datetime parsing, logging, safe filesystem ops, mojibake fixing, lint runners, media tools, LLM wrappers. Stdlib-only base."
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
 license = { file = "LICENSE" }
 authors = [{ name = "Emmy Killett", email = "EmmyKillett@gmail.com" }]
+keywords = [
+    "utilities",
+    "datetime",
+    "logging",
+    "filesystem",
+    "mojibake",
+    "flake8",
+    "autopep8",
+    "ffmpeg",
+    "llm",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
 dependencies = []
+
+[project.urls]
+Homepage   = "https://github.com/killett/emmykit"
+Repository = "https://github.com/killett/emmykit"
+Issues     = "https://github.com/killett/emmykit/issues"
+Changelog  = "https://github.com/killett/emmykit/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 # Lazy in-function imports. Install only what you call.
