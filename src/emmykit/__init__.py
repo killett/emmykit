@@ -27,3 +27,4 @@ from emmykit.lint import *
 from emmykit.treeview import *
 from emmykit.docker_utils import *
 from emmykit.system import *
+from emmykit.media import *
