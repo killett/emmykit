@@ -6,6 +6,6 @@ from typing import Final
 
 __all__ = ["__version__", "PY_VERSION"]
 
-__version__: Final[str] = "0.2.3"
+__version__: Final[str] = "0.3.0"
 
 PY_VERSION: Final[float] = 3.12
