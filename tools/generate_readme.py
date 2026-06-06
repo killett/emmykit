@@ -16,11 +16,12 @@ import inspect
 import io
 import json
 import pprint
+import re
 import sys
 import textwrap
 import tokenize
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC_DIR = ROOT / "src" / "emmykit"
@@ -160,6 +161,116 @@ MODULE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
                          "The 2 000-LOC `LLMs` class wraps `litellm`/`tiktoken` with `LLMConfig`/`ModelInfo` dataclasses, a `SelectionStrategy` enum, "
                          "and lazy backoff via tenacity."),
 }
+
+
+# -------- render policy -------- #
+
+GITHUB_BASE: Final[str] = "https://github.com/killett/emmykit/blob/main"
+
+
+@dataclasses.dataclass(frozen=True)
+class CondenseGroup:
+    """A family of related constants collapsed into one TOC + body entry."""
+
+    label: str         # Human-readable label; doubles as anchor text and TOC entry.
+    names: list[str]   # Symbols absorbed into this group; first present name's source_line drives the link.
+    summary: str       # Short body line shown inside the <details> body.
+
+
+@dataclasses.dataclass(frozen=True)
+class ModuleRenderRule:
+    """Per-module render directives consumed by build_readme.
+
+    Names listed in both `omit` and a `condense.names` list are treated as an
+    authoring error — keep them in only one place.
+    """
+
+    omit: list[str] = dataclasses.field(default_factory=list)
+    condense: list[CondenseGroup] = dataclasses.field(default_factory=list)
+    section_note: str | None = None    # Appended to the module's intro paragraph.
+    drop_section: bool = False         # Skip the whole section in TOC + body.
+
+
+_EXT_NAMES: Final[tuple[str, ...]] = (
+    "ALL_KNOWN_EXTENSIONS", "ARCHIVE_EXTENSIONS", "AUDIO_EXTENSIONS",
+    "BOOK_EXTENSIONS", "HTML_EXTENSIONS", "IMAGE_EXTENSIONS",
+    "PLAYLIST_EXTENSIONS", "PYTHON_EXTENSIONS", "SUBTITLE_EXTENSIONS",
+    "TEXT_ENCODINGS", "TEXT_EXTENSIONS", "VIDEO_EXTENSIONS",
+)
+
+
+RENDER_RULES: dict[str, ModuleRenderRule] = {
+    "constants": ModuleRenderRule(
+        omit=["BACKTICK", "EM_DASH", "HORIZONTAL_ELLIPSIS",
+              "LDQUOTE", "LSQUOTE", "RDQUOTE", "RSQUOTE"],
+        condense=[
+            CondenseGroup(
+                label="ANSI color escapes",
+                names=["ANSI_CYAN", "ANSI_GREEN", "ANSI_RED", "ANSI_RESET", "ANSI_YELLOW"],
+                summary="5 terminal-escape strings: ANSI_CYAN / GREEN / RED / RESET / YELLOW.",
+            ),
+            CondenseGroup(
+                label="IGNORED_CODES",
+                names=["IGNORED_CODES"],
+                summary="flake8 + autopep8 codes Emmy deliberately ignores.",
+            ),
+            CondenseGroup(
+                label="IGNORE_THESE_ERRORS",
+                names=["IGNORE_THESE_ERRORS"],
+                summary="errno codes treated as benign by safe_* helpers.",
+            ),
+        ],
+    ),
+    "extensions": ModuleRenderRule(
+        omit=[n + "_SET" for n in _EXT_NAMES],
+        section_note=(
+            "Each `*_EXTENSIONS` list has a `*_EXTENSIONS_SET` frozenset alias "
+            "for fast membership tests."
+        ),
+    ),
+    "datetime_utils": ModuleRenderRule(omit=["ADAPTIVE_FORMAT_LEVELS"]),
+    "embedded_scripts": ModuleRenderRule(
+        condense=[CondenseGroup(
+            label="7 embedded helper scripts",
+            names=["MULTIREPLACE_SCRIPT", "MYAUDIT_SCRIPT", "MYDIFF_SCRIPT",
+                   "PRINTALL_SCRIPT", "SETUP_CARTOPY_SCRIPT", "TREEVIEW_SCRIPT",
+                   "UNIV_DEFS_SYS_PATH_SCRIPT"],
+            summary="Multi-KB Python script source strings shipped as importable constants.",
+        )],
+    ),
+    "hosts": ModuleRenderRule(
+        condense=[CondenseGroup(
+            label="NASA computer-name prefixes",
+            names=["NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES", "NASA_COMPUTER_NAME_PREFIXES"],
+            summary="Prefix lists feeding `IS_NASA_COMPUTER` detection.",
+        )],
+    ),
+    "net_targets": ModuleRenderRule(drop_section=True),
+    "text_constants": ModuleRenderRule(drop_section=True),
+}
+
+
+# When a module is `drop_section=True`, prepend its substance to the named
+# downstream module's section intro.
+SECTION_DROP_NOTES: dict[str, tuple[str, str]] = {
+    "net_targets": (
+        "network",
+        "Probe targets live in `emmykit.net_targets` "
+        "(`IPV4_TARGETS` / `IPV6_TARGETS` / `HTTP_PROBES` / `DNS_TEST_NAMES`) "
+        "and feed `is_internet_available`.",
+    ),
+    "text_constants": (
+        "text",
+        "Translation tables live in `emmykit.text_constants` "
+        "(`CHARACTERS_TO_SPACE` / `QUOTES_TO_DELETE` / `REPLACE_WITH_SPACE` / `TRANSLATION_TABLE`) "
+        "and feed `normalize_for_search`.",
+    ),
+}
+
+
+def _slug(label: str) -> str:
+    """Lowercase + non-alnum runs → hyphens; stable across runs."""
+    return re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-")
 
 
 # -------- introspection -------- #
@@ -395,14 +506,40 @@ def _render_symbol(s: SymbolInfo) -> str:
         parts.append(decl)
         parts.append("```")
     parts.append("")
-    parts.append(f"[source ↗](src/emmykit/{s.module}.py#L{s.source_line})")
+    parts.append(f"[source ↗]({GITHUB_BASE}/src/emmykit/{s.module}.py#L{s.source_line})")
     parts.append("")
     parts.append("</details>")
     parts.append("")
     return "\n".join(parts)
 
 
-def _render_group(module: str, layer: int, symbols: list[SymbolInfo]) -> str:
+def _render_condense_group(module: str, group: "CondenseGroup", source_line: int, present_names: list[str]) -> str:
+    """Render a CondenseGroup as one <details> block, replacing the per-symbol blocks.
+
+    The source link points at `source_line` (the first present name's location).
+    """
+    slug = _slug(group.label)
+    parts: list[str] = []
+    parts.append(f'<a id="c-{module}-{slug}"></a>')
+    parts.append("<details>")
+    parts.append(f"<summary><code>{group.label}</code> — {group.summary}</summary>")
+    parts.append("")
+    parts.append("**Includes:** " + ", ".join(f"`{n}`" for n in present_names) + ".")
+    parts.append("")
+    parts.append(f"[source ↗]({GITHUB_BASE}/src/emmykit/{module}.py#L{source_line})")
+    parts.append("")
+    parts.append("</details>")
+    parts.append("")
+    return "\n".join(parts)
+
+
+def _render_group(
+    module: str,
+    layer: int,
+    symbols: list[SymbolInfo],
+    condense_blocks: list[tuple["CondenseGroup", int, list[str]]] | None = None,
+    extra_notes: list[str] | None = None,
+) -> str:
     subtitle, intro = MODULE_DESCRIPTIONS[module]
     chunks: list[str] = []
     # `m-` prefix on module anchors avoids collision with same-case-folded symbol names
@@ -413,29 +550,41 @@ def _render_group(module: str, layer: int, symbols: list[SymbolInfo]) -> str:
     chunks.append(f"_Layer {layer}._  `from emmykit.{module} import …`")
     chunks.append("")
     chunks.append(intro)
+    if extra_notes:
+        for note in extra_notes:
+            chunks.append("")
+            chunks.append(note)
     chunks.append("")
     for s in symbols:
         chunks.append(_render_symbol(s))
+    if condense_blocks:
+        for group, source_line, present_names in condense_blocks:
+            chunks.append(_render_condense_group(module, group, source_line, present_names))
     return "\n".join(chunks)
 
 
-def _render_toc(groups: list[tuple[int, str, list[SymbolInfo]]]) -> str:
+def _render_toc(groups: list[tuple[int, str, list[SymbolInfo], list[tuple["CondenseGroup", int, list[str]]]]]) -> str:
     out: list[str] = []
     out.append("## Table of contents")
     out.append("")
-    for _, module, symbols in groups:
+    for _, module, symbols, condense_blocks in groups:
         subtitle, _ = MODULE_DESCRIPTIONS[module]
         out.append(f"- [`{module}` — {subtitle}](#m-{module})")
         for s in symbols:
             out.append(f"  - [`{s.name}`](#{s.name.lower()})")
+        for group, _src_line, _present in condense_blocks:
+            slug = _slug(group.label)
+            out.append(f"  - [`{group.label}`](#c-{module}-{slug})")
     out.append("")
     return "\n".join(out)
 
 
 HEADER = """# emmykit
 
-Personal Python utility kit: 184 importable functions, classes, and constants spread across
-32 submodules in 9 dependency layers. Base install is stdlib-only; heavier helpers
+Personal Python utility kit: 184 importable functions, classes, and constants across 32 submodules
+in 9 dependency layers (README highlights the user-facing surface — internal punctuation, frozenset
+aliases, probe-target lists, and translation tables are referenced by section rather than enumerated).
+Base install is stdlib-only; heavier helpers
 (datetime parsing via numpy/pandas/dateutil, mojibake fixing via ftfy, lint runners,
 LLM wrappers, ffmpeg/VLC controls) are gated behind optional extras so a bare
 `import emmykit` is fast and side-effect-free.
@@ -474,6 +623,9 @@ Apache 2.0 — see [LICENSE](LICENSE). Changelog at [CHANGELOG.md](CHANGELOG.md)
 """
 
 
+_EXTRA_NOTES_BY_MODULE: dict[str, list[str]] = {}
+
+
 def build_readme() -> str:
     sys.path.insert(0, str(SRC_DIR.parent))
     import emmykit  # noqa: WPS433
@@ -489,16 +641,47 @@ def build_readme() -> str:
             continue
         by_mod.setdefault(mod, []).append(name)
 
-    groups: list[tuple[int, str, list[SymbolInfo]]] = []
+    # Pre-compute notes flowing INTO each module from dropped sections.
+    notes_into: dict[str, list[str]] = {}
+    for src_mod, (dst_mod, note) in SECTION_DROP_NOTES.items():
+        notes_into.setdefault(dst_mod, []).append(note)
+
+    groups: list[tuple[int, str, list[SymbolInfo], list[tuple[CondenseGroup, int, list[str]]]]] = []
     for layer, module in LAYER_ORDER:
+        rule = RENDER_RULES.get(module, ModuleRenderRule())
+        if rule.drop_section:
+            continue
         names = by_mod.get(module, [])
         if not names:
             continue
-        gathered = _gather(module, names, emmykit)
-        groups.append((layer, module, gathered))
+        omit_set = set(rule.omit)
+        absorbed = {n for g in rule.condense for n in g.names}
+        individual_names = [n for n in names if n not in omit_set and n not in absorbed]
+        gathered = _gather(module, individual_names, emmykit)
+        condense_blocks: list[tuple[CondenseGroup, int, list[str]]] = []
+        for g in rule.condense:
+            present = [n for n in g.names if n in names]
+            if not present:
+                continue
+            first_info = _gather(module, [present[0]], emmykit)
+            if not first_info:
+                continue
+            condense_blocks.append((g, first_info[0].source_line, present))
+        # Module render: optional section_note + any inflowing drop-section notes.
+        extra_notes: list[str] = []
+        if rule.section_note:
+            extra_notes.append(rule.section_note)
+        extra_notes.extend(notes_into.get(module, []))
+        groups.append((layer, module, gathered, condense_blocks))
+        # Stash extra_notes on the tuple for _render_group; use a parallel dict
+        # to keep tuple shape compatible with _render_toc.
+        _EXTRA_NOTES_BY_MODULE[module] = extra_notes
 
     toc = _render_toc(groups)
-    body = "\n".join(_render_group(m, l, s) for l, m, s in groups)
+    body = "\n".join(
+        _render_group(m, l, s, c, _EXTRA_NOTES_BY_MODULE.get(m))
+        for l, m, s, c in groups
+    )
 
     return HEADER + toc + "\n## API reference\n\n" + body + "\n" + FOOTER
 
