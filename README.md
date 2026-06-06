@@ -948,7 +948,9 @@ Aggregated runtime/plot-time settings passed through downstream APIs as a single
 Options() -> 'None'
 ```
 
+```text
 Class that has all global options in one place.
+```
 
 [source ↗](src/emmykit/options.py#L8)
 
@@ -962,7 +964,9 @@ Class that has all global options in one place.
 PlotOptions() -> 'None'
 ```
 
+```text
 Global figure options.
+```
 
 [source ↗](src/emmykit/options.py#L25)
 
@@ -1049,7 +1053,9 @@ Tiny helpers shared by `humanize` and `datetime_utils` so neither has to pull in
 is_float(s: 'str') -> 'bool'
 ```
 
+```text
 Check if a string can be parsed as a float.
+```
 
 [source ↗](src/emmykit/numeric_helpers.py#L56)
 
@@ -1063,7 +1069,9 @@ Check if a string can be parsed as a float.
 seconds_in_unit(unit: 'str') -> 'float'
 ```
 
+```text
 Return the number of seconds in a given time unit.
+```
 
 [source ↗](src/emmykit/numeric_helpers.py#L49)
 
@@ -1084,6 +1092,7 @@ Leaf helper that coerces `os.PathLike` / `str` arguments into resolved `Path` ob
 ensure_path(path: 'str | os.PathLike[str]', absolute: 'bool' = True) -> 'Path'
 ```
 
+```text
 Ensure that the path is a Path. If not, make it a Path.
 
 Args:
@@ -1092,6 +1101,7 @@ Args:
 
 Returns:
     A Path object (expanded for "~"). If absolute=True, it's absolute; otherwise it may be relative.
+```
 
 [source ↗](src/emmykit/paths_ensure.py#L10)
 
@@ -1112,7 +1122,9 @@ Lazy wrapper over the `inflect` package with a stdlib-only fallback table for co
 InflectEngine(*args, **kwargs)
 ```
 
+```text
 Protocol for the 'inflect' library's engine interface.
+```
 
 **Public methods:** `plural`, `plural_noun`.
 
@@ -1128,6 +1140,7 @@ Protocol for the 'inflect' library's engine interface.
 my_plural(n: 'int', word: 'str') -> 'str'
 ```
 
+```text
 Return a pluralized version of 'word' preceded by 'n'.
 
 Behavior:
@@ -1149,6 +1162,7 @@ Returns:
 
 Raises:
     None.
+```
 
 [source ↗](src/emmykit/inflect_utils.py#L42)
 
@@ -1169,6 +1183,7 @@ Drop-in `configure_logging`, level-filtering handlers, an in-memory ring-buffer 
 configure_logging(basename: 'str', log_level: 'int | str' = 20, rawlog: 'bool' = False, logdir: 'str | os.PathLike[str]' = '') -> 'MemoryHandler | None'
 ```
 
+```text
 Configure logging to write to files and stdout/stderr, and return a MemoryHandler to capture ERROR logs for later (duplicate) printing.
 
 Args:
@@ -1182,6 +1197,7 @@ Returns:
 
 Raises:
     None (file creation errors are caught and logged to stdout).
+```
 
 [source ↗](src/emmykit/logging_utils.py#L63)
 
@@ -1195,12 +1211,14 @@ Raises:
 fallback_logging_config(log_level: 'int | str' = 20, rawlog: 'bool' = False) -> 'None'
 ```
 
+```text
 Configure the root logger with a basic configuration if no handlers are set.
 Run this at the start of functions which might be run without first configuring logging.
 
 Args:
     level  : The logging level to set. Defaults to logging.INFO.
     rawlog : If True, use a simple log format without timestamps or levels.
+```
 
 [source ↗](src/emmykit/logging_utils.py#L46)
 
@@ -1214,7 +1232,9 @@ Args:
 FlushingStreamHandler(stream=None)
 ```
 
+```text
 A logging handler that flushes the stream after emitting each log so the logs are immediately visible.
+```
 
 **Public methods:** `acquire`, `addFilter`, `close`, `createLock`, `emit`, `filter`, `flush`, `format`, `get_name`, `handle`, `handleError`, `release`, `removeFilter`, `setFormatter`, `setLevel`, `setStream`, `set_name`.
 
@@ -1230,7 +1250,9 @@ A logging handler that flushes the stream after emitting each log so the logs ar
 MaxLevelFilter(max_level: 'int') -> 'None'
 ```
 
+```text
 A logging filter that only allows logs up to a certain level to pass through, so that error messages aren't printed multiple times.
+```
 
 **Public methods:** `filter`.
 
@@ -1246,7 +1268,9 @@ A logging filter that only allows logs up to a certain level to pass through, so
 MemoryHandler(level: 'int' = 40) -> 'None'
 ```
 
+```text
 A logging handler that stores logs in memory so the errors can be printed at the end.
+```
 
 **Public methods:** `acquire`, `addFilter`, `close`, `createLock`, `emit`, `filter`, `flush`, `format`, `get_name`, `handle`, `handleError`, `release`, `removeFilter`, `setFormatter`, `setLevel`, `set_name`.
 
@@ -1262,7 +1286,9 @@ A logging handler that stores logs in memory so the errors can be printed at the
 print_all_errors(memory_handler: 'MemoryHandler', rawlog: 'bool' = False) -> 'None'
 ```
 
+```text
 Print all the captured error messages.
+```
 
 [source ↗](src/emmykit/logging_utils.py#L147)
 
@@ -1276,6 +1302,7 @@ Print all the captured error messages.
 return_method_name(levels_up: 'int' = 1) -> 'str'
 ```
 
+```text
 Return the caller's qualified method/function name.
 
 - For instance methods: ClassName.method
@@ -1294,6 +1321,7 @@ Returns:
 Raises:
     None: This function does not raise exceptions, but it may log warnings
           if sys._getframe or inspect fails.
+```
 
 [source ↗](src/emmykit/logging_utils.py#L157)
 
@@ -1314,6 +1342,7 @@ _Layer 2._  `from emmykit.safe_paths import …`
 ensure_dir(path: 'str | os.PathLike[str]', allow_symlink: 'bool' = True, follow_symlinks: 'bool' = True) -> 'Path'
 ```
 
+```text
 Ensure that the given path is an existing directory and return it as a Path object.
 
 Args:
@@ -1330,6 +1359,7 @@ Returns:
 Raises:
     FileNotFoundError:  If the directory does not exist.
     NotADirectoryError: If the path exists but is not a directory.
+```
 
 [source ↗](src/emmykit/safe_paths.py#L63)
 
@@ -1343,6 +1373,7 @@ Raises:
 ensure_file(path: 'str | os.PathLike[str]', raise_on_empty: 'bool' = False, allow_symlink: 'bool' = True, follow_symlinks: 'bool' = True, verbose: 'bool' = True) -> 'Path'
 ```
 
+```text
 Ensure that the given path is an existing file and return it as a Path object.
 
 Args:
@@ -1363,6 +1394,7 @@ Raises:
     IsADirectoryError: If the path exists but is a directory.
     ValueError:        If the path exists but is not a regular file, or if symlinks are not allowed.
     ValueError:        If raise_on_empty is True and the file is empty (or bad permissions, etc.)
+```
 
 [source ↗](src/emmykit/safe_paths.py#L14)
 
@@ -1376,6 +1408,7 @@ Raises:
 safe_ctime(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True, ns: 'bool' = False) -> 'int | float | None'
 ```
 
+```text
 Return ctime (seconds float or ns int) or None on errors.
 Note: On POSIX, ctime == inode *change* time, not creation time.
       On Windows, ctime is the file *creation* time.
@@ -1388,6 +1421,7 @@ Args:
 
 Returns:
     The ctime of the file in seconds or nanoseconds, or None if an error occurred.
+```
 
 [source ↗](src/emmykit/safe_paths.py#L296)
 
@@ -1401,6 +1435,7 @@ Returns:
 safe_exists(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True) -> 'bool'
 ```
 
+```text
 Like Path.exists()/os.path.lexists(), but doesn't raise on permission/loop errors.
 
 Args:
@@ -1410,6 +1445,7 @@ Args:
 Returns:
     True if the path appears to exist (respecting follow_symlinks), False if it doesn't.
     For certain access/loop issues, returns True to avoid misclassifying as 'missing'.
+```
 
 [source ↗](src/emmykit/safe_paths.py#L122)
 
@@ -1423,6 +1459,7 @@ Returns:
 safe_is_dir(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True) -> 'bool'
 ```
 
+```text
 Like Path.is_dir(), but returns False on permission errors instead of raising.
 Uses _is_dir() for pre-3.13 compatibility and no-follow mode.
 
@@ -1436,6 +1473,7 @@ Returns:
 Raises:
     Intentionally designed to catch PermissionError, FileNotFoundError,
     some OSError variations. But not all.
+```
 
 [source ↗](src/emmykit/safe_paths.py#L194)
 
@@ -1449,6 +1487,7 @@ Raises:
 safe_is_file(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True) -> 'bool'
 ```
 
+```text
 Like Path.is_file(), but returns False on permission errors instead of raising.
 Uses _is_file() for pre-3.13 compatibility and no-follow mode.
 
@@ -1462,6 +1501,7 @@ Returns:
 Raises:
     Intentionally designed to catch PermissionError, FileNotFoundError,
     some OSError variations. But not all.
+```
 
 [source ↗](src/emmykit/safe_paths.py#L162)
 
@@ -1475,6 +1515,7 @@ Raises:
 safe_mtime(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True, ns: 'bool' = False) -> 'int | float | None'
 ```
 
+```text
 Return mtime (seconds float or ns int) or None on errors.
 
 Args:
@@ -1485,6 +1526,7 @@ Args:
 
 Returns:
     The mtime of the file in seconds or nanoseconds, or None if an error occurred.
+```
 
 [source ↗](src/emmykit/safe_paths.py#L276)
 
@@ -1498,6 +1540,7 @@ Returns:
 safe_size(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True) -> 'int | None'
 ```
 
+```text
 Like Path.stat().st_size, but returns None on permission/missing/loop errors.
 
 Args:
@@ -1507,6 +1550,7 @@ Args:
 
 Returns:
     The size of the file in bytes or None if an error occurred.
+```
 
 [source ↗](src/emmykit/safe_paths.py#L260)
 
@@ -1520,6 +1564,7 @@ Returns:
 safe_stat(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True) -> 'os.stat_result | None'
 ```
 
+```text
 Like Path.stat()/lstat(), but returns None on permission/missing/loop errors.
 
 Args:
@@ -1533,6 +1578,7 @@ Returns:
 Raises:
     Intentionally designed to catch PermissionError, FileNotFoundError,
     some OSError variations. But not all.
+```
 
 [source ↗](src/emmykit/safe_paths.py#L226)
 
@@ -1553,6 +1599,7 @@ _Layer 2._  `from emmykit.file_io import …`
 my_atomic_write(filepath: 'str | Path | os.PathLike[str]', data: 'str | bytes | bytearray', write_mode: "Literal['w', 'a']", encoding: 'str' = 'utf-8', lock_timeout: 'float | None' = None) -> 'None'
 ```
 
+```text
 Atomically write 'data' to 'filepath' with an advisory lock.
 
 - If write_mode="a" and file exists, data is appended.
@@ -1571,6 +1618,7 @@ Returns:
 
 Raises:
     RuntimeError: If the lock cannot be acquired within the specified timeout.
+```
 
 [source ↗](src/emmykit/file_io.py#L13)
 
@@ -1591,7 +1639,9 @@ _Layer 3._  `from emmykit.io_subprocess import …`
 my_critical_error(message: 'str' = 'A critical error occurred.', choose_breakpoint: 'bool' = False, exit_code: 'int' = 1) -> 'None'
 ```
 
+```text
 Log a critical error message and either exit the program or enter a breakpoint.
+```
 
 [source ↗](src/emmykit/io_subprocess.py#L20)
 
@@ -1605,6 +1655,7 @@ Log a critical error message and either exit the program or enter a breakpoint.
 my_fopen(file_path: 'str | os.PathLike[str]', suppress_errors: 'bool' = False, rawlog: 'bool' = False, numlines: 'int | None' = None, verbose: 'bool' = True) -> 'str | None'
 ```
 
+```text
 Attempt to read a text file with various encodings and return the file content if successful. Optionally, specify numlines to limit the number of lines read.
 
 Args:
@@ -1621,6 +1672,7 @@ Returns:
      - is empty
      - is a non-text file (video, audio, image, archive)
      - cannot be read with any of the specified encodings
+```
 
 [source ↗](src/emmykit/io_subprocess.py#L124)
 
@@ -1634,7 +1686,9 @@ Returns:
 my_popen(command_list: 'list', suppress_info: 'bool' = False, suppress_error: 'bool' = False) -> 'MyPopenResult'
 ```
 
+```text
 Execute a command using subprocess.Popen and capture the output line by line using threads.
+```
 
 [source ↗](src/emmykit/io_subprocess.py#L49)
 
@@ -1648,7 +1702,9 @@ Execute a command using subprocess.Popen and capture the output line by line usi
 MyPopenResult(stdout: 'str', stderr: 'str', returncode: 'int') -> 'None'
 ```
 
+```text
 A class to store the results of a customized subprocess.Popen call.
+```
 
 [source ↗](src/emmykit/io_subprocess.py#L39)
 
@@ -1669,6 +1725,7 @@ Two small helpers that funnel through `input()` with consistent retry behavior.
 prompt_then_choose(prompt: 'str', choices: 'list[str]', default: 'str | None' = None) -> 'str'
 ```
 
+```text
 Show a numbered list of choices and prompt the user to select one.
 
 Args:
@@ -1681,6 +1738,7 @@ Returns:
 
 Raises:
     None: If the user input is invalid, it will keep prompting until a valid choice is made.
+```
 
 [source ↗](src/emmykit/prompts.py#L15)
 
@@ -1694,7 +1752,9 @@ Raises:
 prompt_then_confirm(prompt: 'str') -> 'bool'
 ```
 
+```text
 Prompt the user with the given message and return True if the user enters 'yes', False otherwise.
+```
 
 [source ↗](src/emmykit/prompts.py#L10)
 
@@ -1715,6 +1775,7 @@ Render a function's source with original whitespace, parse module-level constant
 compile_code(source_or_filepath: 'str | os.PathLike[str]', force_source: 'bool' = False) -> 'bool'
 ```
 
+```text
 Attempt to compile the given source code in 'exec' mode.
 If 'source_or_filepath' is a file path, read its contents first.
 
@@ -1728,6 +1789,7 @@ Returns:
 Raises:
     SyntaxError: If the source code has a syntax error, it will be logged and False is returned.
     TypeError:   If 'source_or_filepath' is not a string or a file path.
+```
 
 [source ↗](src/emmykit/introspection.py#L427)
 
@@ -1741,6 +1803,7 @@ Raises:
 if_filepath_then_read(input_string_or_filepath: 'str | os.PathLike[str]', force_string: 'bool' = False) -> 'str'
 ```
 
+```text
 If given a path, return the file's text; otherwise return the string itself.
 
 Behavior:
@@ -1775,6 +1838,7 @@ Notes:
     For string inputs that look like paths, missing files do not raise; the
     string is returned unchanged. Permission/decoding errors are logged and
     result in an empty string.
+```
 
 [source ↗](src/emmykit/introspection.py#L321)
 
@@ -1788,6 +1852,7 @@ Notes:
 load_ast_var(var_name: 'str', script_path: 'str | os.PathLike[str]', rawlog: 'bool' = False) -> 'Any | None'
 ```
 
+```text
 Load a top-level literal Python variable from a module without executing it.
 
 Args:
@@ -1802,6 +1867,7 @@ Raises:
     FileNotFoundError: If the script file does not exist.
     AttributeError:    If the variable is not found at the top level of the script.
     ValueError:        If the value of the variable cannot be evaluated as a literal expression.
+```
 
 [source ↗](src/emmykit/introspection.py#L20)
 
@@ -1815,7 +1881,9 @@ Raises:
 normalize_to_dict(value: 'Any', var_name: 'str', script_path: 'str | os.PathLike[str]') -> 'dict'
 ```
 
+```text
 Ensure that 'value' is a dict. If it's a JSON-style string, try to parse it. Otherwise, log a warning and return an empty dict.
+```
 
 [source ↗](src/emmykit/introspection.py#L300)
 
@@ -1829,6 +1897,7 @@ Ensure that 'value' is a dict. If it's a JSON-style string, try to parse it. Oth
 show_function_source(target: 'object | str', *, unwrap: 'bool' = True, output: 'str | os.PathLike[str] | TextIO | None' = None) -> 'str'
 ```
 
+```text
 Print the full source text of a Python function (including comments,
 docstrings, decorators, and type hints).
 
@@ -1862,6 +1931,7 @@ Raises:
     NameError: If a string cannot be resolved to an object.
     OSError:   If source is unavailable (e.g., built-in/C extension or optimized away).
     TypeError: If the resolved object isn't suitable for source extraction.
+```
 
 [source ↗](src/emmykit/introspection.py#L133)
 
@@ -1882,6 +1952,7 @@ Byte sizes (`1.0 GiB`), scientific-notation exponents, and away-from-zero roundi
 human_bytesize(num: 'float | int | None', *, suffix: 'str' = 'B', si: 'bool' = False, precision: 'int' = 1, space: 'bool' = True, trim_trailing_zeros: 'bool' = False, long_units: 'bool' = False) -> 'str'
 ```
 
+```text
 Formats a byte count into a human-readable string.
 
 Args:
@@ -1906,6 +1977,7 @@ Returns:
 
 Raises:
     None.
+```
 
 [source ↗](src/emmykit/humanize.py#L6)
 
@@ -1919,6 +1991,7 @@ Raises:
 round_out(x: 'float', round_digits: 'int' = 3, max_digits: 'int' = 15) -> 'float'
 ```
 
+```text
 Round a number away from zero (i.e. rounds up for x>0 and down for x<0) to
 the specified number of significant figures (defaults to 3).
 If the number is smaller than 10^(-max_digits), it will be returned as is.
@@ -1931,6 +2004,7 @@ Args:
 
 Returns:
     float: The rounded number, or the original number if it is smaller than 10^(-max_digits).
+```
 
 [source ↗](src/emmykit/humanize.py#L124)
 
@@ -1944,8 +2018,10 @@ Returns:
 sci_exp(x: 'float | int', max_digits: 'int' = 15) -> 'int'
 ```
 
+```text
 Return floor(log10(|x|)), clamped to -max_digits for very small |x|.
 For x == 0, returns -max_digits.
+```
 
 [source ↗](src/emmykit/humanize.py#L110)
 
@@ -1966,6 +2042,7 @@ _Layer 4._  `from emmykit.datetime_utils import …`
 adaptive_date_labels(dates: "'Sequence[AnyDateTimeType]'", *, min_precision: 'int' = 0, max_precision: 'int' = 4, format_levels: "'list[str] | None'" = None) -> 'list[str]'
 ```
 
+```text
 Format dates at the coarsest precision that produces unique labels.
 
 Given a sequence of dates, starts formatting at the coarsest level and
@@ -1984,6 +2061,7 @@ Args:
 Returns:
     List of formatted date strings, one per input date. Empty strings
     for NaT/NaN values.
+```
 
 [source ↗](src/emmykit/datetime_utils.py#L667)
 
@@ -2009,6 +2087,7 @@ ADAPTIVE_FORMAT_LEVELS: Final[list[str]] = ['%Y', '%Y-%m', '%Y-%m-%d', '%Y-%m-%d
 AdaptiveDateFormatter(*, min_precision: 'int' = 0, max_precision: 'int' = 4, format_levels: "'list[str] | None'" = None) -> 'None'
 ```
 
+```text
 Matplotlib Formatter that auto-selects date label precision.
 
 Uses adaptive disambiguation: labels start at the coarsest level and
@@ -2023,6 +2102,7 @@ Args:
 Example:
     >>> ax.xaxis.set_major_formatter(AdaptiveDateFormatter())
     >>> cbar.ax.yaxis.set_major_formatter(AdaptiveDateFormatter())
+```
 
 **Public methods:** `format_ticks`.
 
@@ -2050,9 +2130,11 @@ AnyDateTimeType: TypeAlias = 'str | float | int | np.datetime64 | pd.Timestamp |
 decimal_year_to_datetime(dec: 'float', use_astropy: 'bool' = False) -> 'dt.datetime'
 ```
 
+```text
 Convert a decimal year to a datetime object.
 If use_astropy is True, astropy.time is used for sub-second and leap-second–aware conversion.
 Usage: new_datetime_datetime_object = decimal_year_to_datetime(2002.291)
+```
 
 [source ↗](src/emmykit/datetime_utils.py#L282)
 
@@ -2066,7 +2148,9 @@ Usage: new_datetime_datetime_object = decimal_year_to_datetime(2002.291)
 extract_timestamp(the_string: 'str') -> 'str | None'
 ```
 
+```text
 Extract timestamp string (in format YYYYMMDD-HHMMSS) from the_string, or None if not found.
+```
 
 [source ↗](src/emmykit/datetime_utils.py#L122)
 
@@ -2080,6 +2164,7 @@ Extract timestamp string (in format YYYYMMDD-HHMMSS) from the_string, or None if
 format_date_range(date1: 'dt.datetime', date2: 'dt.datetime | None' = None) -> 'str'
 ```
 
+```text
 Process a pair of datetime.datetime dates and produce a formatted date range string
 where each date looks like 'Jan  7, 2025'. If date2 is not provided, it is set to date1.
 
@@ -2094,6 +2179,7 @@ Returns:
 
 Raises:
     ValueError: If either date1 or date2 is not a datetime.datetime object.
+```
 
 [source ↗](src/emmykit/datetime_utils.py#L64)
 
@@ -2107,6 +2193,7 @@ Raises:
 human_timespan(timespan: 'int | float') -> 'str'
 ```
 
+```text
 Format a time span in seconds into a human-readable string.
 Negative values are treated as absolute.
 
@@ -2120,6 +2207,7 @@ Returns:
 
 Raises:
     None.
+```
 
 [source ↗](src/emmykit/datetime_utils.py#L15)
 
@@ -2133,6 +2221,7 @@ Raises:
 parse_datetime(given_date: 'AnyDateTimeType', timezone: 'str | dt.tzinfo | None' = None, format_str: 'str | None' = None, should_convert: 'bool | None' = None) -> 'dt.datetime'
 ```
 
+```text
 Try parsing the given_date string or number into a datetime.datetime object in the specified timezone.
 
 If "format_str" is provided, it will be used to parse the date string. These format types are accepted:
@@ -2184,6 +2273,7 @@ Returns:
 Raises:
     ValueError:  If the given_date cannot be parsed into a datetime object, or if the timezone is invalid.
     TypeError:   If the given_date is not a string, float, int, numpy.datetime64, pandas.Timestamp, or datetime.datetime object.
+```
 
 [source ↗](src/emmykit/datetime_utils.py#L393)
 
@@ -2197,6 +2287,7 @@ Raises:
 parse_timezone(tz_arg: 'str | dt.tzinfo | None' = None) -> 'dt.tzinfo | str'
 ```
 
+```text
 Parse the given timezone string or tzinfo object into a datetime.tzinfo object.
 If tz_arg is None, return UTC timezone.
 If tz_arg is a string, it can be in one of the following formats:
@@ -2217,6 +2308,7 @@ Returns:
 
 Raises:
     ValueError if the string cannot be converted to a valid timezone.
+```
 
 [source ↗](src/emmykit/datetime_utils.py#L185)
 
@@ -2230,9 +2322,11 @@ Raises:
 Precision()
 ```
 
+```text
 Integer constants representing date-formatting precision levels.
 
 Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
+```
 
 [source ↗](src/emmykit/datetime_utils.py#L617)
 
@@ -2253,8 +2347,10 @@ _Layer 4._  `from emmykit.json_io import …`
 from_jsonable(obj: 'Any') -> 'Any'
 ```
 
+```text
 Reconstruct objects encoded with to_jsonable(..., roundtrip=True).
 If input was produced with roundtrip=False, this mostly passes values through.
+```
 
 [source ↗](src/emmykit/json_io.py#L146)
 
@@ -2268,6 +2364,7 @@ If input was produced with roundtrip=False, this mostly passes values through.
 load_options_from_json(options: 'Options', json_file: 'str | os.PathLike[str]') -> 'Options | None'
 ```
 
+```text
 Load the options object from a JSON file.
 
 Args:
@@ -2280,6 +2377,7 @@ Returns:
 Raises:
     IOError:    If there is an error reading the file.
     ValueError: If the JSON file is invalid or cannot be parsed.
+```
 
 [source ↗](src/emmykit/json_io.py#L303)
 
@@ -2293,6 +2391,7 @@ Raises:
 save_options_to_json(options: 'Options') -> 'None'
 ```
 
+```text
 Save the options object to a JSON file.
 
 Args:
@@ -2308,6 +2407,7 @@ Returns:
 Raises:
     IOError:    If there is an error writing to the file.
     ValueError: If the options object is invalid.
+```
 
 [source ↗](src/emmykit/json_io.py#L271)
 
@@ -2321,8 +2421,10 @@ Raises:
 to_jsonable(obj: 'Any', *, roundtrip: 'bool' = True) -> 'Any'
 ```
 
+```text
 Convert arbitrary Python objects into JSON-serializable primitives.
 If roundtrip=True, non-JSON types are wrapped with a small type tag so they can be reconstructed.
+```
 
 [source ↗](src/emmykit/json_io.py#L17)
 
@@ -2343,6 +2445,7 @@ _Layer 4._  `from emmykit.diff_view import …`
 diff_and_confirm(orig_text: 'str', changed_text: 'str', path: 'str | os.PathLike[str]', label: 'str' = '', skip_compile: 'bool' = False, diff_choice: 'int' = 1, changed_color: 'str' = '\x1b[94m', deleted_color: 'str' = '\x1b[91m', added_color: 'str' = '\x1b[93m', the_fix: 'str' = '', description: 'str' = '') -> 'bool'
 ```
 
+```text
 Show a unified diff of orig_text → changed_text with a number of context lines
 (determined by 'diff_choice') around each hunk, log using 'label' and 'description', then prompt.
 If the user confirms, overwrite 'path' with changed_text and return True.
@@ -2367,6 +2470,7 @@ Returns:
 Raises:
     FileNotFoundError: If the specified file does not exist.
     ValueError: If the specified path is not a file. The function which raises this exception is my_fopen().
+```
 
 [source ↗](src/emmykit/diff_view.py#L300)
 
@@ -2380,6 +2484,7 @@ Raises:
 highlight_changes(orig: 'str', new: 'str', unchanged_color: 'str', added_color: 'str', deleted_color: 'str') -> 'tuple[str, str]'
 ```
 
+```text
 Compare 'orig' and 'new' strings and return a tuple
 (old_highlighted, new_highlighted), where:
 - old_highlighted has parts present only in 'orig' wrapped in deleted_color.
@@ -2398,6 +2503,7 @@ Returns:
 
 Raises:
     None.
+```
 
 [source ↗](src/emmykit/diff_view.py#L36)
 
@@ -2411,6 +2517,7 @@ Raises:
 is_python_script(path: 'str | os.PathLike[str]') -> 'bool'
 ```
 
+```text
 Return True if 'path' looks like a Python script:
   1. It's a file which ends in .py or .pyw
   2. Or it is executable AND its first line is a python shebang
@@ -2425,6 +2532,7 @@ Raises:
     IsADirectoryError: If the path is a directory.
     FileNotFoundError: If the file is not found.
     PermissionError:   If the file is not accessible due to permission issues.
+```
 
 [source ↗](src/emmykit/diff_view.py#L255)
 
@@ -2438,6 +2546,7 @@ Raises:
 my_diff(orig_text: 'str', changed_text: 'str', orig_path: 'str | os.PathLike[str]', changed_path: 'str | os.PathLike[str] | None' = None, diff_choice: 'int' = 1, changed_color: 'str' = '\x1b[94m', deleted_color: 'str' = '\x1b[91m', added_color: 'str' = '\x1b[93m') -> 'None'
 ```
 
+```text
 Show a diff between 'orig_text' and 'changed_text' in the console,
 highlighting character-level changes within changed lines.
 
@@ -2457,6 +2566,7 @@ Returns:
 
 Raises:
     None.
+```
 
 [source ↗](src/emmykit/diff_view.py#L82)
 
@@ -2477,7 +2587,9 @@ ftfy-based `fix_text`/`fix_mojibake` (with an atomic write-back), explicit UTF-8
 contains_mojibake(text: 'str') -> 'bool'
 ```
 
+```text
 Use ftfy.badness.is_bad() to detect any likely mojibake in the text.
+```
 
 [source ↗](src/emmykit/text.py#L63)
 
@@ -2491,8 +2603,10 @@ Use ftfy.badness.is_bad() to detect any likely mojibake in the text.
 decode_cp1252(raw_bytes: 'bytes', path_str: 'str' = 'input string') -> 'str | None'
 ```
 
+```text
 Attempt to decode CP1252 bytes and return as a string.
 If it fails, return None.
+```
 
 [source ↗](src/emmykit/text.py#L48)
 
@@ -2506,8 +2620,10 @@ If it fails, return None.
 decode_utf8(raw_bytes: 'bytes', path_str: 'str' = 'input string') -> 'str | None'
 ```
 
+```text
 If the file at 'path' is valid UTF-8 without lone C1 controls,
 return the decoded string. Otherwise, return None.
+```
 
 [source ↗](src/emmykit/text.py#L31)
 
@@ -2521,11 +2637,13 @@ return the decoded string. Otherwise, return None.
 ensure_utf8_meta(html: 'str') -> 'str'
 ```
 
+```text
 Ensure the HTML text has a <meta charset="utf-8"> tag.
 If one already exists—either as a charset attribute or
 as an http-equiv Content-Type declaration—normalize it to
 <meta charset="utf-8">. Otherwise, insert that tag right
 after the opening <head> tag.
+```
 
 [source ↗](src/emmykit/text.py#L103)
 
@@ -2539,8 +2657,10 @@ after the opening <head> tag.
 fix_mojibake(filepath: 'str | os.PathLike[str]', make_backup: 'bool' = True, dry_run: 'bool' = False) -> 'None'
 ```
 
+```text
 Fix mojibake in a text file, recoding from CP1252 to UTF-8 if necessary.
 If the file is already valid UTF-8, it will only fix mojibake.
+```
 
 [source ↗](src/emmykit/text.py#L141)
 
@@ -2554,7 +2674,9 @@ If the file is already valid UTF-8, it will only fix mojibake.
 fix_text(current_text: 'str', path: 'str | os.PathLike[str]', raw_bytes: 'bytes') -> 'str | None'
 ```
 
+```text
 Fix mojibake in a string using ftfy.fix_encoding().
+```
 
 [source ↗](src/emmykit/text.py#L77)
 
@@ -2568,7 +2690,9 @@ Fix mojibake in a string using ftfy.fix_encoding().
 my_capitalize(string_to_capitalize: 'str') -> 'str'
 ```
 
+```text
 Capitalize ONLY the first letter of a string and DON'T modify the rest of it.
+```
 
 [source ↗](src/emmykit/text.py#L18)
 
@@ -2582,7 +2706,9 @@ Capitalize ONLY the first letter of a string and DON'T modify the rest of it.
 my_title_case(the_title: 'str') -> 'str'
 ```
 
+```text
 Capitalize the first letter of each word, but if a word already has ANY uppercase letters, leave it as is. This way, words like "WW2" or "iZombie" won't be modified.
+```
 
 [source ↗](src/emmykit/text.py#L24)
 
@@ -2596,7 +2722,9 @@ Capitalize the first letter of each word, but if a word already has ANY uppercas
 normalize_for_search(text: 'str') -> 'str'
 ```
 
+```text
 Convert text to ASCII and lowercase for case- and diacritic-insensitive comparison. Also treat some characters such as ._- the same as spaces. Remove quotes (', ", ' and their unicode variants).
+```
 
 [source ↗](src/emmykit/text.py#L196)
 
@@ -2617,6 +2745,7 @@ Five strategies for retrieving a hostname (socket / platform / uname / `hostname
 analyze_computer_name_results(results: 'dict[str, str]', rawlog: 'bool' = False) -> 'str'
 ```
 
+```text
 Analyzes the retrieved computer names.
 
 Args:
@@ -2630,6 +2759,7 @@ Returns:
 Raises:
     None: This function does not raise exceptions, but it may log errors or warnings if
           no names (or differing names) are retrieved.
+```
 
 [source ↗](src/emmykit/hosts.py#L100)
 
@@ -2655,6 +2785,7 @@ COMPUTER_NAME: str = 'b98ed262ead6'
 get_computer_name(rawlog: 'bool' = False) -> 'str'
 ```
 
+```text
 Attempts multiple methods to retrieve the computer's name and returns the most common one.
 
 Args:
@@ -2666,6 +2797,7 @@ Returns:
 
 Raises:
     None: This function does not raise exceptions, but it may log warnings if no names are retrieved.
+```
 
 [source ↗](src/emmykit/hosts.py#L61)
 
@@ -2679,7 +2811,9 @@ Raises:
 get_hostname_os_uname(rawlog: 'bool' = False) -> 'str | None'
 ```
 
+```text
 Retrieves the hostname using os.uname().nodename.
+```
 
 [source ↗](src/emmykit/hosts.py#L31)
 
@@ -2693,7 +2827,9 @@ Retrieves the hostname using os.uname().nodename.
 get_hostname_platform(rawlog: 'bool' = False) -> 'str | None'
 ```
 
+```text
 Retrieves the hostname using platform.node().
+```
 
 [source ↗](src/emmykit/hosts.py#L22)
 
@@ -2707,7 +2843,9 @@ Retrieves the hostname using platform.node().
 get_hostname_socket(rawlog: 'bool' = False) -> 'str | None'
 ```
 
+```text
 Retrieves the hostname using socket.gethostname().
+```
 
 [source ↗](src/emmykit/hosts.py#L13)
 
@@ -2721,7 +2859,9 @@ Retrieves the hostname using socket.gethostname().
 get_hostname_subprocess_hostname(rawlog: 'bool' = False) -> 'str | None'
 ```
 
+```text
 Retrieves the hostname using the 'hostname' system command via subprocess.
+```
 
 [source ↗](src/emmykit/hosts.py#L39)
 
@@ -2735,7 +2875,9 @@ Retrieves the hostname using the 'hostname' system command via subprocess.
 get_hostname_subprocess_scutil(rawlog: 'bool' = False) -> 'str | None'
 ```
 
+```text
 Retrieves the hostname using the 'scutil --get ComputerName' command on macOS via subprocess.
+```
 
 [source ↗](src/emmykit/hosts.py#L49)
 
@@ -2792,7 +2934,9 @@ _Layer 5._  `from emmykit.network import …`
 CheckResult(tcp_ok: 'bool', dns_ok: 'bool', http_ok: 'bool', captive_detected: 'bool') -> None
 ```
 
+```text
 Aggregate results from the multi-strategy connectivity check.
+```
 
 **Fields:** `tcp_ok`, `dns_ok`, `http_ok`, `captive_detected`.
 
@@ -2808,6 +2952,7 @@ Aggregate results from the multi-strategy connectivity check.
 is_internet_available(timeout_per_step: 'float' = 2.5, retries: 'int' = 1, workers: 'int' = 6, include_ipv6: 'bool' = False, strict: 'bool' = False, ignore_proxies: 'bool' = False) -> 'bool'
 ```
 
+```text
 Determine if the internet is available using multiple methods.
 
 Strategy (per attempt):
@@ -2837,6 +2982,7 @@ Returns:
 
 Raises:
     None.
+```
 
 [source ↗](src/emmykit/network.py#L509)
 
@@ -2857,7 +3003,9 @@ Helpers for picking a Python interpreter, locating the user's shell rc file, and
 check_python_version(command: 'str') -> 'bool'
 ```
 
+```text
 Check if the given Python command is available and has a version of PY_VERSION or higher.
+```
 
 [source ↗](src/emmykit/python_env.py#L112)
 
@@ -2871,6 +3019,7 @@ Check if the given Python command is available and has a version of PY_VERSION o
 detect_shell(options: 'Options') -> 'None'
 ```
 
+```text
 Detect the current interactive shell, falling back to parent process name if needed.
 
 Args:
@@ -2882,6 +3031,7 @@ Returns:
 Raises:
     None, but logs an error if the shell cannot be detected via
     subprocess.CalledProcessError or FileNotFoundError.
+```
 
 [source ↗](src/emmykit/python_env.py#L14)
 
@@ -2895,7 +3045,9 @@ Raises:
 find_additional_alias_files(options: 'Options') -> 'None'
 ```
 
+```text
 Find additional alias files for the shell.
+```
 
 [source ↗](src/emmykit/python_env.py#L89)
 
@@ -2909,7 +3061,9 @@ Find additional alias files for the shell.
 find_preferred_python_version() -> 'str | None'
 ```
 
+```text
 Find the command for the preferred version of python (stored here as PY_VERSION).
+```
 
 [source ↗](src/emmykit/python_env.py#L125)
 
@@ -2923,6 +3077,7 @@ Find the command for the preferred version of python (stored here as PY_VERSION)
 find_shell_rc_file(options: 'Options') -> 'None'
 ```
 
+```text
 Find the shell configuration file for the current user, store in options.rc_file.
 For bash/zsh, also consider login‐shell files if the usual rc isn't present.
 
@@ -2935,6 +3090,7 @@ Returns:
 Raises:
     None, but logs an error if the shell is unsupported or if no rc file is found
     for the specified shell.
+```
 
 [source ↗](src/emmykit/python_env.py#L45)
 
@@ -2955,7 +3111,9 @@ _Layer 5._  `from emmykit.files import …`
 calculate_checksum(file_path: 'str | os.PathLike[str]') -> 'str'
 ```
 
+```text
 Calculate the SHA256 checksum of a file.
+```
 
 [source ↗](src/emmykit/files.py#L321)
 
@@ -2969,6 +3127,7 @@ Calculate the SHA256 checksum of a file.
 download_file(url: 'str', dest: 'str | os.PathLike[str]', retries: 'int' = 5, chunk_size: 'int' = 1048576, timeout: 'int' = 30, headers: 'dict[str, str] | None' = None) -> 'None'
 ```
 
+```text
 Download a file to 'dest' with retry + exponential backoff.
 Writes to a temporary .part file and renames atomically on success.
 Verifies Content-Length if provided.
@@ -2988,6 +3147,7 @@ Returns:
 
 Raises:
     SystemExit on failure after retries or if insufficient free space is detected.
+```
 
 [source ↗](src/emmykit/files.py#L19)
 
@@ -3001,6 +3161,7 @@ Raises:
 filename_format(text: 'str', sep: 'str' = '_', max_length: 'int | None' = None) -> 'str'
 ```
 
+```text
 Turn arbitrary text into an ASCII-only, filesystem‐safe base filename.
 WARNING: Do not include an extension in the text, because this function
 might remove the dot which separates the filename from the extension.
@@ -3027,6 +3188,7 @@ Returns:
 
 Raises:
     None: If the input text is None, it will return an empty string.
+```
 
 [source ↗](src/emmykit/files.py#L214)
 
@@ -3040,6 +3202,7 @@ Raises:
 query_free_space(path: 'str | os.PathLike[str]') -> 'int'
 ```
 
+```text
 Return the free space (in bytes) available to the current user on the
 filesystem that contains 'path'. Works for files or directories, and
 for paths that don't yet exist (it climbs to the nearest existing parent).
@@ -3053,6 +3216,7 @@ Returns:
 Raises:
     FileNotFoundError: If no existing parent directory is found.
     OSError:           If the filesystem information cannot be retrieved.
+```
 
 [source ↗](src/emmykit/files.py#L178)
 
@@ -3066,10 +3230,12 @@ Raises:
 verify_script(options: 'Options', thepath: 'str | os.PathLike[str]', thescript: 'str') -> 'None'
 ```
 
+```text
 Ensure that 'thepath' exists and contains exactly 'thescript'.
 - If 'thepath' does not exist or is not a file, it will be created and populated.
 - If it exists but its contents differ, it will be overwritten.
 - Otherwise, nothing happens.
+```
 
 [source ↗](src/emmykit/files.py#L292)
 
@@ -3090,6 +3256,7 @@ Run linters, gather + display findings with color, prompt-and-apply autopep8 fix
 ask_and_autopep8(path: 'str | os.PathLike[str]', code: 'str', description: 'str' = '', diff_choice: 'int' = 1, changed_color: 'str' = '\x1b[94m', deleted_color: 'str' = '\x1b[91m', added_color: 'str' = '\x1b[93m') -> 'bool'
 ```
 
+```text
 Prompt the user about fixing ALL occurrences of 'code' in 'path',
 and if yes, apply autopep8.fix_file with --select=code.
 The fix will be applied without saving, and the user will be shown a diff
@@ -3110,6 +3277,7 @@ Returns:
 Raises:
     FileNotFoundError: If the specified file does not exist.
     ValueError: If the specified path is not a file. The function which raises this exception is autopep8.fix_file().
+```
 
 [source ↗](src/emmykit/lint.py#L520)
 
@@ -3123,6 +3291,7 @@ Raises:
 ask_and_replace(old_str: 'str', new_str: 'str', path: 'str | os.PathLike[str]', label: 'str' = '', diff_choice: 'int' = 1, description: 'str' = '', changed_color: 'str' = '\x1b[94m', deleted_color: 'str' = '\x1b[91m', added_color: 'str' = '\x1b[93m', skip_compile: 'bool' = False, verbose: 'bool' = True) -> 'bool'
 ```
 
+```text
 Read 'path', do orig.replace(old, new), then show a diff and ask to confirm.
 
 Args:
@@ -3145,6 +3314,7 @@ Raises:
     IsADirectoryError: If the path is a directory.
     FileNotFoundError: If the file is not found.
     PermissionError: If the file is not accessible due to permission issues.
+```
 
 [source ↗](src/emmykit/lint.py#L587)
 
@@ -3158,6 +3328,7 @@ Raises:
 check_python_formatting(path: 'str | os.PathLike[str]', diff_choice: 'int' = 1) -> 'bool'
 ```
 
+```text
 Reads a .py file at 'path' via my_fopen, makes sure it compiles, parses it with AST,
 prints any custom formatting violations to stdout,
 and asks the user to fix any backticks or curly quotes in the file. If the user quits, it returns False.
@@ -3172,6 +3343,7 @@ Returns:
 
 Raises:
     FileNotFoundError: If the specified file does not exist.
+```
 
 [source ↗](src/emmykit/lint.py#L252)
 
@@ -3185,9 +3357,11 @@ Raises:
 FormatChecker(source: 'str', doc_style: 'str' = 'None') -> 'None'
 ```
 
+```text
 Walks a module AST and collects formatting violations:
 - missing type hints on params / return
 - missing docstring or incorrect docstring quote style
+```
 
 **Public methods:** `generic_visit`, `visit`, `visit_AsyncFunctionDef`, `visit_ClassDef`, `visit_Constant`, `visit_FunctionDef`.
 
@@ -3203,9 +3377,11 @@ Walks a module AST and collects formatting violations:
 get_autopep8_fixable_codes() -> 'set[str]'
 ```
 
+```text
 Run 'autopep8 --list-fixes' (via subprocess) to discover exactly
 which Flake8 error‐codes autopep8 knows how to fix.
 Returns a set like {"E101","E111", ...}.
+```
 
 [source ↗](src/emmykit/lint.py#L492)
 
@@ -3219,6 +3395,7 @@ Returns a set like {"E101","E111", ...}.
 interactive_flake8(options: 'Options', path: 'str | os.PathLike[str]', ignore_codes: 'list[str] | None' = None, diff_choice: 'int' = 1, max_line_length: 'int' = 100, changed_color: 'str' = '\x1b[94m', deleted_color: 'str' = '\x1b[91m', added_color: 'str' = '\x1b[93m') -> 'bool'
 ```
 
+```text
 1) Run the flake8 API for summary counts.
 2) Shell out to flake8 CLI once to harvest one description per code.
 3) For each code, ask the user; on "yes", call autopep8 to fix only that code.
@@ -3238,6 +3415,7 @@ Args:
 
 Returns:
     False if the user chose to quit during any replacement prompts, True otherwise.
+```
 
 [source ↗](src/emmykit/lint.py#L734)
 
@@ -3251,6 +3429,7 @@ Returns:
 multireplace(options: 'Options', verbose: 'bool' = True) -> 'None'
 ```
 
+```text
 Perform a multi-file replace operation.
 
 Args:
@@ -3269,6 +3448,7 @@ Raises:
     ValueError:         If the glob pattern is invalid.
     FileNotFoundError:  If the specified directory does not exist.
     NotADirectoryError: If the specified path is not a directory.
+```
 
 [source ↗](src/emmykit/lint.py#L667)
 
@@ -3282,6 +3462,7 @@ Raises:
 run_flake8(options: 'Options', path: 'str | os.PathLike[str]', ignore_codes: 'list[str] | None' = None, max_line_length: 'int' = 100) -> 'flake8.Report'
 ```
 
+```text
 Run Flake8 on 'path', but:
   - only flag E501 if a line exceeds 'max_line_length',
   - ignore whatever codes are in 'ignore_codes'.
@@ -3297,6 +3478,7 @@ Returns:
 
 Raises:
     FileNotFoundError: If the specified file does not exist.
+```
 
 [source ↗](src/emmykit/lint.py#L335)
 
@@ -3310,6 +3492,7 @@ Raises:
 run_mypy(options: 'Options', path: 'str | os.PathLike[str]') -> 'None'
 ```
 
+```text
 Run basic mypy static analysis on the specified file.
 
 Args:
@@ -3318,6 +3501,7 @@ Args:
 
 Returns:
     None.
+```
 
 [source ↗](src/emmykit/lint.py#L791)
 
@@ -3338,6 +3522,7 @@ Renders a colored ASCII tree starting at a directory, marking files newer than a
 treeview_new_files(directory: 'str | os.PathLike[str]', last_file_path: 'str | os.PathLike[str] | None' = None, last_mtime: 'float | None' = None, maxlines: 'int' = 0, use_colors: 'bool' = True, print_root: 'bool' = True, prefix: 'str' = '', is_last: 'bool' = True, level: 'int' = 0, state: 'dict[str, Any] | None' = None, probe_only: 'bool' = False) -> 'bool'
 ```
 
+```text
 Recursively scan the directory, print the contents of files newer than last_file_path (if provided- if so store its modification date in last_mtime). Return True if any relevant files are found.
 
 Args:
@@ -3363,6 +3548,7 @@ Returns:
 Raises:
     None: Catches exceptions, logs an error and returns False if the directory is not a valid
           directory or does not exist.
+```
 
 [source ↗](src/emmykit/treeview.py#L14)
 
@@ -3383,7 +3569,9 @@ Ensure the docker daemon is running, the requested image is built, and rerun a c
 ensure_daemon_running() -> 'None'
 ```
 
+```text
 Check if the Docker daemon is running; if not, attempt to start it.
+```
 
 [source ↗](src/emmykit/docker_utils.py#L20)
 
@@ -3397,7 +3585,9 @@ Check if the Docker daemon is running; if not, attempt to start it.
 ensure_docker_installed() -> 'None'
 ```
 
+```text
 Check if the Docker CLI is installed; if not, raise an error.
+```
 
 [source ↗](src/emmykit/docker_utils.py#L13)
 
@@ -3411,10 +3601,12 @@ Check if the Docker CLI is installed; if not, raise an error.
 ensure_image_built(image: 'str', *, dockerfile: 'Path | None' = None, build_dir: 'Path | None' = None, build_cmd: 'str | None' = None) -> 'None'
 ```
 
+```text
 Ensure that a Docker image with the given name exists; if not, build it.
 You can specify either a dockerfile (whose first line is a comment with the build command)
 or a build_cmd (and optionally a build_dir). If both dockerfile and build_cmd are None,
 the function will raise an error.
+```
 
 [source ↗](src/emmykit/docker_utils.py#L48)
 
@@ -3428,6 +3620,7 @@ the function will raise an error.
 run_with_docker_fixes(base_args: 'list[str]', *, ensure_build: 'Callable[[], None] | None' = None, extra_fixes: 'Iterable[Callable[[], None]] | None' = None) -> 'MyPopenResult'
 ```
 
+```text
 Run a command (typically 'docker run ...') and if it fails, attempt to fix
 common Docker issues (like Docker not installed or daemon not running) and retry.
 
@@ -3442,6 +3635,7 @@ Returns:
 
 Raises:
     RuntimeError: If all fixes fail and the command still does not succeed.
+```
 
 [source ↗](src/emmykit/docker_utils.py#L82)
 
@@ -3462,6 +3656,7 @@ _Layer 7._  `from emmykit.system import …`
 check_if_command_exists(command: 'str') -> 'bool'
 ```
 
+```text
 Check if a command exists on the system.
 
 Args:
@@ -3469,6 +3664,7 @@ Args:
 
 Returns:
     True if the command exists, False otherwise.
+```
 
 [source ↗](src/emmykit/system.py#L14)
 
@@ -3482,6 +3678,7 @@ Returns:
 detect_country(force_wtfismyip: 'bool' = False) -> 'str | None'
 ```
 
+```text
 Detect the country of the IP address using ipinfo.io service.
 If the request fails, it falls back to wtfismyip.com service.
 
@@ -3493,6 +3690,7 @@ Returns:
 
 Raises:
     ValueError: If the IPINFO_API_TOKEN environment variable is not set.
+```
 
 [source ↗](src/emmykit/system.py#L163)
 
@@ -3506,7 +3704,9 @@ Raises:
 get_effective_free_memory() -> 'float'
 ```
 
+```text
 Return the "effective" free memory in bytes: free memory plus buffers plus cache.
+```
 
 [source ↗](src/emmykit/system.py#L50)
 
@@ -3520,7 +3720,9 @@ Return the "effective" free memory in bytes: free memory plus buffers plus cache
 is_process_running(process_name: 'str') -> 'bool'
 ```
 
+```text
 Check if a process with the given name is running.
+```
 
 [source ↗](src/emmykit/system.py#L108)
 
@@ -3534,7 +3736,9 @@ Check if a process with the given name is running.
 kill_process(pname: 'str') -> 'None'
 ```
 
+```text
 Kill a process by its name, then check if it is still running and retry if needed. Make sure the process name is unique to avoid killing unintended processes.
+```
 
 [source ↗](src/emmykit/system.py#L72)
 
@@ -3548,8 +3752,10 @@ Kill a process by its name, then check if it is still running and retry if neede
 open_filemanager_with_dirs(directories: 'list[str | os.PathLike[str]]') -> 'None'
 ```
 
+```text
 Open the file manager with the specified directories.
 Note: Most file managers don't support multiple tabs via command line, so open separate windows.
+```
 
 [source ↗](src/emmykit/system.py#L135)
 
@@ -3563,8 +3769,10 @@ Note: Most file managers don't support multiple tabs via command line, so open s
 open_terminal_and_run_command(the_command: 'str', close_after: 'bool' = False, maximize_window: 'bool' = False) -> 'None'
 ```
 
+```text
 Open a GNOME terminal, source ~/.bashrc (via bash -i), run the_command,
 and optionally close or keep the window open. Optionally, maximize it.
+```
 
 [source ↗](src/emmykit/system.py#L27)
 
@@ -3578,7 +3786,9 @@ and optionally close or keep the window open. Optionally, maximize it.
 start_only_one_instance(process_name: 'str') -> 'None'
 ```
 
+```text
 Start a process, but only if it's not already running.
+```
 
 [source ↗](src/emmykit/system.py#L122)
 
@@ -3599,7 +3809,9 @@ Open paths in VLC, find the bundled ffmpeg, query video duration, slice + concat
 ensure_even_dimensions(image_path: 'str | os.PathLike[str]') -> 'None'
 ```
 
+```text
 Ensure the image at 'image_path' has dimensions divisible by 2, by resizing if necessary.
+```
 
 [source ↗](src/emmykit/media.py#L21)
 
@@ -3613,7 +3825,9 @@ Ensure the image at 'image_path' has dimensions divisible by 2, by resizing if n
 extract_and_concatenate_segments(input_file: 'str | os.PathLike[str]', timestamps: 'list', output_name_or_path: 'str | os.PathLike[str]', subtitle_file: 'str | os.PathLike[str]') -> 'None'
 ```
 
+```text
 Extracts segments from a video file and concatenates them into a new file.
+```
 
 [source ↗](src/emmykit/media.py#L474)
 
@@ -3627,6 +3841,7 @@ Extracts segments from a video file and concatenates them into a new file.
 find_ffmpeg() -> 'str | None'
 ```
 
+```text
 Return a full path string to an ffmpeg executable if found, else None.
 Tries: env vars, PATH, common Conda and Windows/Cygwin/MSYS installs,
 and (optionally) imageio-ffmpeg if available.
@@ -3639,6 +3854,7 @@ Returns:
 
 Raises:
     None
+```
 
 [source ↗](src/emmykit/media.py#L41)
 
@@ -3652,6 +3868,7 @@ Raises:
 get_video_duration_seconds(path: 'str | os.PathLike[str]', timeout: 'float' = 10.0) -> 'float'
 ```
 
+```text
 Return the duration of a video file in seconds, using fast and reliable probes.
 
 The function prefers `ffprobe` (from FFmpeg) for speed and accuracy, falls back to
@@ -3669,6 +3886,7 @@ Raises:
     FileNotFoundError: If the given path does not exist or is not a file.
     RuntimeError:      If duration could not be determined by any available method.
     ValueError:        If a probe returns an invalid or non-positive duration.
+```
 
 [source ↗](src/emmykit/media.py#L315)
 
@@ -3682,7 +3900,9 @@ Raises:
 open_dir_in_VLC(the_dir: 'str | os.PathLike[str]', sort_choice: 'str' = 'sort_by_name', recursive: 'bool' = False, no_start: 'bool' = False) -> 'None'
 ```
 
+```text
 Create a playlist of the files in the specified directory, then play that playlist in VLC. By default, don't search the directory recursively and sort the files by name. Optional arguments allow recursive loading or sorting by modification time. If no_start is True, don't start playback in VLC.
+```
 
 [source ↗](src/emmykit/media.py#L245)
 
@@ -3696,6 +3916,7 @@ Create a playlist of the files in the specified directory, then play that playli
 open_in_vlc(path: 'str | os.PathLike[str]', no_start: 'bool' = False) -> 'None'
 ```
 
+```text
 Open a file or directory in VLC. If it's a directory, create a playlist of its contents first. If no_start is True, don't start playback in VLC.
 
 Args:
@@ -3708,6 +3929,7 @@ Returns:
 
 Raises:
     FileNotFoundError: If the specified path does not exist.
+```
 
 [source ↗](src/emmykit/media.py#L292)
 
@@ -3721,7 +3943,9 @@ Raises:
 open_playlist_in_VLC(playlist: 'str | os.PathLike[str]', no_start: 'bool' = False) -> 'None'
 ```
 
+```text
 Open a playlist in VLC. If no_start is True, don't start playback in VLC.
+```
 
 [source ↗](src/emmykit/media.py#L237)
 
@@ -3735,6 +3959,7 @@ Open a playlist in VLC. If no_start is True, don't start playback in VLC.
 set_system_volume(percent: 'int', tolerance: 'int' = 1, change_mute: "Literal['mute', 'unmute'] | None" = None, force_pactl: 'bool' = False) -> 'None'
 ```
 
+```text
 Set the system volume to a specific level.
 On Linux, this function will:
 Try to set the PulseAudio default sink volume to 'percent'% via pulsectl,
@@ -3753,6 +3978,7 @@ Returns:
 
 Raises:
     RuntimeError: If the volume could not be set or verified.
+```
 
 [source ↗](src/emmykit/media.py#L111)
 
@@ -3773,6 +3999,7 @@ Strip a leading prefix from filenames or `<title>` tags, and concatenate multipl
 combine_html_files(file_paths: 'list[str | os.PathLike[str]]', output_file_path: 'str | os.PathLike[str]') -> 'None'
 ```
 
+```text
 Combine multiple HTML files into a single HTML file.
 The first file's <head> is preserved, and all <body> contents are concatenated.
 
@@ -3790,6 +4017,7 @@ Raises:
     ImportError:       If BeautifulSoup is not installed.
     RuntimeError:      If the output file cannot be written.
     OSError:           If there is an error during file operations.
+```
 
 [source ↗](src/emmykit/html_files.py#L88)
 
@@ -3803,6 +4031,7 @@ Raises:
 remove_prefix_from_filename(filepath: 'str | os.PathLike[str]', prefix: 'str') -> 'bool'
 ```
 
+```text
 If the given filepath's base filename starts with the given prefix:
   1. Remove the prefix (and any " _-" immediately following it).
   2. Move the file (but only if that doesn't cause errors).
@@ -3818,6 +4047,7 @@ Returns:
 
 Raises:
     OSError: If the rename operation fails due to an OS error (e.g., permission denied).
+```
 
 [source ↗](src/emmykit/html_files.py#L15)
 
@@ -3831,7 +4061,9 @@ Raises:
 remove_prefix_from_html_title(filepath: 'str | os.PathLike[str]', prefix: 'str') -> 'bool'
 ```
 
+```text
 If the given filepath is an HTML file and its title starts with the given prefix, remove the prefix from the title and save the file, then return True. Otherwise, return False.
+```
 
 [source ↗](src/emmykit/html_files.py#L59)
 
@@ -3849,7 +4081,9 @@ The 2 000-LOC `LLMs` class wraps `litellm`/`tiktoken` with `LLMConfig`/`ModelInf
 <summary><code>LLMConfig</code> — Configuration for LLM selection and usage. Data only.</summary>
 
 
+```text
 Configuration for LLM selection and usage. Data only.
+```
 
 **Fields:** `only_cleared_models`, `only_local_models`, `allow_local_models`, `ollama_base_url`, `vllm_base_url`, `rate_throttle`, `rate_headroom`, `rate_retry_max_attempts`, `rate_retry_max_wait`, `rate_db_path`, `availability_probe`, `availability_probe_ttl_sec`, `availability_probe_timeout`, `availability_probe_allow_costly`, `selection_strategy`, `min_context_tokens`, `assumed_prompt_tokens`, `assumed_output_tokens`, `candidate_models`, `default_temperature`, `max_tokens`, `model_scores`, `prefer_code`, `prefer_low_TTFT`, `prefer_local`, `max_estimated_cost`, `speed_floor`, `model_filter`, `provider_filter`, `weight_price`, `weight_code_skill`, `weight_general_skill`, `weight_TTFT`, `weight_speed`, `weight_nonlocal_penalty`.
 
@@ -3865,10 +4099,12 @@ Configuration for LLM selection and usage. Data only.
 LLMs() -> 'None'
 ```
 
+```text
 - Routes via LiteLLM
 - Builds ModelInfo list, filters by availability/context
 - Applies registered/built-in selection strategy
 - Exposes stable send_prompt(...)
+```
 
 **Public methods:** `alternative_model`, `apply_config`, `describe_selection`, `get_config`, `list_candidates`, `refresh_selection`, `register_strategy`, `send_prompt`, `tokenize`.
 
@@ -3881,7 +4117,9 @@ LLMs() -> 'None'
 <summary><code>ModelInfo</code> — Information about a candidate Large Language Model (LLM).</summary>
 
 
+```text
 Information about a candidate Large Language Model (LLM).
+```
 
 **Fields:** `name`, `provider`, `context_window`, `input_cost_per_token`, `output_cost_per_token`, `available`, `is_local`, `cleared`, `runtime`, `parameters`, `code_skill`, `general_skill`, `TTFT`, `speed`, `meta`.
 
@@ -3899,7 +4137,9 @@ Information about a candidate Large Language Model (LLM).
 SelectionContext(tokens_in: 'int', tokens_out: 'int', min_context_tokens: 'int', require_local: 'bool' = False, require_cleared: 'bool' = False, extras: 'dict[str, Any]' = <factory>) -> None
 ```
 
+```text
 Context passed to strategy functions.
+```
 
 **Fields:** `tokens_in`, `tokens_out`, `min_context_tokens`, `require_local`, `require_cleared`, `extras`.
 
@@ -3912,10 +4152,12 @@ Context passed to strategy functions.
 <summary><code>SelectionStrategy</code> — Enumeration of selection strategies for model selection.</summary>
 
 ```python
-SelectionStrategy(*values)
+SelectionStrategy(value, names=None, *, module=None, qualname=None, type=None, start=1, boundary=None)
 ```
 
+```text
 Enumeration of selection strategies for model selection.
+```
 
 **Public methods:** `capitalize`, `casefold`, `center`, `count`, `encode`, `endswith`, `expandtabs`, `find`, `format`, `format_map`, `index`, `isalnum`, `isalpha`, `isascii`, `isdecimal`, `isdigit`, `isidentifier`, `islower`, `isnumeric`, `isprintable`, `isspace`, `istitle`, `isupper`, `join`, `ljust`, `lower`, `lstrip`, `maketrans`, `partition`, `removeprefix`, `removesuffix`, `replace`, `rfind`, `rindex`, `rjust`, `rpartition`, `rsplit`, `rstrip`, `split`, `splitlines`, `startswith`, `strip`, `swapcase`, `title`, `translate`, `upper`, `zfill`.
 
