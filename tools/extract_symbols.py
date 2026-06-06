@@ -12,12 +12,58 @@ from __future__ import annotations
 
 import ast
 import json
+import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 UNIV_DEFS = ROOT / "univ_defs.py"
 LAYOUT = ROOT / "tools" / "_layout.json"
+
+# Names imported from `typing` at the top of univ_defs.py.
+_TYPING_NAMES: frozenset[str] = frozenset({
+    "Any", "Final", "Literal", "Protocol", "TextIO", "Type",
+    "TypeAlias", "Union", "overload",
+})
+# Names imported from `collections.abc` at the top of univ_defs.py.
+_COLLECTIONS_ABC_NAMES: frozenset[str] = frozenset({
+    "Callable", "Iterable", "Sequence",
+})
+# Combined regex alternation, used to scan the extracted body for any
+# bare-word references to these names so the extractor can prepend the
+# corresponding import lines.
+_TYPING_REFERENCE_RE: re.Pattern[str] = re.compile(
+    r"\b(" + "|".join(sorted(_TYPING_NAMES | _COLLECTIONS_ABC_NAMES)) + r")\b"
+)
+
+
+def _detect_typing_header(body: str) -> str:
+    """Return import lines for any typing / collections.abc names used in body.
+
+    Scans body for bare references to the names imported from `typing` or
+    `collections.abc` at the top of univ_defs.py and emits the matching
+    `from typing import ...` and/or `from collections.abc import ...`
+    lines. Returns the empty string when no such names appear.
+
+    Args:
+        body: Joined source text of the symbols being extracted.
+
+    Returns:
+        Zero, one, or two import lines separated by newlines. When
+        non-empty, the result is terminated with a newline so the caller
+        can concatenate it directly in front of the body.
+    """
+    referenced = set(_TYPING_REFERENCE_RE.findall(body))
+    if not referenced:
+        return ""
+    lines: list[str] = []
+    abc_names = sorted(referenced & _COLLECTIONS_ABC_NAMES)
+    typing_names = sorted(referenced & _TYPING_NAMES)
+    if abc_names:
+        lines.append(f"from collections.abc import {', '.join(abc_names)}")
+    if typing_names:
+        lines.append(f"from typing import {', '.join(typing_names)}")
+    return "\n".join(lines) + "\n"
 
 
 def main(module_name: str) -> None:
@@ -49,7 +95,12 @@ def main(module_name: str) -> None:
         a, b = spans[sym]
         chunks.append("\n".join(lines[a - 1 : b]))
 
-    sys.stdout.write("\n\n".join(chunks) + "\n")
+    body = "\n\n".join(chunks) + "\n"
+    header = _detect_typing_header(body)
+    if header:
+        sys.stdout.write(header + "\n" + body)
+    else:
+        sys.stdout.write(body)
 
 
 if __name__ == "__main__":
