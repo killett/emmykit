@@ -14,6 +14,7 @@ from emmykit.constants import DEFAULT_ENCODING
 from emmykit.net_targets import DNS_TEST_NAMES, HTTP_PROBES, IPV4_TARGETS, IPV6_TARGETS
 
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import Any, Final
 
 _EXECUTOR: ThreadPoolExecutor | None = None
@@ -420,6 +421,7 @@ def _run_tcp_checks_with_pool(tcp_targets: list[tuple[str, int]],
     # If even 1 worker fails, consider TCP unreachable.
     return False
 
+@dataclass
 class CheckResult:
     """Aggregate results from the multi-strategy connectivity check."""
     tcp_ok:           bool

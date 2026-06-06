@@ -74,10 +74,16 @@ def main(module_name: str) -> None:
     tree = ast.parse(src)
 
     # Map symbol name -> (lineno, end_lineno) for top-level defs/assigns.
+    # For decorated defs/classes, ast.FunctionDef.lineno points at the `def`/`class`
+    # keyword, NOT the first decorator. Use the earliest decorator's lineno when
+    # decorators are present so @dataclass etc. are preserved verbatim.
     spans: dict[str, tuple[int, int]] = {}
     for node in tree.body:
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-            spans[node.name] = (node.lineno, node.end_lineno)
+            start = node.lineno
+            if node.decorator_list:
+                start = min(d.lineno for d in node.decorator_list)
+            spans[node.name] = (start, node.end_lineno)
         elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
             spans[node.target.id] = (node.lineno, node.end_lineno)
         elif isinstance(node, ast.Assign):
