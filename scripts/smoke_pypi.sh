@@ -12,7 +12,8 @@ set -euo pipefail
 
 INDEX="https://test.pypi.org/simple/"
 EXTRAS="[all]"
-SPEC="emmykit"
+NAME="emmykit"
+VERSION=""
 VENV="/tmp/emmykit-smoke-$$"
 
 while [[ $# -gt 0 ]]; do
@@ -20,7 +21,7 @@ while [[ $# -gt 0 ]]; do
         --pypi)    INDEX="https://pypi.org/simple/"; shift ;;
         --testpypi) INDEX="https://test.pypi.org/simple/"; shift ;;
         --bare)    EXTRAS=""; shift ;;
-        --version) SPEC="emmykit==$2"; shift 2 ;;
+        --version) VERSION="==$2"; shift 2 ;;
         -h|--help)
             cat <<'EOF'
 Smoke-install emmykit from (Test)PyPi into a throwaway venv and exercise
@@ -43,11 +44,11 @@ trap cleanup EXIT
 echo "==> creating venv at $VENV"
 uv venv "$VENV"
 
-echo "==> installing ${SPEC}${EXTRAS} from $INDEX"
+echo "==> installing ${NAME}${EXTRAS}${VERSION} from $INDEX"
 uv pip install --python "$VENV/bin/python" \
     --index-url "$INDEX" \
     --extra-index-url https://pypi.org/simple/ \
-    "${SPEC}${EXTRAS}"
+    "${NAME}${EXTRAS}${VERSION}"
 
 echo "==> version + pure-stdlib paths"
 "$VENV/bin/python" - <<'PY'
