@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 IPV4_TARGETS: list[tuple[str, int]] = [
     ("1.1.1.1",        443),  # Cloudflare
     ("8.8.8.8",        853),  # Google Public DNS over TLS (TCP)
