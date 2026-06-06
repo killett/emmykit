@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from itertools import chain
+from typing import Final
 
 TEXT_ENCODINGS: Final[tuple[str, ...]] = (
     "utf-8",           "latin-1",        "ascii",           "iso-8859-1",         "big5",
