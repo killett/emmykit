@@ -6,6 +6,8 @@ from typing import Final
 
 __all__ = ["__version__", "PY_VERSION"]
 
-__version__: Final[str] = "0.3.0"
+# Annotation deliberately omitted so hatchling's default version-extraction
+# regex (`__version__\s*=\s*['"]([^'"]+)['"]`) can read this line.
+__version__ = "0.3.1"
 
 PY_VERSION: Final[float] = 3.12

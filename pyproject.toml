@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "emmykit"
-version = "0.3.0"
+dynamic = ["version"]
 description = "Layered Python utility package — datetime parsing, logging, safe filesystem ops, mojibake fixing, lint runners, media tools, LLM wrappers. Stdlib-only base."
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
@@ -63,6 +63,9 @@ all = [
     "inflect",
     "beautifulsoup4",
 ]
+
+[tool.hatch.version]
+path = "src/emmykit/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/emmykit"]
