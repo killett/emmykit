@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "emmykit"
+version = "0.3.0"
+description = "Personal Python utilities — historically known as univ_defs.py."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { file = "LICENSE" }
+authors = [{ name = "Emmy Killett", email = "EmmyKillett@gmail.com" }]
+dependencies = []
+
+[project.optional-dependencies]
+# Lazy in-function imports. Install only what you call.
+datetime   = ["numpy", "pandas", "matplotlib", "astropy", "python-dateutil"]
+text       = ["ftfy", "Unidecode"]
+lint       = ["flake8", "autopep8", "flake8-bugbear"]
+llm        = ["litellm", "tenacity", "tiktoken"]
+media      = ["opencv-python", "Pillow", "imageio-ffmpeg", "pulsectl"]
+files      = ["atomicwrites", "filelock", "requests"]
+inflection = ["inflect"]
+html       = ["beautifulsoup4"]
+# Umbrella that pulls in every optional dep — used by the Phase-4 test env.
+all = [
+    "numpy", "pandas", "matplotlib", "astropy", "python-dateutil",
+    "ftfy", "Unidecode",
+    "flake8", "autopep8", "flake8-bugbear",
+    "litellm", "tenacity", "tiktoken",
+    "opencv-python", "Pillow", "imageio-ffmpeg", "pulsectl",
+    "atomicwrites", "filelock", "requests",
+    "inflect",
+    "beautifulsoup4",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/emmykit"]
