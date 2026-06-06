@@ -1,32 +1,519 @@
-from emmykit.constants import *
-from emmykit.extensions import *
-from emmykit.net_targets import *
-from emmykit.embedded_scripts import *
-from emmykit._version import *
-from emmykit.paths_ensure import *
-from emmykit.options import *
-from emmykit.text_constants import *
-from emmykit.numeric_helpers import *
-from emmykit.inflect_utils import *
-from emmykit.logging_utils import *
-from emmykit.safe_paths import *
-from emmykit.file_io import *
-from emmykit.io_subprocess import *
-from emmykit.prompts import *
-from emmykit.introspection import *
-from emmykit.humanize import *
-from emmykit.datetime_utils import *
-from emmykit.json_io import *
-from emmykit.diff_view import *
-from emmykit.text import *
-from emmykit.hosts import *
-from emmykit.network import *
-from emmykit.python_env import *
-from emmykit.files import *
-from emmykit.lint import *
-from emmykit.treeview import *
-from emmykit.docker_utils import *
-from emmykit.system import *
-from emmykit.media import *
-from emmykit.html_files import *
-from emmykit.llm import *
+"""emmykit — personal Python utilities, layered package extracted from univ_defs.py."""
+
+from __future__ import annotations
+
+# === Stdlib re-exports (preserved from univ_defs.py's public surface) ===
+import errno
+import logging
+import os
+import re
+import sys
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass, field, replace
+from enum import Enum
+from itertools import chain
+from pathlib import Path
+from typing import (
+    Any,
+    Callable,
+    Final,
+    Iterable,
+    Literal,
+    Protocol,
+    Sequence,
+    TextIO,
+    Type,
+    TypeAlias,
+    overload,
+)
+
+# === Layer 0 ===
+from emmykit.constants import (
+    ANSI_CYAN,
+    ANSI_GREEN,
+    ANSI_RED,
+    ANSI_RESET,
+    ANSI_YELLOW,
+    BACKTICK,
+    DEFAULT_ENCODING,
+    DEFAULT_EXCLUDE_DIRS,
+    EM_DASH,
+    HORIZONTAL_ELLIPSIS,
+    IGNORE_THESE_ERRORS,
+    IGNORED_CODES,
+    LDQUOTE,
+    LSQUOTE,
+    RDQUOTE,
+    RSQUOTE,
+)
+from emmykit.embedded_scripts import (
+    MULTIREPLACE_SCRIPT,
+    MYAUDIT_SCRIPT,
+    MYDIFF_SCRIPT,
+    PRINTALL_SCRIPT,
+    SETUP_CARTOPY_SCRIPT,
+    TREEVIEW_SCRIPT,
+    UNIV_DEFS_SYS_PATH_SCRIPT,
+)
+from emmykit.extensions import (
+    ALL_KNOWN_EXTENSIONS,
+    ALL_KNOWN_EXTENSIONS_SET,
+    ARCHIVE_EXTENSIONS,
+    ARCHIVE_EXTENSIONS_SET,
+    AUDIO_EXTENSIONS,
+    AUDIO_EXTENSIONS_SET,
+    BOOK_EXTENSIONS,
+    BOOK_EXTENSIONS_SET,
+    HTML_EXTENSIONS,
+    HTML_EXTENSIONS_SET,
+    IMAGE_EXTENSIONS,
+    IMAGE_EXTENSIONS_SET,
+    PLAYLIST_EXTENSIONS,
+    PLAYLIST_EXTENSIONS_SET,
+    PYTHON_EXTENSIONS,
+    PYTHON_EXTENSIONS_SET,
+    SUBTITLE_EXTENSIONS,
+    SUBTITLE_EXTENSIONS_SET,
+    TEXT_ENCODINGS,
+    TEXT_ENCODINGS_SET,
+    TEXT_EXTENSIONS,
+    TEXT_EXTENSIONS_SET,
+    VIDEO_EXTENSIONS,
+    VIDEO_EXTENSIONS_SET,
+)
+from emmykit.net_targets import (
+    DNS_TEST_NAMES,
+    HTTP_PROBES,
+    IPV4_TARGETS,
+    IPV6_TARGETS,
+)
+
+# === Layer 1 ===
+from emmykit._version import PY_VERSION, __version__
+from emmykit.options import Options, PlotOptions
+from emmykit.text_constants import (
+    CHARACTERS_TO_SPACE,
+    QUOTES_TO_DELETE,
+    REPLACE_WITH_SPACE,
+    TRANSLATION_TABLE,
+)
+from emmykit.numeric_helpers import is_float, seconds_in_unit
+from emmykit.paths_ensure import ensure_path
+from emmykit.inflect_utils import InflectEngine, my_plural
+from emmykit.logging_utils import (
+    FlushingStreamHandler,
+    MaxLevelFilter,
+    MemoryHandler,
+    configure_logging,
+    fallback_logging_config,
+    print_all_errors,
+    return_method_name,
+)
+
+# === Layer 2 ===
+from emmykit.safe_paths import (
+    ensure_dir,
+    ensure_file,
+    safe_ctime,
+    safe_exists,
+    safe_is_dir,
+    safe_is_file,
+    safe_mtime,
+    safe_size,
+    safe_stat,
+)
+from emmykit.file_io import my_atomic_write
+
+# === Layer 3 ===
+from emmykit.io_subprocess import (
+    MyPopenResult,
+    my_critical_error,
+    my_fopen,
+    my_popen,
+)
+
+# === Layer 4 ===
+from emmykit.prompts import prompt_then_choose, prompt_then_confirm
+from emmykit.introspection import (
+    compile_code,
+    if_filepath_then_read,
+    load_ast_var,
+    normalize_to_dict,
+    show_function_source,
+)
+from emmykit.humanize import human_bytesize, round_out, sci_exp
+from emmykit.datetime_utils import (
+    ADAPTIVE_FORMAT_LEVELS,
+    AdaptiveDateFormatter,
+    AnyDateTimeType,
+    Precision,
+    adaptive_date_labels,
+    decimal_year_to_datetime,
+    extract_timestamp,
+    format_date_range,
+    human_timespan,
+    parse_datetime,
+    parse_timezone,
+)
+from emmykit.json_io import (
+    from_jsonable,
+    load_options_from_json,
+    save_options_to_json,
+    to_jsonable,
+)
+from emmykit.diff_view import (
+    diff_and_confirm,
+    highlight_changes,
+    is_python_script,
+    my_diff,
+)
+
+# === Layer 5 ===
+from emmykit.text import (
+    contains_mojibake,
+    decode_cp1252,
+    decode_utf8,
+    ensure_utf8_meta,
+    fix_mojibake,
+    fix_text,
+    my_capitalize,
+    my_title_case,
+    normalize_for_search,
+)
+from emmykit.hosts import (
+    COMPUTER_NAME,
+    IS_NASA_COMPUTER,
+    NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES,
+    NASA_COMPUTER_NAME_PREFIXES,
+    analyze_computer_name_results,
+    get_computer_name,
+    get_hostname_os_uname,
+    get_hostname_platform,
+    get_hostname_socket,
+    get_hostname_subprocess_hostname,
+    get_hostname_subprocess_scutil,
+)
+from emmykit.network import CheckResult, is_internet_available
+from emmykit.python_env import (
+    check_python_version,
+    detect_shell,
+    find_additional_alias_files,
+    find_preferred_python_version,
+    find_shell_rc_file,
+)
+from emmykit.files import (
+    calculate_checksum,
+    download_file,
+    filename_format,
+    query_free_space,
+    verify_script,
+)
+
+# === Layer 6 ===
+from emmykit.lint import (
+    FormatChecker,
+    ask_and_autopep8,
+    ask_and_replace,
+    check_python_formatting,
+    get_autopep8_fixable_codes,
+    interactive_flake8,
+    multireplace,
+    run_flake8,
+    run_mypy,
+)
+
+# === Layer 7 ===
+from emmykit.treeview import treeview_new_files
+from emmykit.docker_utils import (
+    ensure_daemon_running,
+    ensure_docker_installed,
+    ensure_image_built,
+    run_with_docker_fixes,
+)
+from emmykit.system import (
+    check_if_command_exists,
+    detect_country,
+    get_effective_free_memory,
+    is_process_running,
+    kill_process,
+    open_filemanager_with_dirs,
+    open_terminal_and_run_command,
+    start_only_one_instance,
+)
+from emmykit.media import (
+    ensure_even_dimensions,
+    extract_and_concatenate_segments,
+    find_ffmpeg,
+    get_video_duration_seconds,
+    open_dir_in_VLC,
+    open_in_vlc,
+    open_playlist_in_VLC,
+    set_system_volume,
+)
+from emmykit.html_files import (
+    combine_html_files,
+    remove_prefix_from_filename,
+    remove_prefix_from_html_title,
+)
+
+# === Layer 8 ===
+from emmykit.llm import (
+    LLMConfig,
+    LLMs,
+    ModelInfo,
+    SelectionContext,
+    SelectionStrategy,
+    StrategyFn,
+)
+
+__all__ = [
+    "ADAPTIVE_FORMAT_LEVELS",
+    "ALL_KNOWN_EXTENSIONS",
+    "ALL_KNOWN_EXTENSIONS_SET",
+    "ANSI_CYAN",
+    "ANSI_GREEN",
+    "ANSI_RED",
+    "ANSI_RESET",
+    "ANSI_YELLOW",
+    "ARCHIVE_EXTENSIONS",
+    "ARCHIVE_EXTENSIONS_SET",
+    "AUDIO_EXTENSIONS",
+    "AUDIO_EXTENSIONS_SET",
+    "AdaptiveDateFormatter",
+    "Any",
+    "AnyDateTimeType",
+    "BACKTICK",
+    "BOOK_EXTENSIONS",
+    "BOOK_EXTENSIONS_SET",
+    "CHARACTERS_TO_SPACE",
+    "COMPUTER_NAME",
+    "Callable",
+    "CheckResult",
+    "DEFAULT_ENCODING",
+    "DEFAULT_EXCLUDE_DIRS",
+    "DNS_TEST_NAMES",
+    "EM_DASH",
+    "Enum",
+    "Final",
+    "FlushingStreamHandler",
+    "FormatChecker",
+    "HORIZONTAL_ELLIPSIS",
+    "HTML_EXTENSIONS",
+    "HTML_EXTENSIONS_SET",
+    "HTTP_PROBES",
+    "IGNORED_CODES",
+    "IGNORE_THESE_ERRORS",
+    "IMAGE_EXTENSIONS",
+    "IMAGE_EXTENSIONS_SET",
+    "IPV4_TARGETS",
+    "IPV6_TARGETS",
+    "IS_NASA_COMPUTER",
+    "InflectEngine",
+    "Iterable",
+    "LDQUOTE",
+    "LLMConfig",
+    "LLMs",
+    "LSQUOTE",
+    "Literal",
+    "MULTIREPLACE_SCRIPT",
+    "MYAUDIT_SCRIPT",
+    "MYDIFF_SCRIPT",
+    "MaxLevelFilter",
+    "MemoryHandler",
+    "ModelInfo",
+    "MyPopenResult",
+    "NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES",
+    "NASA_COMPUTER_NAME_PREFIXES",
+    "Options",
+    "PLAYLIST_EXTENSIONS",
+    "PLAYLIST_EXTENSIONS_SET",
+    "PRINTALL_SCRIPT",
+    "PYTHON_EXTENSIONS",
+    "PYTHON_EXTENSIONS_SET",
+    "PY_VERSION",
+    "Path",
+    "PlotOptions",
+    "Precision",
+    "Protocol",
+    "QUOTES_TO_DELETE",
+    "RDQUOTE",
+    "REPLACE_WITH_SPACE",
+    "RSQUOTE",
+    "SETUP_CARTOPY_SCRIPT",
+    "SUBTITLE_EXTENSIONS",
+    "SUBTITLE_EXTENSIONS_SET",
+    "SelectionContext",
+    "SelectionStrategy",
+    "Sequence",
+    "StrategyFn",
+    "TEXT_ENCODINGS",
+    "TEXT_ENCODINGS_SET",
+    "TEXT_EXTENSIONS",
+    "TEXT_EXTENSIONS_SET",
+    "TRANSLATION_TABLE",
+    "TREEVIEW_SCRIPT",
+    "TextIO",
+    "ThreadPoolExecutor",
+    "Type",
+    "TypeAlias",
+    "UNIV_DEFS_SYS_PATH_SCRIPT",
+    "VIDEO_EXTENSIONS",
+    "VIDEO_EXTENSIONS_SET",
+    "adaptive_date_labels",
+    "analyze_computer_name_results",
+    "annotations",
+    "ask_and_autopep8",
+    "ask_and_replace",
+    "calculate_checksum",
+    "chain",
+    "check_if_command_exists",
+    "check_python_formatting",
+    "check_python_version",
+    "combine_html_files",
+    "compile_code",
+    "configure_logging",
+    "contains_mojibake",
+    "dataclass",
+    "decimal_year_to_datetime",
+    "decode_cp1252",
+    "decode_utf8",
+    "detect_country",
+    "detect_shell",
+    "diff_and_confirm",
+    "download_file",
+    "ensure_daemon_running",
+    "ensure_dir",
+    "ensure_docker_installed",
+    "ensure_even_dimensions",
+    "ensure_file",
+    "ensure_image_built",
+    "ensure_path",
+    "ensure_utf8_meta",
+    "errno",
+    "extract_and_concatenate_segments",
+    "extract_timestamp",
+    "fallback_logging_config",
+    "field",
+    "filename_format",
+    "find_additional_alias_files",
+    "find_ffmpeg",
+    "find_preferred_python_version",
+    "find_shell_rc_file",
+    "fix_mojibake",
+    "fix_text",
+    "format_date_range",
+    "from_jsonable",
+    "get_autopep8_fixable_codes",
+    "get_computer_name",
+    "get_effective_free_memory",
+    "get_hostname_os_uname",
+    "get_hostname_platform",
+    "get_hostname_socket",
+    "get_hostname_subprocess_hostname",
+    "get_hostname_subprocess_scutil",
+    "get_video_duration_seconds",
+    "highlight_changes",
+    "human_bytesize",
+    "human_timespan",
+    "if_filepath_then_read",
+    "interactive_flake8",
+    "is_float",
+    "is_internet_available",
+    "is_process_running",
+    "is_python_script",
+    "kill_process",
+    "load_ast_var",
+    "load_options_from_json",
+    "logging",
+    "multireplace",
+    "my_atomic_write",
+    "my_capitalize",
+    "my_critical_error",
+    "my_diff",
+    "my_fopen",
+    "my_plural",
+    "my_popen",
+    "my_title_case",
+    "normalize_for_search",
+    "normalize_to_dict",
+    "open_dir_in_VLC",
+    "open_filemanager_with_dirs",
+    "open_in_vlc",
+    "open_playlist_in_VLC",
+    "open_terminal_and_run_command",
+    "os",
+    "overload",
+    "parse_datetime",
+    "parse_timezone",
+    "print_all_errors",
+    "prompt_then_choose",
+    "prompt_then_confirm",
+    "query_free_space",
+    "re",
+    "remove_prefix_from_filename",
+    "remove_prefix_from_html_title",
+    "replace",
+    "return_method_name",
+    "round_out",
+    "run_flake8",
+    "run_mypy",
+    "run_with_docker_fixes",
+    "safe_ctime",
+    "safe_exists",
+    "safe_is_dir",
+    "safe_is_file",
+    "safe_mtime",
+    "safe_size",
+    "safe_stat",
+    "save_options_to_json",
+    "sci_exp",
+    "seconds_in_unit",
+    "set_system_volume",
+    "show_function_source",
+    "start_only_one_instance",
+    "sys",
+    "to_jsonable",
+    "treeview_new_files",
+    "verify_script",
+]
+
+# Remove submodule attributes that Python auto-attaches to the package when
+# `from emmykit.<sub> import ...` runs. These are not part of the public
+# surface promised by the baseline; the baseline lists only names that were
+# in `dir(univ_defs)`, and `univ_defs.py` was a flat module with no submodules.
+for _sub in (
+    "_version",
+    "constants",
+    "datetime_utils",
+    "diff_view",
+    "docker_utils",
+    "embedded_scripts",
+    "extensions",
+    "file_io",
+    "files",
+    "hosts",
+    "html_files",
+    "humanize",
+    "inflect_utils",
+    "introspection",
+    "io_subprocess",
+    "json_io",
+    "lint",
+    "llm",
+    "logging_utils",
+    "media",
+    "net_targets",
+    "network",
+    "numeric_helpers",
+    "options",
+    "paths_ensure",
+    "prompts",
+    "python_env",
+    "safe_paths",
+    "system",
+    "text",
+    "text_constants",
+    "treeview",
+):
+    globals().pop(_sub, None)
+del _sub
