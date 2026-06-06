@@ -376,7 +376,9 @@ def _render_symbol(s: SymbolInfo) -> str:
             parts.append("```")
         if s.docstring:
             parts.append("")
-            parts.append(s.docstring)
+            parts.append("```text")
+            parts.append(s.docstring.rstrip())
+            parts.append("```")
         if s.kind == "class" and s.dataclass_field_names:
             parts.append("")
             parts.append("**Fields:** " + ", ".join(f"`{f}`" for f in s.dataclass_field_names) + ".")
