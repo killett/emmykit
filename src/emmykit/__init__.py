@@ -19,3 +19,4 @@ from emmykit.datetime_utils import *
 from emmykit.json_io import *
 from emmykit.diff_view import *
 from emmykit.text import *
+from emmykit.hosts import *
