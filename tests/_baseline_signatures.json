@@ -1,0 +1,766 @@
+{
+  "ADAPTIVE_FORMAT_LEVELS": {
+    "kind": "list"
+  },
+  "ALL_KNOWN_EXTENSIONS": {
+    "kind": "tuple"
+  },
+  "ALL_KNOWN_EXTENSIONS_SET": {
+    "kind": "frozenset"
+  },
+  "ANSI_CYAN": {
+    "kind": "str"
+  },
+  "ANSI_GREEN": {
+    "kind": "str"
+  },
+  "ANSI_RED": {
+    "kind": "str"
+  },
+  "ANSI_RESET": {
+    "kind": "str"
+  },
+  "ANSI_YELLOW": {
+    "kind": "str"
+  },
+  "ARCHIVE_EXTENSIONS": {
+    "kind": "tuple"
+  },
+  "ARCHIVE_EXTENSIONS_SET": {
+    "kind": "frozenset"
+  },
+  "AUDIO_EXTENSIONS": {
+    "kind": "tuple"
+  },
+  "AUDIO_EXTENSIONS_SET": {
+    "kind": "frozenset"
+  },
+  "AdaptiveDateFormatter": {
+    "kind": "type",
+    "signature": "(*, min_precision: 'int' = 0, max_precision: 'int' = 4, format_levels: \"'list[str] | None'\" = None) -> 'None'"
+  },
+  "Any": {
+    "kind": "_AnyMeta",
+    "signature": "(*args, **kwargs)"
+  },
+  "AnyDateTimeType": {
+    "kind": "str"
+  },
+  "BACKTICK": {
+    "kind": "str"
+  },
+  "BOOK_EXTENSIONS": {
+    "kind": "tuple"
+  },
+  "BOOK_EXTENSIONS_SET": {
+    "kind": "frozenset"
+  },
+  "CHARACTERS_TO_SPACE": {
+    "kind": "str"
+  },
+  "COMPUTER_NAME": {
+    "kind": "str"
+  },
+  "Callable": {
+    "kind": "ABCMeta",
+    "signature": "()"
+  },
+  "CheckResult": {
+    "kind": "type",
+    "signature": "(tcp_ok: 'bool', dns_ok: 'bool', http_ok: 'bool', captive_detected: 'bool') -> None"
+  },
+  "DEFAULT_ENCODING": {
+    "kind": "str"
+  },
+  "DEFAULT_EXCLUDE_DIRS": {
+    "kind": "set"
+  },
+  "DNS_TEST_NAMES": {
+    "kind": "list"
+  },
+  "EM_DASH": {
+    "kind": "str"
+  },
+  "Enum": {
+    "kind": "EnumType",
+    "signature": "(value, names=None, *, module=None, qualname=None, type=None, start=1, boundary=None)"
+  },
+  "Final": {
+    "kind": "_SpecialForm",
+    "signature": "(*args, **kwds)"
+  },
+  "FlushingStreamHandler": {
+    "kind": "type",
+    "signature": "(stream=None)"
+  },
+  "FormatChecker": {
+    "kind": "type",
+    "signature": "(source: 'str', doc_style: 'str' = 'None') -> 'None'"
+  },
+  "HORIZONTAL_ELLIPSIS": {
+    "kind": "str"
+  },
+  "HTML_EXTENSIONS": {
+    "kind": "tuple"
+  },
+  "HTML_EXTENSIONS_SET": {
+    "kind": "frozenset"
+  },
+  "HTTP_PROBES": {
+    "kind": "list"
+  },
+  "IGNORED_CODES": {
+    "kind": "list"
+  },
+  "IGNORE_THESE_ERRORS": {
+    "kind": "frozenset"
+  },
+  "IMAGE_EXTENSIONS": {
+    "kind": "tuple"
+  },
+  "IMAGE_EXTENSIONS_SET": {
+    "kind": "frozenset"
+  },
+  "IPV4_TARGETS": {
+    "kind": "list"
+  },
+  "IPV6_TARGETS": {
+    "kind": "list"
+  },
+  "IS_NASA_COMPUTER": {
+    "kind": "bool"
+  },
+  "InflectEngine": {
+    "kind": "_ProtocolMeta",
+    "signature": "(*args, **kwargs)"
+  },
+  "Iterable": {
+    "kind": "ABCMeta",
+    "signature": "()"
+  },
+  "LDQUOTE": {
+    "kind": "str"
+  },
+  "LLMConfig": {
+    "kind": "type",
+    "signature": "(only_cleared_models: 'bool' = False, only_local_models: 'bool' = False, allow_local_models: 'bool' = True, ollama_base_url: 'str' = 'http://localhost:11434', vllm_base_url: 'str' = 'http://localhost:8000', rate_throttle: 'bool' = True, rate_headroom: 'float' = 0.9, rate_retry_max_attempts: 'int' = 6, rate_retry_max_wait: 'int' = 60, rate_db_path: 'Path' = PosixPath('/home/claudeuser/.univ_defs_llms_rate_tracking.db'), availability_probe: 'bool' = True, availability_probe_ttl_sec: 'float' = 60.0, availability_probe_timeout: 'float' = 1.0, availability_probe_allow_costly: 'bool' = False, selection_strategy: 'SelectionStrategy | str' = <SelectionStrategy.CHEAPEST: 'cheapest'>, min_context_tokens: 'int' = 0, assumed_prompt_tokens: 'int' = 1000, assumed_output_tokens: 'int' = 1000, candidate_models: 'list[str]' = <factory>, default_temperature: 'float' = 0.0, max_tokens: 'int' = 1000, model_scores: 'dict[str, float | dict[str, float]]' = <factory>, prefer_code: 'bool' = False, prefer_low_TTFT: 'bool' = False, prefer_local: 'bool' = False, max_estimated_cost: 'float | None' = None, speed_floor: 'float | None' = None, model_filter: 'str | Sequence[str] | None' = None, provider_filter: 'str | Sequence[str] | None' = None, weight_price: 'float' = 1.0, weight_code_skill: 'float' = 0.0, weight_general_skill: 'float' = 0.0, weight_TTFT: 'float' = 0.0, weight_speed: 'float' = 0.0, weight_nonlocal_penalty: 'float' = 0.0) -> None"
+  },
+  "LLMs": {
+    "kind": "type",
+    "signature": "() -> 'None'"
+  },
+  "LSQUOTE": {
+    "kind": "str"
+  },
+  "Literal": {
+    "kind": "_LiteralSpecialForm",
+    "signature": "(*args, **kwds)"
+  },
+  "MULTIREPLACE_SCRIPT": {
+    "kind": "str"
+  },
+  "MYAUDIT_SCRIPT": {
+    "kind": "str"
+  },
+  "MYDIFF_SCRIPT": {
+    "kind": "str"
+  },
+  "MaxLevelFilter": {
+    "kind": "type",
+    "signature": "(max_level: 'int') -> 'None'"
+  },
+  "MemoryHandler": {
+    "kind": "type",
+    "signature": "(level: 'int' = 40) -> 'None'"
+  },
+  "ModelInfo": {
+    "kind": "type",
+    "signature": "(name: 'str', provider: 'str', context_window: 'int', input_cost_per_token: 'float', output_cost_per_token: 'float', available: 'bool', is_local: 'bool', cleared: 'bool', runtime: 'str | None' = None, parameters: 'float' = 9e+99, code_skill: 'float' = 0.5, general_skill: 'float' = 0.5, TTFT: 'float | None' = None, speed: 'float | None' = None, meta: 'dict[str, Any]' = <factory>) -> None"
+  },
+  "MyPopenResult": {
+    "kind": "type",
+    "signature": "(stdout: 'str', stderr: 'str', returncode: 'int') -> 'None'"
+  },
+  "NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES": {
+    "kind": "tuple"
+  },
+  "NASA_COMPUTER_NAME_PREFIXES": {
+    "kind": "tuple"
+  },
+  "Options": {
+    "kind": "type",
+    "signature": "() -> 'None'"
+  },
+  "PLAYLIST_EXTENSIONS": {
+    "kind": "tuple"
+  },
+  "PLAYLIST_EXTENSIONS_SET": {
+    "kind": "frozenset"
+  },
+  "PRINTALL_SCRIPT": {
+    "kind": "str"
+  },
+  "PYTHON_EXTENSIONS": {
+    "kind": "tuple"
+  },
+  "PYTHON_EXTENSIONS_SET": {
+    "kind": "frozenset"
+  },
+  "PY_VERSION": {
+    "kind": "float"
+  },
+  "Path": {
+    "kind": "type",
+    "signature": "(*args, **kwargs)"
+  },
+  "PlotOptions": {
+    "kind": "type",
+    "signature": "() -> 'None'"
+  },
+  "Precision": {
+    "kind": "type",
+    "signature": "()"
+  },
+  "Protocol": {
+    "kind": "_ProtocolMeta",
+    "signature": "()"
+  },
+  "QUOTES_TO_DELETE": {
+    "kind": "str"
+  },
+  "RDQUOTE": {
+    "kind": "str"
+  },
+  "REPLACE_WITH_SPACE": {
+    "kind": "str"
+  },
+  "RSQUOTE": {
+    "kind": "str"
+  },
+  "SETUP_CARTOPY_SCRIPT": {
+    "kind": "str"
+  },
+  "SUBTITLE_EXTENSIONS": {
+    "kind": "tuple"
+  },
+  "SUBTITLE_EXTENSIONS_SET": {
+    "kind": "frozenset"
+  },
+  "SelectionContext": {
+    "kind": "type",
+    "signature": "(tokens_in: 'int', tokens_out: 'int', min_context_tokens: 'int', require_local: 'bool' = False, require_cleared: 'bool' = False, extras: 'dict[str, Any]' = <factory>) -> None"
+  },
+  "SelectionStrategy": {
+    "kind": "EnumType",
+    "signature": "(value, names=None, *, module=None, qualname=None, type=None, start=1, boundary=None)"
+  },
+  "Sequence": {
+    "kind": "ABCMeta",
+    "signature": "()"
+  },
+  "StrategyFn": {
+    "kind": "_CallableGenericAlias",
+    "signature": null
+  },
+  "TEXT_ENCODINGS": {
+    "kind": "tuple"
+  },
+  "TEXT_ENCODINGS_SET": {
+    "kind": "frozenset"
+  },
+  "TEXT_EXTENSIONS": {
+    "kind": "tuple"
+  },
+  "TEXT_EXTENSIONS_SET": {
+    "kind": "frozenset"
+  },
+  "TRANSLATION_TABLE": {
+    "kind": "dict"
+  },
+  "TREEVIEW_SCRIPT": {
+    "kind": "str"
+  },
+  "TextIO": {
+    "kind": "type",
+    "signature": "()"
+  },
+  "ThreadPoolExecutor": {
+    "kind": "type",
+    "signature": "(max_workers=None, thread_name_prefix='', initializer=None, initargs=())"
+  },
+  "Type": {
+    "kind": "_SpecialGenericAlias",
+    "signature": "(*args, **kwargs)"
+  },
+  "TypeAlias": {
+    "kind": "_SpecialForm",
+    "signature": "(*args, **kwds)"
+  },
+  "UNIV_DEFS_SYS_PATH_SCRIPT": {
+    "kind": "str"
+  },
+  "VIDEO_EXTENSIONS": {
+    "kind": "tuple"
+  },
+  "VIDEO_EXTENSIONS_SET": {
+    "kind": "frozenset"
+  },
+  "adaptive_date_labels": {
+    "kind": "function",
+    "signature": "(dates: \"'Sequence[AnyDateTimeType]'\", *, min_precision: 'int' = 0, max_precision: 'int' = 4, format_levels: \"'list[str] | None'\" = None) -> 'list[str]'"
+  },
+  "analyze_computer_name_results": {
+    "kind": "function",
+    "signature": "(results: 'dict[str, str]', rawlog: 'bool' = False) -> 'str'"
+  },
+  "annotations": {
+    "kind": "_Feature"
+  },
+  "ask_and_autopep8": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', code: 'str', description: 'str' = '', diff_choice: 'int' = 1, changed_color: 'str' = '\\x1b[94m', deleted_color: 'str' = '\\x1b[91m', added_color: 'str' = '\\x1b[93m') -> 'bool'"
+  },
+  "ask_and_replace": {
+    "kind": "function",
+    "signature": "(old_str: 'str', new_str: 'str', path: 'str | os.PathLike[str]', label: 'str' = '', diff_choice: 'int' = 1, description: 'str' = '', changed_color: 'str' = '\\x1b[94m', deleted_color: 'str' = '\\x1b[91m', added_color: 'str' = '\\x1b[93m', skip_compile: 'bool' = False, verbose: 'bool' = True) -> 'bool'"
+  },
+  "calculate_checksum": {
+    "kind": "function",
+    "signature": "(file_path: 'str | os.PathLike[str]') -> 'str'"
+  },
+  "chain": {
+    "kind": "type",
+    "signature": null
+  },
+  "check_if_command_exists": {
+    "kind": "function",
+    "signature": "(command: 'str') -> 'bool'"
+  },
+  "check_python_formatting": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', diff_choice: 'int' = 1) -> 'bool'"
+  },
+  "check_python_version": {
+    "kind": "function",
+    "signature": "(command: 'str') -> 'bool'"
+  },
+  "combine_html_files": {
+    "kind": "function",
+    "signature": "(file_paths: 'list[str | os.PathLike[str]]', output_file_path: 'str | os.PathLike[str]') -> 'None'"
+  },
+  "compile_code": {
+    "kind": "function",
+    "signature": "(source_or_filepath: 'str | os.PathLike[str]', force_source: 'bool' = False) -> 'bool'"
+  },
+  "configure_logging": {
+    "kind": "function",
+    "signature": "(basename: 'str', log_level: 'int | str' = 20, rawlog: 'bool' = False, logdir: 'str | os.PathLike[str]' = '') -> 'MemoryHandler | None'"
+  },
+  "contains_mojibake": {
+    "kind": "function",
+    "signature": "(text: 'str') -> 'bool'"
+  },
+  "dataclass": {
+    "kind": "function",
+    "signature": "(cls=None, /, *, init=True, repr=True, eq=True, order=False, unsafe_hash=False, frozen=False, match_args=True, kw_only=False, slots=False, weakref_slot=False)"
+  },
+  "decimal_year_to_datetime": {
+    "kind": "function",
+    "signature": "(dec: 'float', use_astropy: 'bool' = False) -> 'dt.datetime'"
+  },
+  "decode_cp1252": {
+    "kind": "function",
+    "signature": "(raw_bytes: 'bytes', path_str: 'str' = 'input string') -> 'str | None'"
+  },
+  "decode_utf8": {
+    "kind": "function",
+    "signature": "(raw_bytes: 'bytes', path_str: 'str' = 'input string') -> 'str | None'"
+  },
+  "detect_country": {
+    "kind": "function",
+    "signature": "(force_wtfismyip: 'bool' = False) -> 'str | None'"
+  },
+  "detect_shell": {
+    "kind": "function",
+    "signature": "(options: 'Options') -> 'None'"
+  },
+  "diff_and_confirm": {
+    "kind": "function",
+    "signature": "(orig_text: 'str', changed_text: 'str', path: 'str | os.PathLike[str]', label: 'str' = '', skip_compile: 'bool' = False, diff_choice: 'int' = 1, changed_color: 'str' = '\\x1b[94m', deleted_color: 'str' = '\\x1b[91m', added_color: 'str' = '\\x1b[93m', the_fix: 'str' = '', description: 'str' = '') -> 'bool'"
+  },
+  "download_file": {
+    "kind": "function",
+    "signature": "(url: 'str', dest: 'str | os.PathLike[str]', retries: 'int' = 5, chunk_size: 'int' = 1048576, timeout: 'int' = 30, headers: 'dict[str, str] | None' = None) -> 'None'"
+  },
+  "ensure_daemon_running": {
+    "kind": "function",
+    "signature": "() -> 'None'"
+  },
+  "ensure_dir": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', allow_symlink: 'bool' = True, follow_symlinks: 'bool' = True) -> 'Path'"
+  },
+  "ensure_docker_installed": {
+    "kind": "function",
+    "signature": "() -> 'None'"
+  },
+  "ensure_even_dimensions": {
+    "kind": "function",
+    "signature": "(image_path: 'str | os.PathLike[str]') -> 'None'"
+  },
+  "ensure_file": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', raise_on_empty: 'bool' = False, allow_symlink: 'bool' = True, follow_symlinks: 'bool' = True, verbose: 'bool' = True) -> 'Path'"
+  },
+  "ensure_image_built": {
+    "kind": "function",
+    "signature": "(image: 'str', *, dockerfile: 'Path | None' = None, build_dir: 'Path | None' = None, build_cmd: 'str | None' = None) -> 'None'"
+  },
+  "ensure_path": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', absolute: 'bool' = True) -> 'Path'"
+  },
+  "ensure_utf8_meta": {
+    "kind": "function",
+    "signature": "(html: 'str') -> 'str'"
+  },
+  "errno": {
+    "kind": "module"
+  },
+  "extract_and_concatenate_segments": {
+    "kind": "function",
+    "signature": "(input_file: 'str | os.PathLike[str]', timestamps: 'list', output_name_or_path: 'str | os.PathLike[str]', subtitle_file: 'str | os.PathLike[str]') -> 'None'"
+  },
+  "extract_timestamp": {
+    "kind": "function",
+    "signature": "(the_string: 'str') -> 'str | None'"
+  },
+  "fallback_logging_config": {
+    "kind": "function",
+    "signature": "(log_level: 'int | str' = 20, rawlog: 'bool' = False) -> 'None'"
+  },
+  "field": {
+    "kind": "function",
+    "signature": "(*, default=<dataclasses._MISSING_TYPE object at 0x716818873dd0>, default_factory=<dataclasses._MISSING_TYPE object at 0x716818873dd0>, init=True, repr=True, hash=None, compare=True, metadata=None, kw_only=<dataclasses._MISSING_TYPE object at 0x716818873dd0>)"
+  },
+  "filename_format": {
+    "kind": "function",
+    "signature": "(text: 'str', sep: 'str' = '_', max_length: 'int | None' = None) -> 'str'"
+  },
+  "find_additional_alias_files": {
+    "kind": "function",
+    "signature": "(options: 'Options') -> 'None'"
+  },
+  "find_ffmpeg": {
+    "kind": "function",
+    "signature": "() -> 'str | None'"
+  },
+  "find_preferred_python_version": {
+    "kind": "function",
+    "signature": "() -> 'str | None'"
+  },
+  "find_shell_rc_file": {
+    "kind": "function",
+    "signature": "(options: 'Options') -> 'None'"
+  },
+  "fix_mojibake": {
+    "kind": "function",
+    "signature": "(filepath: 'str | os.PathLike[str]', make_backup: 'bool' = True, dry_run: 'bool' = False) -> 'None'"
+  },
+  "fix_text": {
+    "kind": "function",
+    "signature": "(current_text: 'str', path: 'str | os.PathLike[str]', raw_bytes: 'bytes') -> 'str | None'"
+  },
+  "format_date_range": {
+    "kind": "function",
+    "signature": "(date1: 'dt.datetime', date2: 'dt.datetime | None' = None) -> 'str'"
+  },
+  "from_jsonable": {
+    "kind": "function",
+    "signature": "(obj: 'Any') -> 'Any'"
+  },
+  "get_autopep8_fixable_codes": {
+    "kind": "function",
+    "signature": "() -> 'set[str]'"
+  },
+  "get_computer_name": {
+    "kind": "function",
+    "signature": "(rawlog: 'bool' = False) -> 'str'"
+  },
+  "get_effective_free_memory": {
+    "kind": "function",
+    "signature": "() -> 'float'"
+  },
+  "get_hostname_os_uname": {
+    "kind": "function",
+    "signature": "(rawlog: 'bool' = False) -> 'str | None'"
+  },
+  "get_hostname_platform": {
+    "kind": "function",
+    "signature": "(rawlog: 'bool' = False) -> 'str | None'"
+  },
+  "get_hostname_socket": {
+    "kind": "function",
+    "signature": "(rawlog: 'bool' = False) -> 'str | None'"
+  },
+  "get_hostname_subprocess_hostname": {
+    "kind": "function",
+    "signature": "(rawlog: 'bool' = False) -> 'str | None'"
+  },
+  "get_hostname_subprocess_scutil": {
+    "kind": "function",
+    "signature": "(rawlog: 'bool' = False) -> 'str | None'"
+  },
+  "get_video_duration_seconds": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', timeout: 'float' = 10.0) -> 'float'"
+  },
+  "highlight_changes": {
+    "kind": "function",
+    "signature": "(orig: 'str', new: 'str', unchanged_color: 'str', added_color: 'str', deleted_color: 'str') -> 'tuple[str, str]'"
+  },
+  "human_bytesize": {
+    "kind": "function",
+    "signature": "(num: 'float | int | None', *, suffix: 'str' = 'B', si: 'bool' = False, precision: 'int' = 1, space: 'bool' = True, trim_trailing_zeros: 'bool' = False, long_units: 'bool' = False) -> 'str'"
+  },
+  "human_timespan": {
+    "kind": "function",
+    "signature": "(timespan: 'int | float') -> 'str'"
+  },
+  "if_filepath_then_read": {
+    "kind": "function",
+    "signature": "(input_string_or_filepath: 'str | os.PathLike[str]', force_string: 'bool' = False) -> 'str'"
+  },
+  "interactive_flake8": {
+    "kind": "function",
+    "signature": "(options: 'Options', path: 'str | os.PathLike[str]', ignore_codes: 'list[str] | None' = None, diff_choice: 'int' = 1, max_line_length: 'int' = 100, changed_color: 'str' = '\\x1b[94m', deleted_color: 'str' = '\\x1b[91m', added_color: 'str' = '\\x1b[93m') -> 'bool'"
+  },
+  "is_float": {
+    "kind": "function",
+    "signature": "(s: 'str') -> 'bool'"
+  },
+  "is_internet_available": {
+    "kind": "function",
+    "signature": "(timeout_per_step: 'float' = 2.5, retries: 'int' = 1, workers: 'int' = 6, include_ipv6: 'bool' = False, strict: 'bool' = False, ignore_proxies: 'bool' = False) -> 'bool'"
+  },
+  "is_process_running": {
+    "kind": "function",
+    "signature": "(process_name: 'str') -> 'bool'"
+  },
+  "is_python_script": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]') -> 'bool'"
+  },
+  "kill_process": {
+    "kind": "function",
+    "signature": "(pname: 'str') -> 'None'"
+  },
+  "load_ast_var": {
+    "kind": "function",
+    "signature": "(var_name: 'str', script_path: 'str | os.PathLike[str]', rawlog: 'bool' = False) -> 'Any | None'"
+  },
+  "load_options_from_json": {
+    "kind": "function",
+    "signature": "(options: 'Options', json_file: 'str | os.PathLike[str]') -> 'Options | None'"
+  },
+  "logging": {
+    "kind": "module"
+  },
+  "multireplace": {
+    "kind": "function",
+    "signature": "(options: 'Options', verbose: 'bool' = True) -> 'None'"
+  },
+  "my_atomic_write": {
+    "kind": "function",
+    "signature": "(filepath: 'str | Path | os.PathLike[str]', data: 'str | bytes | bytearray', write_mode: \"Literal['w', 'a']\", encoding: 'str' = 'utf-8', lock_timeout: 'float | None' = None) -> 'None'"
+  },
+  "my_capitalize": {
+    "kind": "function",
+    "signature": "(string_to_capitalize: 'str') -> 'str'"
+  },
+  "my_critical_error": {
+    "kind": "function",
+    "signature": "(message: 'str' = 'A critical error occurred.', choose_breakpoint: 'bool' = False, exit_code: 'int' = 1) -> 'None'"
+  },
+  "my_diff": {
+    "kind": "function",
+    "signature": "(orig_text: 'str', changed_text: 'str', orig_path: 'str | os.PathLike[str]', changed_path: 'str | os.PathLike[str] | None' = None, diff_choice: 'int' = 1, changed_color: 'str' = '\\x1b[94m', deleted_color: 'str' = '\\x1b[91m', added_color: 'str' = '\\x1b[93m') -> 'None'"
+  },
+  "my_fopen": {
+    "kind": "function",
+    "signature": "(file_path: 'str | os.PathLike[str]', suppress_errors: 'bool' = False, rawlog: 'bool' = False, numlines: 'int | None' = None, verbose: 'bool' = True) -> 'str | None'"
+  },
+  "my_plural": {
+    "kind": "function",
+    "signature": "(n: 'int', word: 'str') -> 'str'"
+  },
+  "my_popen": {
+    "kind": "function",
+    "signature": "(command_list: 'list', suppress_info: 'bool' = False, suppress_error: 'bool' = False) -> 'MyPopenResult'"
+  },
+  "my_title_case": {
+    "kind": "function",
+    "signature": "(the_title: 'str') -> 'str'"
+  },
+  "normalize_for_search": {
+    "kind": "function",
+    "signature": "(text: 'str') -> 'str'"
+  },
+  "normalize_to_dict": {
+    "kind": "function",
+    "signature": "(value: 'Any', var_name: 'str', script_path: 'str | os.PathLike[str]') -> 'dict'"
+  },
+  "open_dir_in_VLC": {
+    "kind": "function",
+    "signature": "(the_dir: 'str | os.PathLike[str]', sort_choice: 'str' = 'sort_by_name', recursive: 'bool' = False, no_start: 'bool' = False) -> 'None'"
+  },
+  "open_filemanager_with_dirs": {
+    "kind": "function",
+    "signature": "(directories: 'list[str | os.PathLike[str]]') -> 'None'"
+  },
+  "open_in_vlc": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', no_start: 'bool' = False) -> 'None'"
+  },
+  "open_playlist_in_VLC": {
+    "kind": "function",
+    "signature": "(playlist: 'str | os.PathLike[str]', no_start: 'bool' = False) -> 'None'"
+  },
+  "open_terminal_and_run_command": {
+    "kind": "function",
+    "signature": "(the_command: 'str', close_after: 'bool' = False, maximize_window: 'bool' = False) -> 'None'"
+  },
+  "os": {
+    "kind": "module"
+  },
+  "overload": {
+    "kind": "function",
+    "signature": "(func)"
+  },
+  "parse_datetime": {
+    "kind": "function",
+    "signature": "(given_date: 'AnyDateTimeType', timezone: 'str | dt.tzinfo | None' = None, format_str: 'str | None' = None, should_convert: 'bool | None' = None) -> 'dt.datetime'"
+  },
+  "parse_timezone": {
+    "kind": "function",
+    "signature": "(tz_arg: 'str | dt.tzinfo | None' = None) -> 'dt.tzinfo | str'"
+  },
+  "print_all_errors": {
+    "kind": "function",
+    "signature": "(memory_handler: 'MemoryHandler', rawlog: 'bool' = False) -> 'None'"
+  },
+  "prompt_then_choose": {
+    "kind": "function",
+    "signature": "(prompt: 'str', choices: 'list[str]', default: 'str | None' = None) -> 'str'"
+  },
+  "prompt_then_confirm": {
+    "kind": "function",
+    "signature": "(prompt: 'str') -> 'bool'"
+  },
+  "query_free_space": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]') -> 'int'"
+  },
+  "re": {
+    "kind": "module"
+  },
+  "remove_prefix_from_filename": {
+    "kind": "function",
+    "signature": "(filepath: 'str | os.PathLike[str]', prefix: 'str') -> 'bool'"
+  },
+  "remove_prefix_from_html_title": {
+    "kind": "function",
+    "signature": "(filepath: 'str | os.PathLike[str]', prefix: 'str') -> 'bool'"
+  },
+  "replace": {
+    "kind": "function",
+    "signature": "(obj, /, **changes)"
+  },
+  "return_method_name": {
+    "kind": "function",
+    "signature": "(levels_up: 'int' = 1) -> 'str'"
+  },
+  "round_out": {
+    "kind": "function",
+    "signature": "(x: 'float', round_digits: 'int' = 3, max_digits: 'int' = 15) -> 'float'"
+  },
+  "run_flake8": {
+    "kind": "function",
+    "signature": "(options: 'Options', path: 'str | os.PathLike[str]', ignore_codes: 'list[str] | None' = None, max_line_length: 'int' = 100) -> 'flake8.Report'"
+  },
+  "run_mypy": {
+    "kind": "function",
+    "signature": "(options: 'Options', path: 'str | os.PathLike[str]') -> 'None'"
+  },
+  "run_with_docker_fixes": {
+    "kind": "function",
+    "signature": "(base_args: 'list[str]', *, ensure_build: 'Callable[[], None] | None' = None, extra_fixes: 'Iterable[Callable[[], None]] | None' = None) -> 'MyPopenResult'"
+  },
+  "safe_ctime": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True, ns: 'bool' = False) -> 'int | float | None'"
+  },
+  "safe_exists": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True) -> 'bool'"
+  },
+  "safe_is_dir": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True) -> 'bool'"
+  },
+  "safe_is_file": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True) -> 'bool'"
+  },
+  "safe_mtime": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True, ns: 'bool' = False) -> 'int | float | None'"
+  },
+  "safe_size": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True) -> 'int | None'"
+  },
+  "safe_stat": {
+    "kind": "function",
+    "signature": "(path: 'str | os.PathLike[str]', follow_symlinks: 'bool' = True) -> 'os.stat_result | None'"
+  },
+  "save_options_to_json": {
+    "kind": "function",
+    "signature": "(options: 'Options') -> 'None'"
+  },
+  "sci_exp": {
+    "kind": "function",
+    "signature": "(x: 'float | int', max_digits: 'int' = 15) -> 'int'"
+  },
+  "seconds_in_unit": {
+    "kind": "function",
+    "signature": "(unit: 'str') -> 'float'"
+  },
+  "set_system_volume": {
+    "kind": "function",
+    "signature": "(percent: 'int', tolerance: 'int' = 1, change_mute: \"Literal['mute', 'unmute'] | None\" = None, force_pactl: 'bool' = False) -> 'None'"
+  },
+  "show_function_source": {
+    "kind": "function",
+    "signature": "(target: 'object | str', *, unwrap: 'bool' = True, output: 'str | os.PathLike[str] | TextIO | None' = None) -> 'str'"
+  },
+  "start_only_one_instance": {
+    "kind": "function",
+    "signature": "(process_name: 'str') -> 'None'"
+  },
+  "sys": {
+    "kind": "module"
+  },
+  "to_jsonable": {
+    "kind": "function",
+    "signature": "(obj: 'Any', *, roundtrip: 'bool' = True) -> 'Any'"
+  },
+  "treeview_new_files": {
+    "kind": "function",
+    "signature": "(directory: 'str | os.PathLike[str]', last_file_path: 'str | os.PathLike[str] | None' = None, last_mtime: 'float | None' = None, maxlines: 'int' = 0, use_colors: 'bool' = True, print_root: 'bool' = True, prefix: 'str' = '', is_last: 'bool' = True, level: 'int' = 0, state: 'dict[str, Any] | None' = None, probe_only: 'bool' = False) -> 'bool'"
+  },
+  "verify_script": {
+    "kind": "function",
+    "signature": "(options: 'Options', thepath: 'str | os.PathLike[str]', thescript: 'str') -> 'None'"
+  }
+}

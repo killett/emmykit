@@ -1,0 +1,202 @@
+{
+  "decimal_year_to_datetime": [
+    {
+      "args": [
+        2024.5
+      ],
+      "result": "datetime.datetime(2024, 7, 2, 0, 0, tzinfo=datetime.timezone.utc)"
+    },
+    {
+      "args": [
+        2000.0
+      ],
+      "result": "datetime.datetime(2000, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)"
+    }
+  ],
+  "extract_timestamp": [
+    {
+      "args": [
+        "foo_20240101.txt"
+      ],
+      "result": "None"
+    },
+    {
+      "args": [
+        "no_ts.txt"
+      ],
+      "result": "None"
+    }
+  ],
+  "human_bytesize": [
+    {
+      "args": [
+        1048576
+      ],
+      "result": "'1.0 MiB'"
+    },
+    {
+      "args": [
+        0
+      ],
+      "result": "'0.0 B'"
+    },
+    {
+      "args": [
+        1536
+      ],
+      "result": "'1.5 KiB'"
+    }
+  ],
+  "human_timespan": [
+    {
+      "args": [
+        3725
+      ],
+      "result": "'1 hour, 2 minutes and 5 seconds'"
+    },
+    {
+      "args": [
+        60
+      ],
+      "result": "'1 minute'"
+    },
+    {
+      "args": [
+        0
+      ],
+      "result": "'0 seconds'"
+    }
+  ],
+  "is_float": [
+    {
+      "args": [
+        "12.3"
+      ],
+      "result": "True"
+    },
+    {
+      "args": [
+        "nope"
+      ],
+      "result": "False"
+    },
+    {
+      "args": [
+        "-1e9"
+      ],
+      "result": "True"
+    },
+    {
+      "args": [
+        ""
+      ],
+      "result": "False"
+    }
+  ],
+  "my_capitalize": [
+    {
+      "args": [
+        "hello world"
+      ],
+      "result": "'Hello world'"
+    },
+    {
+      "args": [
+        ""
+      ],
+      "result": "''"
+    },
+    {
+      "args": [
+        "ALL CAPS"
+      ],
+      "result": "'ALL CAPS'"
+    }
+  ],
+  "my_title_case": [
+    {
+      "args": [
+        "the lord of the rings"
+      ],
+      "result": "'The Lord Of The Rings'"
+    },
+    {
+      "args": [
+        "a"
+      ],
+      "result": "'A'"
+    },
+    {
+      "args": [
+        ""
+      ],
+      "result": "''"
+    }
+  ],
+  "round_out": [
+    {
+      "args": [
+        3.14159,
+        3
+      ],
+      "error": "ModuleNotFoundError: No module named 'numpy'"
+    },
+    {
+      "args": [
+        -2.5,
+        0
+      ],
+      "error": "ModuleNotFoundError: No module named 'numpy'"
+    },
+    {
+      "args": [
+        1.0,
+        5
+      ],
+      "error": "ModuleNotFoundError: No module named 'numpy'"
+    }
+  ],
+  "sci_exp": [
+    {
+      "args": [
+        12345.6,
+        2
+      ],
+      "result": "4"
+    },
+    {
+      "args": [
+        1.0,
+        3
+      ],
+      "result": "0"
+    },
+    {
+      "args": [
+        0.000123,
+        4
+      ],
+      "result": "-4"
+    }
+  ],
+  "seconds_in_unit": [
+    {
+      "args": [
+        "minute"
+      ],
+      "result": "60"
+    },
+    {
+      "args": [
+        "hour"
+      ],
+      "result": "3600"
+    },
+    {
+      "args": [
+        "day"
+      ],
+      "result": "86400"
+    }
+  ]
+}
