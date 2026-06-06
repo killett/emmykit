@@ -9,3 +9,4 @@ from emmykit.text_constants import *
 from emmykit.numeric_helpers import *
 from emmykit.inflect_utils import *
 from emmykit.logging_utils import *
+from emmykit.safe_paths import *
