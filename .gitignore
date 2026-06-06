@@ -1,0 +1,34 @@
+# Build artifacts
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Bytecode + caches
+__pycache__/
+*.py[cod]
+
+# Test + type-checker caches
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual envs
+.venv/
+venv/
+
+# Pixi local install
+.pixi/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local-only env
+.env
