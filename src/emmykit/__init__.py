@@ -28,3 +28,4 @@ from emmykit.treeview import *
 from emmykit.docker_utils import *
 from emmykit.system import *
 from emmykit.media import *
+from emmykit.html_files import *
