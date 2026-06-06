@@ -21,5 +21,5 @@ from emmykit import parse_datetime, human_bytesize, Options, LLMs
 ## Layout
 
 The codebase is split into 32 modules across 9 dependency layers (constants → LLMs).
-See [`docs/superpowers/specs/2026-06-05-emmykit-split-design.md`](docs/superpowers/specs/2026-06-05-emmykit-split-design.md)
-for the layer map and `__all__` rules. Underscore-prefixed names are private.
+See [`docs/design.md`](docs/design.md) for the layer map and `__all__` rules.
+Underscore-prefixed names are private.
