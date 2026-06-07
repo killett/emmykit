@@ -62,11 +62,6 @@ print(ek.my_capitalize("hello world"))   # "Hello world"
 - [`options` — Options dataclasses for configuration](#m-options)
   - [`Options`](#options)
   - [`PlotOptions`](#plotoptions)
-- [`numeric_helpers` — Numeric parsing + unit-to-seconds conversion](#m-numeric_helpers)
-  - [`is_float`](#is_float)
-  - [`seconds_in_unit`](#seconds_in_unit)
-- [`paths_ensure` — Path normalization](#m-paths_ensure)
-  - [`ensure_path`](#ensure_path)
 - [`inflect_utils` — Grammar + pluralization helpers](#m-inflect_utils)
   - [`InflectEngine`](#inflectengine)
   - [`my_plural`](#my_plural)
@@ -78,6 +73,8 @@ print(ek.my_capitalize("hello world"))   # "Hello world"
   - [`MemoryHandler`](#memoryhandler)
   - [`print_all_errors`](#print_all_errors)
   - [`return_method_name`](#return_method_name)
+- [`paths_ensure` — Path normalization](#m-paths_ensure)
+  - [`ensure_path`](#ensure_path)
 - [`safe_paths` — Exception-swallowing filesystem queries](#m-safe_paths)
   - [`ensure_dir`](#ensure_dir)
   - [`ensure_file`](#ensure_file)
@@ -108,6 +105,9 @@ print(ek.my_capitalize("hello world"))   # "Hello world"
   - [`human_bytesize`](#human_bytesize)
   - [`round_out`](#round_out)
   - [`sci_exp`](#sci_exp)
+- [`numeric_helpers` — Numeric parsing + unit-to-seconds conversion](#m-numeric_helpers)
+  - [`is_float`](#is_float)
+  - [`seconds_in_unit`](#seconds_in_unit)
 - [`datetime_utils` — Date / time parsing, formatting, timezone handling](#m-datetime_utils)
   - [`adaptive_date_labels`](#adaptive_date_labels)
   - [`AdaptiveDateFormatter`](#adaptivedateformatter)
@@ -523,75 +523,6 @@ Global figure options.
 
 </details>
 
-<a id="m-numeric_helpers"></a>
-### `numeric_helpers` — Numeric parsing + unit-to-seconds conversion
-
-_Layer 1._  `from emmykit.numeric_helpers import …`
-
-Tiny helpers shared by `humanize` and `datetime_utils` so neither has to pull in the other.
-
-<a id="is_float"></a>
-<details>
-<summary><code>is_float</code> — Check if a string can be parsed as a float.</summary>
-
-```python
-is_float(s: 'str') -> 'bool'
-```
-
-```text
-Check if a string can be parsed as a float.
-```
-
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/numeric_helpers.py#L56)
-
-</details>
-
-<a id="seconds_in_unit"></a>
-<details>
-<summary><code>seconds_in_unit</code> — Return the number of seconds in a given time unit.</summary>
-
-```python
-seconds_in_unit(unit: 'str') -> 'float'
-```
-
-```text
-Return the number of seconds in a given time unit.
-```
-
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/numeric_helpers.py#L49)
-
-</details>
-
-<a id="m-paths_ensure"></a>
-### `paths_ensure` — Path normalization
-
-_Layer 1._  `from emmykit.paths_ensure import …`
-
-Leaf helper that coerces `os.PathLike` / `str` arguments into resolved `Path` objects.
-
-<a id="ensure_path"></a>
-<details>
-<summary><code>ensure_path</code> — Ensure that the path is a Path. If not, make it a Path.</summary>
-
-```python
-ensure_path(path: 'str | os.PathLike[str]', absolute: 'bool' = True) -> 'Path'
-```
-
-```text
-Ensure that the path is a Path. If not, make it a Path.
-
-Args:
-    path:     The path to ensure is a Path object.
-    absolute: If True (default), return an absolute path without resolving symlinks.
-
-Returns:
-    A Path object (expanded for "~"). If absolute=True, it's absolute; otherwise it may be relative.
-```
-
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/paths_ensure.py#L10)
-
-</details>
-
 <a id="m-inflect_utils"></a>
 ### `inflect_utils` — Grammar + pluralization helpers
 
@@ -809,6 +740,36 @@ Raises:
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L157)
+
+</details>
+
+<a id="m-paths_ensure"></a>
+### `paths_ensure` — Path normalization
+
+_Layer 1._  `from emmykit.paths_ensure import …`
+
+Leaf helper that coerces `os.PathLike` / `str` arguments into resolved `Path` objects.
+
+<a id="ensure_path"></a>
+<details>
+<summary><code>ensure_path</code> — Ensure that the path is a Path. If not, make it a Path.</summary>
+
+```python
+ensure_path(path: 'str | os.PathLike[str]', absolute: 'bool' = True) -> 'Path'
+```
+
+```text
+Ensure that the path is a Path. If not, make it a Path.
+
+Args:
+    path:     The path to ensure is a Path object.
+    absolute: If True (default), return an absolute path without resolving symlinks.
+
+Returns:
+    A Path object (expanded for "~"). If absolute=True, it's absolute; otherwise it may be relative.
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/paths_ensure.py#L10)
 
 </details>
 
@@ -1509,6 +1470,45 @@ For x == 0, returns -max_digits.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L110)
+
+</details>
+
+<a id="m-numeric_helpers"></a>
+### `numeric_helpers` — Numeric parsing + unit-to-seconds conversion
+
+_Layer 1._  `from emmykit.numeric_helpers import …`
+
+Tiny helpers shared by `humanize` and `datetime_utils` so neither has to pull in the other.
+
+<a id="is_float"></a>
+<details>
+<summary><code>is_float</code> — Check if a string can be parsed as a float.</summary>
+
+```python
+is_float(s: 'str') -> 'bool'
+```
+
+```text
+Check if a string can be parsed as a float.
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/numeric_helpers.py#L56)
+
+</details>
+
+<a id="seconds_in_unit"></a>
+<details>
+<summary><code>seconds_in_unit</code> — Return the number of seconds in a given time unit.</summary>
+
+```python
+seconds_in_unit(unit: 'str') -> 'float'
+```
+
+```text
+Return the number of seconds in a given time unit.
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/numeric_helpers.py#L49)
 
 </details>
 
@@ -3615,7 +3615,7 @@ Context passed to strategy functions.
 <summary><code>SelectionStrategy</code> — Enumeration of selection strategies for model selection.</summary>
 
 ```python
-SelectionStrategy(*values)
+SelectionStrategy(value, names=None, *, module=None, qualname=None, type=None, start=1, boundary=None)
 ```
 
 ```text
