@@ -45,9 +45,17 @@ echo "==> creating venv at $VENV"
 uv venv "$VENV"
 
 echo "==> installing ${NAME}${EXTRAS}${VERSION} from $INDEX"
+# --extra-index-url only when the primary index is TestPyPi (so emmykit's lazy
+# third-party deps that don't exist on TestPyPi can fall through to real PyPi).
+# When primary IS real PyPi, a duplicate --extra-index-url trips uv's
+# dependency-confusion guard ("found on first index but not at requested version").
+EXTRA_INDEX_ARGS=()
+if [[ "$INDEX" == "https://test.pypi.org/simple/" ]]; then
+    EXTRA_INDEX_ARGS=(--extra-index-url https://pypi.org/simple/)
+fi
 uv pip install --python "$VENV/bin/python" \
     --index-url "$INDEX" \
-    --extra-index-url https://pypi.org/simple/ \
+    "${EXTRA_INDEX_ARGS[@]}" \
     "${NAME}${EXTRAS}${VERSION}"
 
 echo "==> version + pure-stdlib paths"
