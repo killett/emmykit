@@ -56,6 +56,7 @@ fi
 uv pip install --python "$VENV/bin/python" \
     --index-url "$INDEX" \
     "${EXTRA_INDEX_ARGS[@]}" \
+    --refresh-package emmykit \
     "${NAME}${EXTRAS}${VERSION}"
 
 echo "==> version + pure-stdlib paths"
