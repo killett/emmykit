@@ -1,6 +1,6 @@
 # emmykit
 
-Personal Python utility kit: 184 importable functions, classes, and constants across 32 submodules
+Personal Python utility kit: 181 importable functions, classes, and constants across 32 submodules
 in 9 dependency layers (README highlights the user-facing surface — internal punctuation, frozenset
 aliases, probe-target lists, and translation tables are referenced by section rather than enumerated).
 Base install is stdlib-only; heavier helpers
@@ -34,6 +34,67 @@ ts = ek.parse_datetime("2026-06-06T12:34:56Z")
 print(ek.my_capitalize("hello world"))   # "Hello world"
 ```
 
+## Teaching the JSON round trip about your own types
+
+`to_jsonable` / `from_jsonable` know a fixed set of types (`Path`, `set`,
+`datetime`, `Decimal`, `Enum`, compiled regexes, …). Anything else falls through
+to `str(obj)`, which fails *silently*: the file reloads holding a repr string
+where an object should be, and membership tests quietly degrade to substring
+matching. Register your types instead — `emmykit` never has to import your
+package.
+
+```python
+import emmykit as ek
+
+class Duration:
+    def __init__(self, seconds: int) -> None:
+        self.seconds = seconds
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Duration) and other.seconds == self.seconds
+
+ek.register_json_type(
+    Duration,
+    lambda o: {"seconds": o.seconds},          # -> payload
+    tag="duration",                            # -> written as "__type__"
+    decode=lambda p: Duration(p["seconds"]),   # payload -> object
+)
+
+blob = ek.to_jsonable({"limit": Duration(90)})
+# {"limit": {"__type__": "duration", "seconds": 90}}
+ek.from_jsonable(blob) == {"limit": Duration(90)}   # True
+```
+
+This also reaches `save_options_to_json` / `load_options_from_json`, which call
+the converters internally.
+
+- **Dispatch is by `isinstance`**, so subclasses are covered. When two
+  registrations match, the more specific class wins; unrelated ties go to the
+  most recently registered.
+- **Registrations beat the built-ins.** A registered handler is consulted before
+  every built-in encoder and before the `str()` fallback.
+- **Payloads are converted too.** The mapping your encoder returns is passed back
+  through the converter, so it may contain `Path`, `set`, `datetime`, or another
+  registered type. The recursion guard stays in effect across that call.
+- **`roundtrip=False`** returns the bare payload with no `__type__` key.
+- **Encode-only registration** — omit *both* `tag` and `decode` (supplying one
+  without the other is an error). The object is serialized through its encoder
+  but never tagged, in either `roundtrip` mode, and reloads as a plain `dict`:
+
+  ```python
+  ek.register_json_type(LiveIndex, lambda o: {"probed": sorted(o.names), "offline": o.offline})
+  ```
+
+  This is the honest choice for an object that can be *described* faithfully but
+  not *rebuilt* faithfully — one whose contents came from probing a live
+  interpreter or a live HTTP client, where a reconstructed copy would answer
+  differently while looking identical. A readable snapshot plus a plain `dict` on
+  reload beats a decoder that fabricates a plausible-but-wrong object.
+- **Tags are exclusive.** Reusing a registered tag or class raises unless you
+  pass `replace=True`; the built-in tags in `BUILTIN_JSON_TAGS` (`path`, `set`,
+  `datetime`, `recursion`, …) are rejected outright. `unregister_json_type(cls)`
+  or `unregister_json_type("tag")` removes a handler again — useful in test
+  teardown.
+
 ## Table of contents
 
 - [`constants` — ANSI colors, unicode punctuation, default encoding, ignore-lists](#m-constants)
@@ -56,7 +117,7 @@ print(ek.my_capitalize("hello world"))   # "Hello world"
   - [`TEXT_EXTENSIONS`](#text_extensions)
   - [`VIDEO_EXTENSIONS`](#video_extensions)
 - [`embedded_scripts` — Pre-packaged helper-script source-strings](#m-embedded_scripts)
-  - [`7 embedded helper scripts`](#c-embedded_scripts-7-embedded-helper-scripts)
+  - [`SETUP_CARTOPY_SCRIPT`](#setup_cartopy_script)
 - [`_version` — Package and Python version constants](#m-_version)
   - [`PY_VERSION`](#py_version)
 - [`options` — Options dataclasses for configuration](#m-options)
@@ -120,10 +181,13 @@ print(ek.my_capitalize("hello world"))   # "Hello world"
   - [`parse_timezone`](#parse_timezone)
   - [`Precision`](#precision)
 - [`json_io` — JSON serialization + dataclass conversion](#m-json_io)
+  - [`BUILTIN_JSON_TAGS`](#builtin_json_tags)
   - [`from_jsonable`](#from_jsonable)
   - [`load_options_from_json`](#load_options_from_json)
+  - [`register_json_type`](#register_json_type)
   - [`save_options_to_json`](#save_options_to_json)
   - [`to_jsonable`](#to_jsonable)
+  - [`unregister_json_type`](#unregister_json_type)
 - [`diff_view` — Diff rendering with visible whitespace](#m-diff_view)
   - [`diff_and_confirm`](#diff_and_confirm)
   - [`highlight_changes`](#highlight_changes)
@@ -453,15 +517,19 @@ VIDEO_EXTENSIONS: Final[tuple[str, ...]] = ('.mp4', '.mkv', '.mov', '.avi', '.mp
 
 _Layer 0._  `from emmykit.embedded_scripts import …`
 
-Multi-kilobyte Python script literals shipped as importable strings — used by Emmy's external automation to drop drop-in helpers into other projects.
+Python script literals shipped as importable strings — used by Emmy's external automation to drop drop-in helpers into other projects.
 
-<a id="c-embedded_scripts-7-embedded-helper-scripts"></a>
+The five standalone command-line programs that used to live here (`PRINTALL_SCRIPT`, `MYDIFF_SCRIPT`, `MYAUDIT_SCRIPT`, `MULTIREPLACE_SCRIPT`, `TREEVIEW_SCRIPT`) moved to [killett/utilities](https://github.com/killett/utilities) in 0.4.0; `UNIV_DEFS_SYS_PATH_SCRIPT` was deleted.
+
+<a id="setup_cartopy_script"></a>
 <details>
-<summary><code>7 embedded helper scripts</code> — Multi-KB Python script source strings shipped as importable constants.</summary>
+<summary><code>SETUP_CARTOPY_SCRIPT</code> — str (532 chars)</summary>
 
-**Includes:** `MULTIREPLACE_SCRIPT`, `MYAUDIT_SCRIPT`, `MYDIFF_SCRIPT`, `PRINTALL_SCRIPT`, `SETUP_CARTOPY_SCRIPT`, `TREEVIEW_SCRIPT`, `UNIV_DEFS_SYS_PATH_SCRIPT`.
+```python
+SETUP_CARTOPY_SCRIPT: str = '<532-char Python script source, 16 lines>'
+```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/embedded_scripts.py#L156)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/embedded_scripts.py#L12)
 
 </details>
 
@@ -1812,6 +1880,18 @@ _Layer 4._  `from emmykit.json_io import …`
 
 `to_jsonable`/`from_jsonable` round-trip recursively-typed structures including `Path`, `datetime`, and dataclasses, with paired `save_options_to_json`/`load_options_from_json` helpers for `Options` objects.
 
+<a id="builtin_json_tags"></a>
+<details>
+<summary><code>BUILTIN_JSON_TAGS</code> — Final[frozenset[str]] (16 items)</summary>
+
+```python
+BUILTIN_JSON_TAGS: Final[frozenset[str]] = frozenset({'bytearray', 'bytes', 'date', 'datetime', 'decimal', 'enum', 'frozenset', 'memoryview', 'namespace', 'object', 'path', 're_pattern', 'recursion', 'set', 'time', 'tuple'})
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L21)
+
+</details>
+
 <a id="from_jsonable"></a>
 <details>
 <summary><code>from_jsonable</code> — Reconstruct objects encoded with to_jsonable(..., roundtrip=True).</summary>
@@ -1825,7 +1905,7 @@ Reconstruct objects encoded with to_jsonable(..., roundtrip=True).
 If input was produced with roundtrip=False, this mostly passes values through.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L146)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L372)
 
 </details>
 
@@ -1852,7 +1932,65 @@ Raises:
     ValueError: If the JSON file is invalid or cannot be parsed.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L303)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L534)
+
+</details>
+
+<a id="register_json_type"></a>
+<details>
+<summary><code>register_json_type</code> — Teach `to_jsonable` / `from_jsonable` about a type `emmykit` does not know.</summary>
+
+```python
+register_json_type(cls: 'type', encode: 'Callable[[Any], Mapping[str, Any]]', *, tag: 'str | None' = None, decode: 'Callable[[dict[str, Any]], Any] | None' = None, replace: 'bool' = False) -> 'None'
+```
+
+```text
+Teach `to_jsonable` / `from_jsonable` about a type `emmykit` does not know.
+
+Without this, an unrecognized object falls through to `str(obj)` and a
+reloaded file holds a repr string where a real object should be — a silent
+failure, not a loud one.
+
+Dispatch is by `isinstance`, so subclasses of `cls` are handled too. When
+two registrations both match, the more specific class wins; when neither is
+a subclass of the other, the most recently registered one wins. A registered
+handler takes precedence over every built-in handler.
+
+`tag` and `decode` are optional *together*. Supplying one without the other
+is an error. Supplying neither registers an **encode-only** type: it is
+serialized through `encode` but never tagged, in either `roundtrip` mode,
+and therefore reloads as a plain `dict`. That is the honest choice for an
+object that can be *described* faithfully but not *rebuilt* faithfully —
+e.g. a lookup table populated by probing a live interpreter, where a
+reconstructed copy would answer differently while looking identical.
+
+Args:
+    cls:     The class to register. Dispatch is by `isinstance`.
+    encode:  Callable taking an instance and returning a mapping of
+             JSON-ish values. The mapping's values are themselves passed
+             through the converter, so they may contain `Path`, `set`,
+             `datetime`, or another registered type. The recursion guard
+             stays in effect across that call.
+    tag:     Type tag written as `__type__` when `roundtrip=True`. Must not
+             collide with a built-in tag (see `BUILTIN_JSON_TAGS`) or with
+             an already-registered tag.
+    decode:  Callable taking the decoded payload (the `__type__` key
+             removed, every value already reconstructed) and returning an
+             instance.
+    replace: Retire any existing registration for `cls` or for `tag` instead
+             of raising.
+
+Returns:
+    None - mutates the process-wide registry.
+
+Raises:
+    TypeError:  If `cls` is not a class, or `encode` is not callable.
+    ValueError: If exactly one of `tag` / `decode` is given; if `tag` is
+                empty or collides with a built-in tag; or if `cls` or `tag`
+                is already registered and `replace` is False.
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L58)
 
 </details>
 
@@ -1882,7 +2020,7 @@ Raises:
     ValueError: If the options object is invalid.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L271)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L502)
 
 </details>
 
@@ -1897,9 +2035,38 @@ to_jsonable(obj: 'Any', *, roundtrip: 'bool' = True) -> 'Any'
 ```text
 Convert arbitrary Python objects into JSON-serializable primitives.
 If roundtrip=True, non-JSON types are wrapped with a small type tag so they can be reconstructed.
+Types registered via register_json_type() are handled ahead of the built-ins.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L17)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L236)
+
+</details>
+
+<a id="unregister_json_type"></a>
+<details>
+<summary><code>unregister_json_type</code> — Remove a registration made by `register_json_type`.</summary>
+
+```python
+unregister_json_type(cls_or_tag: 'type | str') -> 'None'
+```
+
+```text
+Remove a registration made by `register_json_type`.
+
+The type falls back to whatever `to_jsonable` did before it was registered.
+
+Args:
+    cls_or_tag: The registered class, or its `tag` string.
+
+Returns:
+    None - mutates the process-wide registry.
+
+Raises:
+    KeyError:  If nothing is registered under that class or tag.
+    TypeError: If `cls_or_tag` is neither a class nor a string.
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L154)
 
 </details>
 
@@ -2242,10 +2409,10 @@ Raises:
 
 <a id="computer_name"></a>
 <details>
-<summary><code>COMPUTER_NAME</code> — str = 'b98ed262ead6'</summary>
+<summary><code>COMPUTER_NAME</code> — str = 'b5ac839dd662'</summary>
 
 ```python
-COMPUTER_NAME: str = 'b98ed262ead6'
+COMPUTER_NAME: str = 'b5ac839dd662'
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L146)
@@ -3615,7 +3782,7 @@ Context passed to strategy functions.
 <summary><code>SelectionStrategy</code> — Enumeration of selection strategies for model selection.</summary>
 
 ```python
-SelectionStrategy(value, names=None, *, module=None, qualname=None, type=None, start=1, boundary=None)
+SelectionStrategy(*values)
 ```
 
 ```text
