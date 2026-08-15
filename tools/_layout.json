@@ -1,6 +1,6 @@
 {
   "constants": ["ANSI_CYAN","ANSI_GREEN","ANSI_RED","ANSI_RESET","ANSI_YELLOW","BACKTICK","DEFAULT_ENCODING","DEFAULT_EXCLUDE_DIRS","EM_DASH","HORIZONTAL_ELLIPSIS","IGNORE_THESE_ERRORS","IGNORED_CODES","LDQUOTE","LSQUOTE","RDQUOTE","RSQUOTE"],
-  "embedded_scripts": ["MULTIREPLACE_SCRIPT","MYAUDIT_SCRIPT","MYDIFF_SCRIPT","PRINTALL_SCRIPT","SETUP_CARTOPY_SCRIPT","TREEVIEW_SCRIPT","UNIV_DEFS_SYS_PATH_SCRIPT"],
+  "embedded_scripts": ["SETUP_CARTOPY_SCRIPT"],
   "extensions": ["ALL_KNOWN_EXTENSIONS","ALL_KNOWN_EXTENSIONS_SET","ARCHIVE_EXTENSIONS","ARCHIVE_EXTENSIONS_SET","AUDIO_EXTENSIONS","AUDIO_EXTENSIONS_SET","BOOK_EXTENSIONS","BOOK_EXTENSIONS_SET","HTML_EXTENSIONS","HTML_EXTENSIONS_SET","IMAGE_EXTENSIONS","IMAGE_EXTENSIONS_SET","PLAYLIST_EXTENSIONS","PLAYLIST_EXTENSIONS_SET","PYTHON_EXTENSIONS","PYTHON_EXTENSIONS_SET","SUBTITLE_EXTENSIONS","SUBTITLE_EXTENSIONS_SET","TEXT_ENCODINGS","TEXT_ENCODINGS_SET","TEXT_EXTENSIONS","TEXT_EXTENSIONS_SET","VIDEO_EXTENSIONS","VIDEO_EXTENSIONS_SET","_ALL_CATEGORIES","_ARCHIVE_CATEGORIES","_ARCHIVE_EXTENSIONS_1","_ARCHIVE_EXTENSIONS_2","_ARCHIVE_EXTENSIONS_3","_ARCHIVE_EXTENSIONS_4"],
   "net_targets": ["DNS_TEST_NAMES","HTTP_PROBES","IPV4_TARGETS","IPV6_TARGETS"],
   "_version": ["__version__","PY_VERSION"],
@@ -17,7 +17,7 @@
   "introspection": ["_builtin_stub","_sanitize_text_signature","compile_code","if_filepath_then_read","load_ast_var","normalize_to_dict","show_function_source"],
   "humanize": ["human_bytesize","round_out","sci_exp"],
   "datetime_utils": ["ADAPTIVE_FORMAT_LEVELS","AdaptiveDateFormatter","AnyDateTimeType","Precision","_JD_MJD_CAPTURE_RE","_JD_MJD_SIMPLE_RE","_JD_UNIX_EPOCH","_OFFSET_IN_STR_RE","_TIMESTAMP_PATTERN_RE","_TZ_ABBREV_TO_ZONE","_TZ_OFFSET_RE","_finalize_datetime","_normalize_to_datetime","_parse_iso","_should_convert","adaptive_date_labels","decimal_year_to_datetime","extract_timestamp","format_date_range","human_timespan","parse_datetime","parse_timezone"],
-  "json_io": ["_coerce_log_mode","_to_jsonable","from_jsonable","load_options_from_json","save_options_to_json","to_jsonable"],
+  "json_io": ["BUILTIN_JSON_TAGS","_coerce_log_mode","_to_jsonable","from_jsonable","load_options_from_json","register_json_type","save_options_to_json","to_jsonable","unregister_json_type"],
   "diff_view": ["_vis_all_ws","_vis_trailing_ws","diff_and_confirm","highlight_changes","is_python_script","my_diff"],
   "text": ["contains_mojibake","decode_cp1252","decode_utf8","ensure_utf8_meta","fix_mojibake","fix_text","my_capitalize","my_title_case","normalize_for_search"],
   "hosts": ["COMPUTER_NAME","IS_NASA_COMPUTER","NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES","NASA_COMPUTER_NAME_PREFIXES","analyze_computer_name_results","get_computer_name","get_hostname_os_uname","get_hostname_platform","get_hostname_socket","get_hostname_subprocess_hostname","get_hostname_subprocess_scutil"],

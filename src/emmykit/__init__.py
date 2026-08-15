@@ -44,15 +44,7 @@ from emmykit.constants import (
     RDQUOTE,
     RSQUOTE,
 )
-from emmykit.embedded_scripts import (
-    MULTIREPLACE_SCRIPT,
-    MYAUDIT_SCRIPT,
-    MYDIFF_SCRIPT,
-    PRINTALL_SCRIPT,
-    SETUP_CARTOPY_SCRIPT,
-    TREEVIEW_SCRIPT,
-    UNIV_DEFS_SYS_PATH_SCRIPT,
-)
+from emmykit.embedded_scripts import SETUP_CARTOPY_SCRIPT
 from emmykit.extensions import (
     ALL_KNOWN_EXTENSIONS,
     ALL_KNOWN_EXTENSIONS_SET,
@@ -154,10 +146,13 @@ from emmykit.datetime_utils import (
     parse_timezone,
 )
 from emmykit.json_io import (
+    BUILTIN_JSON_TAGS,
     from_jsonable,
     load_options_from_json,
+    register_json_type,
     save_options_to_json,
     to_jsonable,
+    unregister_json_type,
 )
 from emmykit.diff_view import (
     diff_and_confirm,
@@ -283,6 +278,7 @@ __all__ = [
     "BACKTICK",
     "BOOK_EXTENSIONS",
     "BOOK_EXTENSIONS_SET",
+    "BUILTIN_JSON_TAGS",
     "CHARACTERS_TO_SPACE",
     "COMPUTER_NAME",
     "Callable",
@@ -313,9 +309,6 @@ __all__ = [
     "LLMs",
     "LSQUOTE",
     "Literal",
-    "MULTIREPLACE_SCRIPT",
-    "MYAUDIT_SCRIPT",
-    "MYDIFF_SCRIPT",
     "MaxLevelFilter",
     "MemoryHandler",
     "ModelInfo",
@@ -325,7 +318,6 @@ __all__ = [
     "Options",
     "PLAYLIST_EXTENSIONS",
     "PLAYLIST_EXTENSIONS_SET",
-    "PRINTALL_SCRIPT",
     "PYTHON_EXTENSIONS",
     "PYTHON_EXTENSIONS_SET",
     "PY_VERSION",
@@ -349,12 +341,10 @@ __all__ = [
     "TEXT_EXTENSIONS",
     "TEXT_EXTENSIONS_SET",
     "TRANSLATION_TABLE",
-    "TREEVIEW_SCRIPT",
     "TextIO",
     "ThreadPoolExecutor",
     "Type",
     "TypeAlias",
-    "UNIV_DEFS_SYS_PATH_SCRIPT",
     "VIDEO_EXTENSIONS",
     "VIDEO_EXTENSIONS_SET",
     "adaptive_date_labels",
@@ -448,6 +438,7 @@ __all__ = [
     "prompt_then_confirm",
     "query_free_space",
     "re",
+    "register_json_type",
     "remove_prefix_from_filename",
     "remove_prefix_from_html_title",
     "replace",
@@ -472,6 +463,7 @@ __all__ = [
     "sys",
     "to_jsonable",
     "treeview_new_files",
+    "unregister_json_type",
     "verify_script",
 ]
 

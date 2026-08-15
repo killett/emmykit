@@ -55,6 +55,9 @@
   "BOOK_EXTENSIONS_SET": {
     "kind": "frozenset"
   },
+  "BUILTIN_JSON_TAGS": {
+    "kind": "frozenset"
+  },
   "CHARACTERS_TO_SPACE": {
     "kind": "str"
   },
@@ -156,15 +159,6 @@
     "kind": "_TypedCacheSpecialForm",
     "signature": "(*args, **kwds)"
   },
-  "MULTIREPLACE_SCRIPT": {
-    "kind": "str"
-  },
-  "MYAUDIT_SCRIPT": {
-    "kind": "str"
-  },
-  "MYDIFF_SCRIPT": {
-    "kind": "str"
-  },
   "MaxLevelFilter": {
     "kind": "type",
     "signature": "(max_level: 'int') -> 'None'"
@@ -196,9 +190,6 @@
   },
   "PLAYLIST_EXTENSIONS_SET": {
     "kind": "frozenset"
-  },
-  "PRINTALL_SCRIPT": {
-    "kind": "str"
   },
   "PYTHON_EXTENSIONS": {
     "kind": "tuple"
@@ -277,9 +268,6 @@
   "TRANSLATION_TABLE": {
     "kind": "dict"
   },
-  "TREEVIEW_SCRIPT": {
-    "kind": "str"
-  },
   "TextIO": {
     "kind": "type",
     "signature": "()"
@@ -295,9 +283,6 @@
   "TypeAlias": {
     "kind": "_SpecialForm",
     "signature": "(*args, **kwds)"
-  },
-  "UNIV_DEFS_SYS_PATH_SCRIPT": {
-    "kind": "str"
   },
   "VIDEO_EXTENSIONS": {
     "kind": "tuple"
@@ -664,6 +649,10 @@
   "re": {
     "kind": "module"
   },
+  "register_json_type": {
+    "kind": "function",
+    "signature": "(cls: 'type', encode: 'Callable[[Any], Mapping[str, Any]]', *, tag: 'str | None' = None, decode: 'Callable[[dict[str, Any]], Any] | None' = None, replace: 'bool' = False) -> 'None'"
+  },
   "remove_prefix_from_filename": {
     "kind": "function",
     "signature": "(filepath: 'str | os.PathLike[str]', prefix: 'str') -> 'bool'"
@@ -758,6 +747,10 @@
   "treeview_new_files": {
     "kind": "function",
     "signature": "(directory: 'str | os.PathLike[str]', last_file_path: 'str | os.PathLike[str] | None' = None, last_mtime: 'float | None' = None, maxlines: 'int' = 0, use_colors: 'bool' = True, print_root: 'bool' = True, prefix: 'str' = '', is_last: 'bool' = True, level: 'int' = 0, state: 'dict[str, Any] | None' = None, probe_only: 'bool' = False) -> 'bool'"
+  },
+  "unregister_json_type": {
+    "kind": "function",
+    "signature": "(cls_or_tag: 'type | str') -> 'None'"
   },
   "verify_script": {
     "kind": "function",
