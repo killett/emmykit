@@ -85,7 +85,7 @@ MODULE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
     "net_targets":      ("Network-diagnostic probe targets",
                          "IPv4, IPv6, HTTP, and DNS endpoint lists used by `is_internet_available` to verify connectivity beyond DNS resolution."),
     "embedded_scripts": ("Pre-packaged helper-script source-strings",
-                         "Multi-kilobyte Python script literals shipped as importable strings — used by Emmy's external automation "
+                         "Python script literals shipped as importable strings — used by Emmy's external automation "
                          "to drop drop-in helpers into other projects."),
     "_version":         ("Package and Python version constants",
                          "Single source of truth for `emmykit.__version__` (read by hatchling at build-time) and the supported `PY_VERSION` floor."),
@@ -230,13 +230,13 @@ RENDER_RULES: dict[str, ModuleRenderRule] = {
     ),
     "datetime_utils": ModuleRenderRule(omit=["ADAPTIVE_FORMAT_LEVELS"]),
     "embedded_scripts": ModuleRenderRule(
-        condense=[CondenseGroup(
-            label="7 embedded helper scripts",
-            names=["MULTIREPLACE_SCRIPT", "MYAUDIT_SCRIPT", "MYDIFF_SCRIPT",
-                   "PRINTALL_SCRIPT", "SETUP_CARTOPY_SCRIPT", "TREEVIEW_SCRIPT",
-                   "UNIV_DEFS_SYS_PATH_SCRIPT"],
-            summary="Multi-KB Python script source strings shipped as importable constants.",
-        )],
+        section_note=(
+            "The five standalone command-line programs that used to live here "
+            "(`PRINTALL_SCRIPT`, `MYDIFF_SCRIPT`, `MYAUDIT_SCRIPT`, "
+            "`MULTIREPLACE_SCRIPT`, `TREEVIEW_SCRIPT`) moved to "
+            "[killett/utilities](https://github.com/killett/utilities) in 0.4.0; "
+            "`UNIV_DEFS_SYS_PATH_SCRIPT` was deleted."
+        ),
     ),
     "hosts": ModuleRenderRule(
         condense=[CondenseGroup(
@@ -581,7 +581,7 @@ def _render_toc(groups: list[tuple[int, str, list[SymbolInfo], list[tuple["Conde
 
 HEADER = """# emmykit
 
-Personal Python utility kit: 184 importable functions, classes, and constants across 32 submodules
+Personal Python utility kit: 181 importable functions, classes, and constants across 32 submodules
 in 9 dependency layers (README highlights the user-facing surface — internal punctuation, frozenset
 aliases, probe-target lists, and translation tables are referenced by section rather than enumerated).
 Base install is stdlib-only; heavier helpers
@@ -614,6 +614,67 @@ print(ek.human_bytesize(1024**3))        # "1.0 GiB"
 ts = ek.parse_datetime("2026-06-06T12:34:56Z")
 print(ek.my_capitalize("hello world"))   # "Hello world"
 ```
+
+## Teaching the JSON round trip about your own types
+
+`to_jsonable` / `from_jsonable` know a fixed set of types (`Path`, `set`,
+`datetime`, `Decimal`, `Enum`, compiled regexes, …). Anything else falls through
+to `str(obj)`, which fails *silently*: the file reloads holding a repr string
+where an object should be, and membership tests quietly degrade to substring
+matching. Register your types instead — `emmykit` never has to import your
+package.
+
+```python
+import emmykit as ek
+
+class Duration:
+    def __init__(self, seconds: int) -> None:
+        self.seconds = seconds
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Duration) and other.seconds == self.seconds
+
+ek.register_json_type(
+    Duration,
+    lambda o: {"seconds": o.seconds},          # -> payload
+    tag="duration",                            # -> written as "__type__"
+    decode=lambda p: Duration(p["seconds"]),   # payload -> object
+)
+
+blob = ek.to_jsonable({"limit": Duration(90)})
+# {"limit": {"__type__": "duration", "seconds": 90}}
+ek.from_jsonable(blob) == {"limit": Duration(90)}   # True
+```
+
+This also reaches `save_options_to_json` / `load_options_from_json`, which call
+the converters internally.
+
+- **Dispatch is by `isinstance`**, so subclasses are covered. When two
+  registrations match, the more specific class wins; unrelated ties go to the
+  most recently registered.
+- **Registrations beat the built-ins.** A registered handler is consulted before
+  every built-in encoder and before the `str()` fallback.
+- **Payloads are converted too.** The mapping your encoder returns is passed back
+  through the converter, so it may contain `Path`, `set`, `datetime`, or another
+  registered type. The recursion guard stays in effect across that call.
+- **`roundtrip=False`** returns the bare payload with no `__type__` key.
+- **Encode-only registration** — omit *both* `tag` and `decode` (supplying one
+  without the other is an error). The object is serialized through its encoder
+  but never tagged, in either `roundtrip` mode, and reloads as a plain `dict`:
+
+  ```python
+  ek.register_json_type(LiveIndex, lambda o: {"probed": sorted(o.names), "offline": o.offline})
+  ```
+
+  This is the honest choice for an object that can be *described* faithfully but
+  not *rebuilt* faithfully — one whose contents came from probing a live
+  interpreter or a live HTTP client, where a reconstructed copy would answer
+  differently while looking identical. A readable snapshot plus a plain `dict` on
+  reload beats a decoder that fabricates a plausible-but-wrong object.
+- **Tags are exclusive.** Reusing a registered tag or class raises unless you
+  pass `replace=True`; the built-in tags in `BUILTIN_JSON_TAGS` (`path`, `set`,
+  `datetime`, `recursion`, …) are rejected outright. `unregister_json_type(cls)`
+  or `unregister_json_type("tag")` removes a handler again — useful in test
+  teardown.
 
 """
 

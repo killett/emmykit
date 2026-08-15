@@ -68,8 +68,9 @@ emmykit/src/emmykit/
 │   │                             # _ARCHIVE_EXTENSIONS_1..4, _ARCHIVE_CATEGORIES,
 │   │                             # _ALL_CATEGORIES, TEXT_ENCODINGS, TEXT_ENCODINGS_SET
 │   ├── net_targets.py            # IPV4_TARGETS, IPV6_TARGETS, HTTP_PROBES, DNS_TEST_NAMES
-│   └── embedded_scripts.py       # MYDIFF/MYAUDIT/MULTIREPLACE/PRINTALL/TREEVIEW/
-│                                 # SETUP_CARTOPY/UNIV_DEFS_SYS_PATH_SCRIPT strings
+│   └── embedded_scripts.py       # SETUP_CARTOPY_SCRIPT string (the five CLI-program
+│                                 # strings moved to killett/utilities in 0.4.0;
+│                                 # UNIV_DEFS_SYS_PATH_SCRIPT was deleted)
 │
 ├── L1 — leaf utilities ─────────────────────────────────────────────
 │   ├── _version.py               # __version__, PY_VERSION
