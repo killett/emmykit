@@ -365,10 +365,6 @@
     "kind": "function",
     "signature": "(force_wtfismyip: 'bool' = False) -> 'str | None'"
   },
-  "detect_shell": {
-    "kind": "function",
-    "signature": "(options: 'Options') -> 'None'"
-  },
   "diff_and_confirm": {
     "kind": "function",
     "signature": "(orig_text: 'str', changed_text: 'str', path: 'str | os.PathLike[str]', label: 'str' = '', skip_compile: 'bool' = False, diff_choice: 'int' = 1, changed_color: 'str' = '\\x1b[94m', deleted_color: 'str' = '\\x1b[91m', added_color: 'str' = '\\x1b[93m', the_fix: 'str' = '', description: 'str' = '') -> 'bool'"
@@ -432,10 +428,6 @@
     "kind": "function",
     "signature": "(text: 'str', sep: 'str' = '_', max_length: 'int | None' = None) -> 'str'"
   },
-  "find_additional_alias_files": {
-    "kind": "function",
-    "signature": "(options: 'Options') -> 'None'"
-  },
   "find_ffmpeg": {
     "kind": "function",
     "signature": "() -> 'str | None'"
@@ -443,10 +435,6 @@
   "find_preferred_python_version": {
     "kind": "function",
     "signature": "() -> 'str | None'"
-  },
-  "find_shell_rc_file": {
-    "kind": "function",
-    "signature": "(options: 'Options') -> 'None'"
   },
   "fix_mojibake": {
     "kind": "function",

@@ -189,10 +189,7 @@ from emmykit.hosts import (
 from emmykit.network import CheckResult, is_internet_available
 from emmykit.python_env import (
     check_python_version,
-    detect_shell,
-    find_additional_alias_files,
     find_preferred_python_version,
-    find_shell_rc_file,
 )
 from emmykit.files import (
     calculate_checksum,
@@ -366,7 +363,6 @@ __all__ = [
     "decode_cp1252",
     "decode_utf8",
     "detect_country",
-    "detect_shell",
     "diff_and_confirm",
     "download_file",
     "ensure_daemon_running",
@@ -383,10 +379,8 @@ __all__ = [
     "fallback_logging_config",
     "field",
     "filename_format",
-    "find_additional_alias_files",
     "find_ffmpeg",
     "find_preferred_python_version",
-    "find_shell_rc_file",
     "fix_mojibake",
     "fix_text",
     "format_date_range",
