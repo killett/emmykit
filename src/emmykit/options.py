@@ -13,11 +13,6 @@ class Options:
         import argparse
         self.log_mode:                      int = logging.INFO
         self.home:                         Path = Path.home()  # User's home directory
-        self.shell:                  str | None = None
-        self.rc_file:               Path | None = None
-        self.alias:                  str | None = None  # The alias to use for this script, if any.
-        self.alias_command:          str | None = None  # The command to run when the alias is used.
-        self.additional_alias_files: list[Path] = []
         self.rawlog:                       bool = False
         self.bugbear_choice:         str | None = None  # set by run_flake8() if bugbear is installed.
         self.args:           argparse.Namespace = argparse.Namespace()

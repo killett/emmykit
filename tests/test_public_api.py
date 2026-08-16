@@ -66,3 +66,12 @@ def test_every_submodule_imports() -> None:
         except Exception as exc:
             failed.append(f"{sub}: {type(exc).__name__}: {exc}")
     assert not failed, "submodule import failures:\n" + "\n".join(failed)
+
+
+def test_options_has_no_shell_alias_fields() -> None:
+    """The shell/alias installer state was removed in 0.5.0."""
+    options = emmykit.Options()
+    removed = ["shell", "rc_file", "alias", "alias_command",
+               "additional_alias_files"]
+    present = [name for name in removed if hasattr(options, name)]
+    assert not present, f"removed Options fields still present: {present}"
