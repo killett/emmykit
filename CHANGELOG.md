@@ -16,6 +16,35 @@ All notable changes to `emmykit` are documented here. Format follows
   `ek.sys` confusing. After that release, callers should import these
   directly from the stdlib. (Deferred from 0.4.0.)
 
+### Removed (breaking)
+
+- `detect_shell`, `find_shell_rc_file` and `find_additional_alias_files`
+  in `emmykit.python_env`, and their re-exports from the top-level
+  namespace. They existed to support a script installing itself by
+  appending an alias to the user's shell configuration file. `veny`, the
+  only known consumer, now ships a console-script entry point
+  (`[project.scripts]`) and deleted its alias installer, which left all
+  three with no caller. `emmykit.python_env` keeps
+  `check_python_version` and `find_preferred_python_version`.
+- The five `Options` fields the group used: `shell`, `rc_file`, `alias`,
+  `alias_command` and `additional_alias_files`. `alias` and
+  `alias_command` had no reader and no writer anywhere in the library —
+  they were the payload the consumer's installer filled in. This is a
+  softer break than the function removal: `Options` has no `__slots__`,
+  so external code can still assign these attributes; only code that
+  *reads* the former `None` default without assigning first now raises
+  `AttributeError`.
+
+### Changed
+
+- Public surface: 205 → 202 names.
+- `tests/_baseline_signatures.json` updated to match.
+- Options JSON written by 0.4.0 still loads. `load_options_from_json`
+  restores attributes with a `setattr` loop over whatever keys the file
+  holds, so the five removed keys reload as dynamic attributes rather
+  than raising. Newly written files simply no longer contain them, since
+  `save_options_to_json` serializes `options.__dict__` wholesale.
+
 ## [0.4.0] - 2026-08-14
 
 Adds a public extension point to the JSON round trip, and removes the
