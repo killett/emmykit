@@ -31,11 +31,13 @@ All notable changes to `emmykit` are documented here. Format follows
   `__init__.py`'s own body never uses them and no submodule imports them
   back out of the package.
 
-  A survey of `killett/utilities` (16 scripts, 134 `ek.*` accesses
-  across 25 distinct names) and of the five pre-split scripts that
-  became it (35 `ud.*` accesses) found zero uses of any of the 24.
-  Callers should import these directly from the stdlib. (Deferred from
-  0.4.0.)
+  Surveyed on 2026-08-16 across every known consumer: `veny` (108 `ek.*`
+  accesses), `killett/utilities` (16 scripts, 134 `ek.*` accesses across
+  25 distinct names), and the five pre-split scripts that became
+  `utilities` (35 `ud.*` accesses). Zero uses of any of the 24 in 277
+  accesses — no star-import and no `from emmykit import` of a re-exported
+  name anywhere. Callers should import these directly from the stdlib.
+  (Deferred from 0.4.0.)
 
 ### Removed (breaking)
 
