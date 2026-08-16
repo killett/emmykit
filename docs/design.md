@@ -131,8 +131,7 @@ emmykit/src/emmykit/
 │   │                             # _EXECUTOR, _get_executor, _call_with_timeout,
 │   │                             # _should_use_proc_cap, _advisory_user_proc_limit_cap,
 │   │                             # _effective_workers
-│   ├── python_env.py             # check_python_version, find_preferred_python_version,
-│   │                             # detect_shell, find_shell_rc_file, find_additional_alias_files
+│   ├── python_env.py             # check_python_version, find_preferred_python_version
 │   └── files.py                  # download_file, query_free_space, verify_script,
 │                                 # filename_format, calculate_checksum
 │
@@ -194,7 +193,7 @@ emmykit/src/emmykit/
 | 5     | `text`               | Mojibake fixers + casing helpers + normalize-for-search.                                                                |
 | 5     | `hosts`              | Hostname/computer-name lookups (5 strategies) + NASA-prefix detection.                                                 |
 | 5     | `network`            | Internet-availability framework (DNS/HTTP/TCP probes, captive-portal detection, executor pool).                        |
-| 5     | `python_env`         | Python version & shell-rc-file discovery.                                                                              |
+| 5     | `python_env`         | Python interpreter discovery (preferred version + version check).                                                      |
 | 5     | `files`              | Download / free space / atomic-verify / filename helpers.                                                              |
 | 6     | `lint`               | flake8/autopep8/mypy interactive runners + `multireplace` (the regex-driven replace tool that shares lint internals).  |
 | 7     | `treeview`           | Recursive directory listing with extension grouping.                                                                    |

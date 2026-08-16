@@ -22,7 +22,7 @@
   "text": ["contains_mojibake","decode_cp1252","decode_utf8","ensure_utf8_meta","fix_mojibake","fix_text","my_capitalize","my_title_case","normalize_for_search"],
   "hosts": ["COMPUTER_NAME","IS_NASA_COMPUTER","NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES","NASA_COMPUTER_NAME_PREFIXES","analyze_computer_name_results","get_computer_name","get_hostname_os_uname","get_hostname_platform","get_hostname_socket","get_hostname_subprocess_hostname","get_hostname_subprocess_scutil"],
   "network": ["CheckResult","_EXECUTOR","_advisory_user_proc_limit_cap","_any_dns_name_resolves","_build_http_opener","_call_with_timeout","_check_once","_dns_resolve","_effective_workers","_get_executor","_http_meets_expectations","_http_probe","_http_probe_with_cap","_looks_like_captive","_run_tcp_checks_with_pool","_should_use_proc_cap","_tcp_connect","is_internet_available"],
-  "python_env": ["check_python_version","detect_shell","find_additional_alias_files","find_preferred_python_version","find_shell_rc_file"],
+  "python_env": ["check_python_version","find_preferred_python_version"],
   "files": ["calculate_checksum","download_file","filename_format","query_free_space","verify_script"],
   "lint": ["FormatChecker","_collect_files","_gather_flake8_issues","_gather_via_app","_gather_via_cli","_make_format_checker","_resolve_dir","_validate_glob_pattern","ask_and_autopep8","ask_and_replace","check_python_formatting","get_autopep8_fixable_codes","interactive_flake8","multireplace","run_flake8","run_mypy"],
   "treeview": ["treeview_new_files"],

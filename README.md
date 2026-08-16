@@ -217,12 +217,9 @@ the converters internally.
 - [`network` — Internet-connectivity probes](#m-network)
   - [`CheckResult`](#checkresult)
   - [`is_internet_available`](#is_internet_available)
-- [`python_env` — Python version + shell-environment detection](#m-python_env)
+- [`python_env` — Python interpreter discovery](#m-python_env)
   - [`check_python_version`](#check_python_version)
-  - [`detect_shell`](#detect_shell)
-  - [`find_additional_alias_files`](#find_additional_alias_files)
   - [`find_preferred_python_version`](#find_preferred_python_version)
-  - [`find_shell_rc_file`](#find_shell_rc_file)
 - [`files` — Checksums, downloads, filename formatting, free-space queries](#m-files)
   - [`calculate_checksum`](#calculate_checksum)
   - [`download_file`](#download_file)
@@ -587,7 +584,7 @@ PlotOptions() -> 'None'
 Global figure options.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/options.py#L25)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/options.py#L20)
 
 </details>
 
@@ -2619,11 +2616,11 @@ Raises:
 </details>
 
 <a id="m-python_env"></a>
-### `python_env` — Python version + shell-environment detection
+### `python_env` — Python interpreter discovery
 
 _Layer 5._  `from emmykit.python_env import …`
 
-Helpers for picking a Python interpreter, locating the user's shell rc file, and finding alias-source files.
+`find_preferred_python_version` locates the preferred interpreter on PATH; `check_python_version` confirms a given python command meets the minimum version.
 
 <a id="check_python_version"></a>
 <details>
@@ -2637,49 +2634,7 @@ check_python_version(command: 'str') -> 'bool'
 Check if the given Python command is available and has a version of PY_VERSION or higher.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L112)
-
-</details>
-
-<a id="detect_shell"></a>
-<details>
-<summary><code>detect_shell</code> — Detect the current interactive shell, falling back to parent process name if needed.</summary>
-
-```python
-detect_shell(options: 'Options') -> 'None'
-```
-
-```text
-Detect the current interactive shell, falling back to parent process name if needed.
-
-Args:
-    options: Options object to store the detected shell information.
-
-Returns:
-    None, but updates options.shell with the detected shell name.
-
-Raises:
-    None, but logs an error if the shell cannot be detected via
-    subprocess.CalledProcessError or FileNotFoundError.
-```
-
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L14)
-
-</details>
-
-<a id="find_additional_alias_files"></a>
-<details>
-<summary><code>find_additional_alias_files</code> — Find additional alias files for the shell.</summary>
-
-```python
-find_additional_alias_files(options: 'Options') -> 'None'
-```
-
-```text
-Find additional alias files for the shell.
-```
-
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L89)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L9)
 
 </details>
 
@@ -2695,34 +2650,7 @@ find_preferred_python_version() -> 'str | None'
 Find the command for the preferred version of python (stored here as PY_VERSION).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L125)
-
-</details>
-
-<a id="find_shell_rc_file"></a>
-<details>
-<summary><code>find_shell_rc_file</code> — Find the shell configuration file for the current user, store in options.rc_file.</summary>
-
-```python
-find_shell_rc_file(options: 'Options') -> 'None'
-```
-
-```text
-Find the shell configuration file for the current user, store in options.rc_file.
-For bash/zsh, also consider login‐shell files if the usual rc isn't present.
-
-Args:
-    options: Options object containing the shell type and rc_file attribute.
-
-Returns:
-    None, but updates options.rc_file with the path to the shell configuration file.
-
-Raises:
-    None, but logs an error if the shell is unsupported or if no rc file is found
-    for the specified shell.
-```
-
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L45)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L22)
 
 </details>
 
