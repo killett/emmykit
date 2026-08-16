@@ -8,13 +8,34 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ### Planned for 0.5.0 (potential breaking changes)
 
-- Drop the 24 stdlib re-exports (`os`, `sys`, `re`, `Path`, `chain`,
-  `Enum`, `dataclass`, `field`, `replace`, `annotations`, plus 11
-  `typing` names) from the public surface. They were preserved in 0.3.0
-  for byte-for-byte parity with the legacy `from univ_defs import *`
-  surface, but `import emmykit as ek` users will find `ek.os` /
-  `ek.sys` confusing. After that release, callers should import these
-  directly from the stdlib. (Deferred from 0.4.0.)
+- Drop the 24 stdlib re-exports from the public surface, taking it from
+  202 names to 178. In full: the modules `os`, `sys`, `re`, `errno` and
+  `logging`; `Path`, `chain`, `Enum`, `ThreadPoolExecutor` and
+  `annotations`; `dataclass`, `field` and `replace` from `dataclasses`;
+  the eight `typing` names `Any`, `Final`, `Literal`, `Protocol`,
+  `TextIO`, `Type`, `TypeAlias` and `overload`; and `Callable`,
+  `Iterable` and `Sequence` from `collections.abc`.
+
+  They were preserved in 0.3.0 to match `dir(univ_defs)` exactly, since
+  the legacy single-file module imported them at its top level and the
+  split had to reproduce its surface name-for-name. That parity is worth
+  less than it looked: callers reached the module as `import univ_defs
+  as ud`, never by star-import, so the re-exports were only ever
+  reachable as `ud.os` / `ek.os` — an access pattern nobody used.
+
+  Two halves with different risk. Removing the 24 `__all__` entries
+  affects `from emmykit import *` and nothing else, so it is invisible
+  to `import emmykit as ek` callers. Removing the corresponding import
+  lines from `__init__.py` is what actually makes `ek.os` raise
+  `AttributeError`; those imports serve no other purpose, as
+  `__init__.py`'s own body never uses them and no submodule imports them
+  back out of the package.
+
+  A survey of `killett/utilities` (16 scripts, 134 `ek.*` accesses
+  across 25 distinct names) and of the five pre-split scripts that
+  became it (35 `ud.*` accesses) found zero uses of any of the 24.
+  Callers should import these directly from the stdlib. (Deferred from
+  0.4.0.)
 
 ### Removed (breaking)
 
