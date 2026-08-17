@@ -413,9 +413,9 @@ __all__ = [
 ]
 
 # Remove submodule attributes that Python auto-attaches to the package when
-# `from emmykit.<sub> import ...` runs. These are not part of the public
-# surface promised by the baseline; the baseline lists only names that were
-# in `dir(univ_defs)`, and `univ_defs.py` was a flat module with no submodules.
+# `from emmykit.<sub> import ...` runs. The public surface is a curated flat
+# namespace of names, not a tree of submodules; none of the 32 submodules
+# themselves are part of it, so drop these before the package is imported.
 for _sub in (
     "_version",
     "constants",

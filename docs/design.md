@@ -58,7 +58,7 @@ Verified by graph analysis: **0 upward references, 0 same-layer cycles, 0 module
 
 ```
 emmykit/src/emmykit/
-├── __init__.py                   # public-API re-export (mirrors old `dir(univ_defs)`)
+├── __init__.py                   # public-API re-export (curated surface; no longer legacy parity)
 │
 ├── L0 — pure constants ─────────────────────────────────────────────
 │   ├── constants.py              # ANSI_*, BACKTICK/quotes/EM_DASH/HORIZONTAL_ELLIPSIS,

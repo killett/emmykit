@@ -39,13 +39,13 @@ All notable changes to `emmykit` are documented here. Format follows
   as ud`, never by star-import, so the re-exports were only ever
   reachable as `ud.os` / `ek.os` — an access pattern nobody used.
 
-  Two halves with different risk. Removing the 24 `__all__` entries
-  affects `from emmykit import *` and nothing else, so it is invisible
-  to `import emmykit as ek` callers. Removing the corresponding import
+  Two halves with different risk. Removing the corresponding import
   lines from `__init__.py` is what actually makes `ek.os` raise
   `AttributeError`; those imports serve no other purpose, as
   `__init__.py`'s own body never uses them and no submodule imports them
-  back out of the package.
+  back out of the package. Removing the 24 `__all__` entries affects
+  `from emmykit import *` and nothing else, so it is invisible to
+  `import emmykit as ek` callers.
 
   Surveyed on 2026-08-16 across every known consumer: `veny` (108 `ek.*`
   accesses), `killett/utilities` (16 scripts, 134 `ek.*` accesses across
@@ -72,6 +72,13 @@ All notable changes to `emmykit` are documented here. Format follows
   legal, which is the coupling that removal deleted.
 - `tools/generate_readme.py` no longer carries the `STDLIB_REEXPORTS`
   frozenset, which existed solely to keep the 24 out of the README.
+- `emmykit.<submodule>` attribute access (e.g. `emmykit.json_io`) is
+  intentionally unavailable: `__init__.py` strips submodule attributes
+  after import, so reach a submodule with `from emmykit.json_io import X`
+  or `import emmykit.json_io as jio` — plain `import emmykit.json_io`
+  does not leave `emmykit.json_io` resolvable afterward, since the module
+  is already in `sys.modules` and the import system skips re-attaching it
+  to the parent package.
 
 ## [0.4.0] - 2026-08-14
 

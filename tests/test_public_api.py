@@ -1,4 +1,4 @@
-"""Pin the post-split public surface to the pre-split baseline."""
+"""Pin the public surface to the checked-in baseline, exactly."""
 
 from __future__ import annotations
 
@@ -28,7 +28,11 @@ def _normalize_sig(sig: str) -> str:
 
 
 def test_public_name_set_matches_baseline() -> None:
-    """Every non-_ symbol in the legacy univ_defs surface must be re-exported."""
+    """Public names must match the baseline exactly: nothing missing, nothing extra.
+
+    The baseline is maintained deliberately, curated on its own merits — it
+    is no longer derived from the legacy `univ_defs` surface.
+    """
     expected = set(BASELINE)
     current = set(PUBLIC_NAMES)
     missing = expected - current
