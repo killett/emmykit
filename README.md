@@ -2618,7 +2618,7 @@ Raises:
 <a id="m-python_env"></a>
 ### `python_env` — Python interpreter discovery
 
-_Layer 5._  `from emmykit.python_env import …`
+_Layer 2._  `from emmykit.python_env import …`
 
 `find_preferred_python_version` locates the preferred interpreter on PATH; `check_python_version` confirms a given python command meets the minimum version.
 

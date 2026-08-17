@@ -53,7 +53,7 @@ LAYER_ORDER: list[tuple[int, str]] = [
     (5, "text"),
     (5, "hosts"),
     (5, "network"),
-    (5, "python_env"),
+    (2, "python_env"),
     (5, "files"),
     (6, "lint"),
     (7, "treeview"),

@@ -58,7 +58,7 @@ Verified by graph analysis: **0 upward references, 0 same-layer cycles, 0 module
 
 ```
 emmykit/src/emmykit/
-├── __init__.py                   # public-API re-export (mirrors old `from univ_defs import *`)
+├── __init__.py                   # public-API re-export (mirrors old `dir(univ_defs)`)
 │
 ├── L0 — pure constants ─────────────────────────────────────────────
 │   ├── constants.py              # ANSI_*, BACKTICK/quotes/EM_DASH/HORIZONTAL_ELLIPSIS,
@@ -84,12 +84,13 @@ emmykit/src/emmykit/
 │                                 # fallback_logging_config, configure_logging,
 │                                 # print_all_errors, return_method_name
 │
-├── L2 — safe filesystem ────────────────────────────────────────────
+├── L2 — safe filesystem + interpreter discovery ────────────────────
 │   ├── safe_paths.py             # _is_file, _is_dir,
 │   │                             # safe_exists, safe_is_file, safe_is_dir,
 │   │                             # safe_stat, safe_size, safe_mtime, safe_ctime,
 │   │                             # ensure_file, ensure_dir
-│   └── file_io.py                # my_atomic_write
+│   ├── file_io.py                # my_atomic_write
+│   └── python_env.py             # check_python_version, find_preferred_python_version
 │
 ├── L3 — process / critical IO ──────────────────────────────────────
 │   └── io_subprocess.py          # MyPopenResult, my_fopen, my_popen, my_critical_error
@@ -131,7 +132,6 @@ emmykit/src/emmykit/
 │   │                             # _EXECUTOR, _get_executor, _call_with_timeout,
 │   │                             # _should_use_proc_cap, _advisory_user_proc_limit_cap,
 │   │                             # _effective_workers
-│   ├── python_env.py             # check_python_version, find_preferred_python_version
 │   └── files.py                  # download_file, query_free_space, verify_script,
 │                                 # filename_format, calculate_checksum
 │
@@ -183,6 +183,7 @@ emmykit/src/emmykit/
 | 1     | `logging_utils`      | Custom log handlers + `configure_logging` + `return_method_name` — the introspective helper logs via the same handlers. |
 | 2     | `safe_paths`         | Exception-swallowing filesystem queries + `ensure_file`/`ensure_dir` which compose `safe_*`.                            |
 | 2     | `file_io`            | `my_atomic_write` — single primitive needed by both text fixers and lint workflows.                                    |
+| 2     | `python_env`         | Python interpreter discovery (preferred version + version check).                                                      |
 | 3     | `io_subprocess`      | `my_fopen` / `my_popen` / `my_critical_error` — subprocess + critical-error wrappers.                                  |
 | 4     | `prompts`            | Interactive Y/N + choose helpers.                                                                                       |
 | 4     | `introspection`      | Source inspection + AST helpers.                                                                                       |
@@ -193,7 +194,6 @@ emmykit/src/emmykit/
 | 5     | `text`               | Mojibake fixers + casing helpers + normalize-for-search.                                                                |
 | 5     | `hosts`              | Hostname/computer-name lookups (5 strategies) + NASA-prefix detection.                                                 |
 | 5     | `network`            | Internet-availability framework (DNS/HTTP/TCP probes, captive-portal detection, executor pool).                        |
-| 5     | `python_env`         | Python interpreter discovery (preferred version + version check).                                                      |
 | 5     | `files`              | Download / free space / atomic-verify / filename helpers.                                                              |
 | 6     | `lint`               | flake8/autopep8/mypy interactive runners + `multireplace` (the regex-driven replace tool that shares lint internals).  |
 | 7     | `treeview`           | Recursive directory listing with extension grouping.                                                                    |
