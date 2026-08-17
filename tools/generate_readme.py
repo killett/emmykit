@@ -28,16 +28,6 @@ SRC_DIR = ROOT / "src" / "emmykit"
 LAYOUT_PATH = ROOT / "tools" / "_layout.json"
 README_PATH = ROOT / "README.md"
 
-# Inserted at import-time into __all__ in src/emmykit/__init__.py for byte-for-byte
-# parity with the legacy `from univ_defs import *` surface. They are stdlib names,
-# not emmykit's own code. Omit them from the README.
-STDLIB_REEXPORTS: frozenset[str] = frozenset({
-    "Any", "Callable", "Enum", "Final", "Iterable", "Literal", "Path", "Protocol",
-    "Sequence", "TextIO", "ThreadPoolExecutor", "Type", "TypeAlias", "annotations",
-    "chain", "dataclass", "errno", "field", "logging", "os", "overload", "re",
-    "replace", "sys",
-})
-
 # Layer ordering (L0 -> L8) baked in so the README sections come out top-down.
 LAYER_ORDER: list[tuple[int, str]] = [
     (0, "constants"),
@@ -691,7 +681,7 @@ def build_readme() -> str:
     sys.path.insert(0, str(SRC_DIR.parent))
     import emmykit  # noqa: WPS433
 
-    public = [n for n in emmykit.__all__ if n not in STDLIB_REEXPORTS]
+    public = list(emmykit.__all__)
 
     layout = json.loads(LAYOUT_PATH.read_text())
     sym_to_mod = {s: m for m, syms in layout.items() for s in syms}
