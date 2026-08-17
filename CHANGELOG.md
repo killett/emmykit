@@ -6,8 +6,24 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ## [Unreleased]
 
-### Planned for 0.5.0 (potential breaking changes)
+### Removed (breaking)
 
+- `detect_shell`, `find_shell_rc_file` and `find_additional_alias_files`
+  in `emmykit.python_env`, and their re-exports from the top-level
+  namespace. They existed to support a script installing itself by
+  appending an alias to the user's shell configuration file. `veny`, the
+  only known consumer, now ships a console-script entry point
+  (`[project.scripts]`) and deleted its alias installer, which left all
+  three with no caller. `emmykit.python_env` keeps
+  `check_python_version` and `find_preferred_python_version`.
+- The five `Options` fields the group used: `shell`, `rc_file`, `alias`,
+  `alias_command` and `additional_alias_files`. `alias` and
+  `alias_command` had no reader and no writer anywhere in the library —
+  they were the payload the consumer's installer filled in. This is a
+  softer break than the function removal: `Options` has no `__slots__`,
+  so external code can still assign these attributes; only code that
+  *reads* the former `None` default without assigning first now raises
+  `AttributeError`.
 - Drop the 24 stdlib re-exports from the public surface, taking it from
   202 names to 178. In full: the modules `os`, `sys`, `re`, `errno` and
   `logging`; `Path`, `chain`, `Enum`, `ThreadPoolExecutor` and
@@ -37,26 +53,6 @@ All notable changes to `emmykit` are documented here. Format follows
   `utilities` (35 `ud.*` accesses). Zero uses of any of the 24 in 277
   accesses — no star-import and no `from emmykit import` of a re-exported
   name anywhere. Callers should import these directly from the stdlib.
-  (Deferred from 0.4.0.)
-
-### Removed (breaking)
-
-- `detect_shell`, `find_shell_rc_file` and `find_additional_alias_files`
-  in `emmykit.python_env`, and their re-exports from the top-level
-  namespace. They existed to support a script installing itself by
-  appending an alias to the user's shell configuration file. `veny`, the
-  only known consumer, now ships a console-script entry point
-  (`[project.scripts]`) and deleted its alias installer, which left all
-  three with no caller. `emmykit.python_env` keeps
-  `check_python_version` and `find_preferred_python_version`.
-- The five `Options` fields the group used: `shell`, `rc_file`, `alias`,
-  `alias_command` and `additional_alias_files`. `alias` and
-  `alias_command` had no reader and no writer anywhere in the library —
-  they were the payload the consumer's installer filled in. This is a
-  softer break than the function removal: `Options` has no `__slots__`,
-  so external code can still assign these attributes; only code that
-  *reads* the former `None` default without assigning first now raises
-  `AttributeError`.
 
 ### Changed
 
@@ -67,6 +63,15 @@ All notable changes to `emmykit` are documented here. Format follows
   holds, so the five removed keys reload as dynamic attributes rather
   than raising. Newly written files simply no longer contain them, since
   `save_options_to_json` serializes `options.__dict__` wholesale.
+- Public surface: 202 → 178 names. Combined with the shell/alias removal
+  above, 0.5.0 takes the package from 205 to 178 — a deliberate 13%
+  reduction, not a packaging accident.
+- `python_env` is now documented at layer 2 rather than layer 5. After
+  the shell/alias removal its only intra-package import is
+  `emmykit._version` (L1). The stale number implied an L4 dependency was
+  legal, which is the coupling that removal deleted.
+- `tools/generate_readme.py` no longer carries the `STDLIB_REEXPORTS`
+  frozenset, which existed solely to keep the 24 out of the README.
 
 ## [0.4.0] - 2026-08-14
 
