@@ -75,3 +75,15 @@ def test_options_has_no_shell_alias_fields() -> None:
                "additional_alias_files"]
     present = [name for name in removed if hasattr(options, name)]
     assert not present, f"removed Options fields still present: {present}"
+
+
+def test_no_stdlib_reexports() -> None:
+    """The stdlib re-exports were removed from the public surface in 0.5.0."""
+    removed = [
+        "Any", "Callable", "Enum", "Final", "Iterable", "Literal", "Path",
+        "Protocol", "Sequence", "TextIO", "ThreadPoolExecutor", "Type",
+        "TypeAlias", "annotations", "chain", "dataclass", "errno", "field",
+        "logging", "os", "overload", "re", "replace", "sys",
+    ]
+    present = [name for name in removed if hasattr(emmykit, name)]
+    assert not present, f"stdlib re-exports still on the surface: {present}"

@@ -39,10 +39,6 @@
     "kind": "type",
     "signature": "(*, min_precision: 'int' = 0, max_precision: 'int' = 4, format_levels: \"'list[str] | None'\" = None) -> 'None'"
   },
-  "Any": {
-    "kind": "_AnyMeta",
-    "signature": "(*args, **kwargs)"
-  },
   "AnyDateTimeType": {
     "kind": "str"
   },
@@ -64,10 +60,6 @@
   "COMPUTER_NAME": {
     "kind": "str"
   },
-  "Callable": {
-    "kind": "ABCMeta",
-    "signature": "()"
-  },
   "CheckResult": {
     "kind": "type",
     "signature": "(tcp_ok: 'bool', dns_ok: 'bool', http_ok: 'bool', captive_detected: 'bool') -> None"
@@ -83,14 +75,6 @@
   },
   "EM_DASH": {
     "kind": "str"
-  },
-  "Enum": {
-    "kind": "EnumType",
-    "signature": "(new_class_name, /, names, *, module=None, qualname=None, type=None, start=1, boundary=None)"
-  },
-  "Final": {
-    "kind": "_SpecialForm",
-    "signature": "(*args, **kwds)"
   },
   "FlushingStreamHandler": {
     "kind": "type",
@@ -137,10 +121,6 @@
     "kind": "_ProtocolMeta",
     "signature": "(*args, **kwargs)"
   },
-  "Iterable": {
-    "kind": "ABCMeta",
-    "signature": "()"
-  },
   "LDQUOTE": {
     "kind": "str"
   },
@@ -154,10 +134,6 @@
   },
   "LSQUOTE": {
     "kind": "str"
-  },
-  "Literal": {
-    "kind": "_TypedCacheSpecialForm",
-    "signature": "(*args, **kwds)"
   },
   "MaxLevelFilter": {
     "kind": "type",
@@ -200,20 +176,12 @@
   "PY_VERSION": {
     "kind": "float"
   },
-  "Path": {
-    "kind": "type",
-    "signature": "(*args, **kwargs)"
-  },
   "PlotOptions": {
     "kind": "type",
     "signature": "() -> 'None'"
   },
   "Precision": {
     "kind": "type",
-    "signature": "()"
-  },
-  "Protocol": {
-    "kind": "_ProtocolMeta",
     "signature": "()"
   },
   "QUOTES_TO_DELETE": {
@@ -245,10 +213,6 @@
     "kind": "EnumType",
     "signature": "(*values)"
   },
-  "Sequence": {
-    "kind": "ABCMeta",
-    "signature": "()"
-  },
   "StrategyFn": {
     "kind": "_CallableGenericAlias",
     "signature": "(*args, **kwargs)"
@@ -268,22 +232,6 @@
   "TRANSLATION_TABLE": {
     "kind": "dict"
   },
-  "TextIO": {
-    "kind": "type",
-    "signature": "()"
-  },
-  "ThreadPoolExecutor": {
-    "kind": "type",
-    "signature": "(max_workers=None, thread_name_prefix='', initializer=None, initargs=())"
-  },
-  "Type": {
-    "kind": "_SpecialGenericAlias",
-    "signature": "(*args, **kwargs)"
-  },
-  "TypeAlias": {
-    "kind": "_SpecialForm",
-    "signature": "(*args, **kwds)"
-  },
   "VIDEO_EXTENSIONS": {
     "kind": "tuple"
   },
@@ -298,9 +246,6 @@
     "kind": "function",
     "signature": "(results: 'dict[str, str]', rawlog: 'bool' = False) -> 'str'"
   },
-  "annotations": {
-    "kind": "_Feature"
-  },
   "ask_and_autopep8": {
     "kind": "function",
     "signature": "(path: 'str | os.PathLike[str]', code: 'str', description: 'str' = '', diff_choice: 'int' = 1, changed_color: 'str' = '\\x1b[94m', deleted_color: 'str' = '\\x1b[91m', added_color: 'str' = '\\x1b[93m') -> 'bool'"
@@ -312,10 +257,6 @@
   "calculate_checksum": {
     "kind": "function",
     "signature": "(file_path: 'str | os.PathLike[str]') -> 'str'"
-  },
-  "chain": {
-    "kind": "type",
-    "signature": "(*iterables)"
   },
   "check_if_command_exists": {
     "kind": "function",
@@ -344,10 +285,6 @@
   "contains_mojibake": {
     "kind": "function",
     "signature": "(text: 'str') -> 'bool'"
-  },
-  "dataclass": {
-    "kind": "function",
-    "signature": "(cls=None, /, *, init=True, repr=True, eq=True, order=False, unsafe_hash=False, frozen=False, match_args=True, kw_only=False, slots=False, weakref_slot=False)"
   },
   "decimal_year_to_datetime": {
     "kind": "function",
@@ -405,9 +342,6 @@
     "kind": "function",
     "signature": "(html: 'str') -> 'str'"
   },
-  "errno": {
-    "kind": "module"
-  },
   "extract_and_concatenate_segments": {
     "kind": "function",
     "signature": "(input_file: 'str | os.PathLike[str]', timestamps: 'list', output_name_or_path: 'str | os.PathLike[str]', subtitle_file: 'str | os.PathLike[str]') -> 'None'"
@@ -419,10 +353,6 @@
   "fallback_logging_config": {
     "kind": "function",
     "signature": "(log_level: 'int | str' = 20, rawlog: 'bool' = False) -> 'None'"
-  },
-  "field": {
-    "kind": "function",
-    "signature": "(*, default=<dataclasses._MISSING_TYPE object at 0x7d827d61cd70>, default_factory=<dataclasses._MISSING_TYPE object at 0x7d827d61cd70>, init=True, repr=True, hash=None, compare=True, metadata=None, kw_only=<dataclasses._MISSING_TYPE object at 0x7d827d61cd70>)"
   },
   "filename_format": {
     "kind": "function",
@@ -536,9 +466,6 @@
     "kind": "function",
     "signature": "(options: 'Options', json_file: 'str | os.PathLike[str]') -> 'Options | None'"
   },
-  "logging": {
-    "kind": "module"
-  },
   "multireplace": {
     "kind": "function",
     "signature": "(options: 'Options', verbose: 'bool' = True) -> 'None'"
@@ -603,13 +530,6 @@
     "kind": "function",
     "signature": "(the_command: 'str', close_after: 'bool' = False, maximize_window: 'bool' = False) -> 'None'"
   },
-  "os": {
-    "kind": "module"
-  },
-  "overload": {
-    "kind": "function",
-    "signature": "(func)"
-  },
   "parse_datetime": {
     "kind": "function",
     "signature": "(given_date: 'AnyDateTimeType', timezone: 'str | dt.tzinfo | None' = None, format_str: 'str | None' = None, should_convert: 'bool | None' = None) -> 'dt.datetime'"
@@ -634,9 +554,6 @@
     "kind": "function",
     "signature": "(path: 'str | os.PathLike[str]') -> 'int'"
   },
-  "re": {
-    "kind": "module"
-  },
   "register_json_type": {
     "kind": "function",
     "signature": "(cls: 'type', encode: 'Callable[[Any], Mapping[str, Any]]', *, tag: 'str | None' = None, decode: 'Callable[[dict[str, Any]], Any] | None' = None, replace: 'bool' = False) -> 'None'"
@@ -648,10 +565,6 @@
   "remove_prefix_from_html_title": {
     "kind": "function",
     "signature": "(filepath: 'str | os.PathLike[str]', prefix: 'str') -> 'bool'"
-  },
-  "replace": {
-    "kind": "function",
-    "signature": "(obj, /, **changes)"
   },
   "return_method_name": {
     "kind": "function",
@@ -724,9 +637,6 @@
   "start_only_one_instance": {
     "kind": "function",
     "signature": "(process_name: 'str') -> 'None'"
-  },
-  "sys": {
-    "kind": "module"
   },
   "to_jsonable": {
     "kind": "function",

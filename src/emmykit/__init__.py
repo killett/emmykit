@@ -1,30 +1,5 @@
 """emmykit — personal Python utilities, layered package extracted from univ_defs.py."""
 
-from __future__ import annotations
-
-# === Stdlib re-exports (preserved from univ_defs.py's public surface) ===
-import errno
-import logging
-import os
-import re
-import sys
-from collections.abc import Callable, Iterable, Sequence
-from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, field, replace
-from enum import Enum
-from itertools import chain
-from pathlib import Path
-from typing import (
-    Any,
-    Final,
-    Literal,
-    Protocol,
-    TextIO,
-    Type,
-    TypeAlias,
-    overload,
-)
-
 # === Layer 0 ===
 from emmykit.constants import (
     ANSI_CYAN,
@@ -270,7 +245,6 @@ __all__ = [
     "AUDIO_EXTENSIONS",
     "AUDIO_EXTENSIONS_SET",
     "AdaptiveDateFormatter",
-    "Any",
     "AnyDateTimeType",
     "BACKTICK",
     "BOOK_EXTENSIONS",
@@ -278,14 +252,11 @@ __all__ = [
     "BUILTIN_JSON_TAGS",
     "CHARACTERS_TO_SPACE",
     "COMPUTER_NAME",
-    "Callable",
     "CheckResult",
     "DEFAULT_ENCODING",
     "DEFAULT_EXCLUDE_DIRS",
     "DNS_TEST_NAMES",
     "EM_DASH",
-    "Enum",
-    "Final",
     "FlushingStreamHandler",
     "FormatChecker",
     "HORIZONTAL_ELLIPSIS",
@@ -300,12 +271,10 @@ __all__ = [
     "IPV6_TARGETS",
     "IS_NASA_COMPUTER",
     "InflectEngine",
-    "Iterable",
     "LDQUOTE",
     "LLMConfig",
     "LLMs",
     "LSQUOTE",
-    "Literal",
     "MaxLevelFilter",
     "MemoryHandler",
     "ModelInfo",
@@ -318,10 +287,8 @@ __all__ = [
     "PYTHON_EXTENSIONS",
     "PYTHON_EXTENSIONS_SET",
     "PY_VERSION",
-    "Path",
     "PlotOptions",
     "Precision",
-    "Protocol",
     "QUOTES_TO_DELETE",
     "RDQUOTE",
     "REPLACE_WITH_SPACE",
@@ -331,26 +298,19 @@ __all__ = [
     "SUBTITLE_EXTENSIONS_SET",
     "SelectionContext",
     "SelectionStrategy",
-    "Sequence",
     "StrategyFn",
     "TEXT_ENCODINGS",
     "TEXT_ENCODINGS_SET",
     "TEXT_EXTENSIONS",
     "TEXT_EXTENSIONS_SET",
     "TRANSLATION_TABLE",
-    "TextIO",
-    "ThreadPoolExecutor",
-    "Type",
-    "TypeAlias",
     "VIDEO_EXTENSIONS",
     "VIDEO_EXTENSIONS_SET",
     "adaptive_date_labels",
     "analyze_computer_name_results",
-    "annotations",
     "ask_and_autopep8",
     "ask_and_replace",
     "calculate_checksum",
-    "chain",
     "check_if_command_exists",
     "check_python_formatting",
     "check_python_version",
@@ -358,7 +318,6 @@ __all__ = [
     "compile_code",
     "configure_logging",
     "contains_mojibake",
-    "dataclass",
     "decimal_year_to_datetime",
     "decode_cp1252",
     "decode_utf8",
@@ -373,11 +332,9 @@ __all__ = [
     "ensure_image_built",
     "ensure_path",
     "ensure_utf8_meta",
-    "errno",
     "extract_and_concatenate_segments",
     "extract_timestamp",
     "fallback_logging_config",
-    "field",
     "filename_format",
     "find_ffmpeg",
     "find_preferred_python_version",
@@ -406,7 +363,6 @@ __all__ = [
     "kill_process",
     "load_ast_var",
     "load_options_from_json",
-    "logging",
     "multireplace",
     "my_atomic_write",
     "my_capitalize",
@@ -423,19 +379,15 @@ __all__ = [
     "open_in_vlc",
     "open_playlist_in_VLC",
     "open_terminal_and_run_command",
-    "os",
-    "overload",
     "parse_datetime",
     "parse_timezone",
     "print_all_errors",
     "prompt_then_choose",
     "prompt_then_confirm",
     "query_free_space",
-    "re",
     "register_json_type",
     "remove_prefix_from_filename",
     "remove_prefix_from_html_title",
-    "replace",
     "return_method_name",
     "round_out",
     "run_flake8",
@@ -454,7 +406,6 @@ __all__ = [
     "set_system_volume",
     "show_function_source",
     "start_only_one_instance",
-    "sys",
     "to_jsonable",
     "treeview_new_files",
     "unregister_json_type",
