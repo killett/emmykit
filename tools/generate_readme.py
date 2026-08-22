@@ -34,6 +34,7 @@ LAYER_ORDER: list[tuple[int, str]] = [
     (0, "extensions"),
     (0, "net_targets"),
     (0, "embedded_scripts"),
+    (0, "palette"),
     (1, "_version"),
     (1, "options"),
     (1, "text_constants"),
@@ -77,6 +78,10 @@ MODULE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
     "embedded_scripts": ("Pre-packaged helper-script source-strings",
                          "Python script literals shipped as importable strings — used by Emmy's external automation "
                          "to drop drop-in helpers into other projects."),
+    "palette":          ("Colourblind-safe figure palettes and WCAG contrast measurement",
+                         "Frozen `Palette` value objects — an Okabe-Ito-derived qualitative series plus background / "
+                         "foreground / grid roles, every colour an explicit hex string — looked up by name and handed "
+                         "to matplotlib as an rcParams mapping. Stdlib-only except for `Palette.rc_params`."),
     "_version":         ("Package and Python version constants",
                          "Single source of truth for `emmykit.__version__` (read by hatchling at build-time) and the supported `PY_VERSION` floor."),
     "options":          ("Options dataclasses for configuration",

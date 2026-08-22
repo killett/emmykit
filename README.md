@@ -118,6 +118,12 @@ the converters internally.
   - [`VIDEO_EXTENSIONS`](#video_extensions)
 - [`embedded_scripts` — Pre-packaged helper-script source-strings](#m-embedded_scripts)
   - [`SETUP_CARTOPY_SCRIPT`](#setup_cartopy_script)
+- [`palette` — Colourblind-safe figure palettes and WCAG contrast measurement](#m-palette)
+  - [`contrast_ratio`](#contrast_ratio)
+  - [`MIN_CONTRAST_RATIO`](#min_contrast_ratio)
+  - [`Palette`](#palette)
+  - [`palette`](#palette)
+  - [`palette_names`](#palette_names)
 - [`_version` — Package and Python version constants](#m-_version)
   - [`PY_VERSION`](#py_version)
 - [`options` — Options dataclasses for configuration](#m-options)
@@ -530,6 +536,139 @@ SETUP_CARTOPY_SCRIPT: str = '<532-char Python script source, 16 lines>'
 
 </details>
 
+<a id="m-palette"></a>
+### `palette` — Colourblind-safe figure palettes and WCAG contrast measurement
+
+_Layer 0._  `from emmykit.palette import …`
+
+Frozen `Palette` value objects — an Okabe-Ito-derived qualitative series plus background / foreground / grid roles, every colour an explicit hex string — looked up by name and handed to matplotlib as an rcParams mapping. Stdlib-only except for `Palette.rc_params`.
+
+<a id="contrast_ratio"></a>
+<details>
+<summary><code>contrast_ratio</code> — Return the WCAG contrast ratio between two colours.</summary>
+
+```python
+contrast_ratio(color: 'str', background: 'str') -> 'float'
+```
+
+```text
+Return the WCAG contrast ratio between two colours.
+
+The ratio is symmetric and ranges from ``1.0`` (identical colours) to
+``21.0`` (black against white). WCAG 2.1 AA asks for at least ``4.5`` for
+normal text; `MIN_CONTRAST_RATIO` carries that threshold.
+
+Args:
+    color: Foreground colour as a ``#RGB`` or ``#RRGGBB`` string.
+    background: Background colour, same format.
+
+Returns:
+    The contrast ratio, ``(lighter + 0.05) / (darker + 0.05)``.
+
+Raises:
+    ValueError: If either argument is not a hex colour string.
+
+Example:
+    >>> round(contrast_ratio("#FFFFFF", "#000000"), 1)
+    21.0
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/palette.py#L128)
+
+</details>
+
+<a id="min_contrast_ratio"></a>
+<details>
+<summary><code>MIN_CONTRAST_RATIO</code> — Final[float]</summary>
+
+```python
+MIN_CONTRAST_RATIO: Final[float] = 4.5
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/palette.py#L36)
+
+</details>
+
+<a id="palette"></a>
+<details>
+<summary><code>Palette</code> — An immutable figure theme: qualitative series colours plus semantic roles.</summary>
+
+```python
+Palette(name: 'str', series: 'tuple[str, ...]', background: 'str', foreground: 'str', grid: 'str') -> None
+```
+
+```text
+An immutable figure theme: qualitative series colours plus semantic roles.
+
+Attributes:
+    name: The key this palette is registered under.
+    series: Ordered qualitative colours for successive data series, as
+        uppercase ``#RRGGBB`` strings. Every one of them clears
+        `MIN_CONTRAST_RATIO` against `background`.
+    background: Figure and axes face colour.
+    foreground: Text, tick, label and spine colour.
+    grid: Grid-line colour — decoration, deliberately lower contrast than
+        `foreground`.
+```
+
+**Fields:** `name`, `series`, `background`, `foreground`, `grid`.
+
+**Public methods:** `rc_params`.
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/palette.py#L210)
+
+</details>
+
+<a id="palette"></a>
+<details>
+<summary><code>palette</code> — Look up a registered palette by name.</summary>
+
+```python
+palette(name: 'str') -> 'Palette'
+```
+
+```text
+Look up a registered palette by name.
+
+Args:
+    name: A registered palette name — see `palette_names`.
+
+Returns:
+    The shared, frozen `Palette` for that name. Repeated lookups return
+    the same instance; it cannot be mutated, so sharing is safe.
+
+Raises:
+    ValueError: If `name` is not registered. The message lists the names
+        that are.
+
+Example:
+    >>> palette("dark").background
+    '#000000'
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/palette.py#L308)
+
+</details>
+
+<a id="palette_names"></a>
+<details>
+<summary><code>palette_names</code> — Return the names of every registered palette, in registration order.</summary>
+
+```python
+palette_names() -> 'tuple[str, ...]'
+```
+
+```text
+Return the names of every registered palette, in registration order.
+
+Returns:
+    The registry keys, suitable for offering to a user as choices.
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/palette.py#L299)
+
+</details>
+
 <a id="m-_version"></a>
 ### `_version` — Package and Python version constants
 
@@ -568,7 +707,7 @@ Options() -> 'None'
 Class that has all global options in one place.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/options.py#L8)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/options.py#L19)
 
 </details>
 
@@ -582,9 +721,15 @@ PlotOptions() -> 'None'
 
 ```text
 Global figure options.
+
+Colour lives in `emmykit.palette` and is reached through the `palette`
+attribute; the `colors` / `lightcolors` / `background_color` / `text_color`
+attributes remain as read-only views onto it, so existing callers are
+unaffected. Figure geometry (`myfigsize`, `fsize`, `dpi_choice`) and the
+marker/linestyle cycles stay here — they are not colour.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/options.py#L20)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/options.py#L31)
 
 </details>
 

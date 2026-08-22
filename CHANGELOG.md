@@ -6,6 +6,48 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- `emmykit.palette` (layer 0, stdlib-only): `Palette`, a frozen value
+  object holding an ordered tuple of qualitative `series` colours plus
+  the `background` / `foreground` / `grid` roles a figure needs;
+  `palette(name)` and `palette_names()` over a registry that ships
+  `"light"` and `"dark"`; `contrast_ratio(color, background)` returning
+  the WCAG 2.1 ratio; and `MIN_CONTRAST_RATIO` (4.5), the threshold every
+  series colour clears against its own palette's background. Colour is
+  now usable without constructing an `Options` — the reason for the
+  extraction. Requesting an unregistered name raises `ValueError` listing
+  the names that are registered.
+- `Palette.rc_params()` returns a matplotlib rcParams mapping — the
+  colour cycle plus figure/axes/savefig face colours, text/label/edge and
+  tick colours, and the grid colour — so
+  `with plt.rc_context(palette.rc_params()):` themes every artist without
+  the caller naming a colour. This is the only matplotlib-aware code in
+  the module and it imports lazily; the rest is stdlib, and matplotlib
+  stays an optional dependency.
+- Series colours derive from the Okabe-Ito colourblind-safe set, minus
+  black (a role here, and invisible on the dark palette) and minus yellow
+  (`#F0E442`, which converges on the darkened orange once both are forced
+  to clear 4.5:1 against white). Per-theme readability comes from
+  shifting luminance toward or away from the background only as far as
+  the threshold requires, not from picking replacements by eye.
+
+### Fixed
+
+- `PlotOptions.lightcolors` ended with `"lightpurple"`, which is in
+  neither matplotlib's CSS4 nor its base colour table, so
+  `matplotlib.colors.to_rgb` raised `ValueError` for any caller reaching
+  the fifth entry. Every colour is now an explicit `#RRGGBB` string, and
+  a test resolves every colour of every registered palette through
+  `to_rgb`.
+- Dark mode left unreadable colours in `PlotOptions.colors`. The old
+  `_apply_theme` swapped only `black` → `darkgrey`, leaving `purple`
+  (2.2:1 on black), `blue` (2.4:1) and `green` (4.1:1) in place, and
+  relied on the caller remembering to reach for `lightcolors` instead —
+  which nothing enforced and forgetting was silent. The dark palette's
+  six series colours now measure 4.5:1 to 9.3:1 against its own
+  background, asserted in a test.
+
 ### Removed (breaking)
 
 - `detect_shell`, `find_shell_rc_file` and `find_additional_alias_files`
@@ -72,13 +114,38 @@ All notable changes to `emmykit` are documented here. Format follows
   legal, which is the coupling that removal deleted.
 - `tools/generate_readme.py` no longer carries the `STDLIB_REEXPORTS`
   frozenset, which existed solely to keep the 24 out of the README.
+- Public surface: 178 → 183 names, the five `emmykit.palette` exports.
+- `PlotOptions` now holds a `Palette` (new `palette` attribute) and
+  exposes `colors`, `lightcolors`, `background_color` and `text_color` as
+  read-only properties delegating to it. Readers are unaffected; the
+  values change (hex strings from the Okabe-Ito-derived series rather
+  than matplotlib colour names) and *writers* now raise `AttributeError`,
+  since a settable `colors` would let a caller reintroduce exactly the
+  unreadable dark-mode list this release removed. Set `dark_mode` to
+  change theme, or use `emmykit.palette` directly.
+- `PlotOptions._base_colors`, `._base_lightcolors` and `._apply_theme()`
+  are gone. Private, but `_apply_theme` was documented as the hook a
+  child class inherited through `dark_mode`; that responsibility now sits
+  in the `dark_mode` setter, which swaps the whole palette in one step.
+- `PlotOptions.lightcolors` is now derived rather than hand-maintained:
+  each entry is its `colors` counterpart blended half-way toward the
+  background, so the two lists correspond positionally at any length.
+  Under the old lists that correspondence was coincidental.
+- `myfigsize`, `fsize`, `dpi_choice`, `markers` and `linestyles` stay on
+  `PlotOptions` unchanged — geometry and dash/marker cycles are not
+  colour, and a caller with its own geometry conventions should be able
+  to take the palette without inheriting a figure size.
 - `emmykit.<submodule>` attribute access (e.g. `emmykit.json_io`) is
   intentionally unavailable: `__init__.py` strips submodule attributes
   after import, so reach a submodule with `from emmykit.json_io import X`
   or `import emmykit.json_io as jio` — plain `import emmykit.json_io`
   does not leave `emmykit.json_io` resolvable afterward, since the module
   is already in `sys.modules` and the import system skips re-attaching it
-  to the parent package.
+  to the parent package. `palette` is the one name where module and
+  function collide: `emmykit.palette` is the lookup *function*, and the
+  scrub-list deliberately omits the name so that binding survives.
+  `from emmykit.palette import palette` — the documented form — resolves
+  through `sys.modules` and is unaffected.
 
 ## [0.4.0] - 2026-08-14
 

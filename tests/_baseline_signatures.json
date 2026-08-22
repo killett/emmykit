@@ -135,6 +135,9 @@
   "LSQUOTE": {
     "kind": "str"
   },
+  "MIN_CONTRAST_RATIO": {
+    "kind": "float"
+  },
   "MaxLevelFilter": {
     "kind": "type",
     "signature": "(max_level: 'int') -> 'None'"
@@ -175,6 +178,10 @@
   },
   "PY_VERSION": {
     "kind": "float"
+  },
+  "Palette": {
+    "kind": "type",
+    "signature": "(name: 'str', series: 'tuple[str, ...]', background: 'str', foreground: 'str', grid: 'str') -> None"
   },
   "PlotOptions": {
     "kind": "type",
@@ -285,6 +292,10 @@
   "contains_mojibake": {
     "kind": "function",
     "signature": "(text: 'str') -> 'bool'"
+  },
+  "contrast_ratio": {
+    "kind": "function",
+    "signature": "(color: 'str', background: 'str') -> 'float'"
   },
   "decimal_year_to_datetime": {
     "kind": "function",
@@ -529,6 +540,14 @@
   "open_terminal_and_run_command": {
     "kind": "function",
     "signature": "(the_command: 'str', close_after: 'bool' = False, maximize_window: 'bool' = False) -> 'None'"
+  },
+  "palette": {
+    "kind": "function",
+    "signature": "(name: 'str') -> 'Palette'"
+  },
+  "palette_names": {
+    "kind": "function",
+    "signature": "() -> 'tuple[str, ...]'"
   },
   "parse_datetime": {
     "kind": "function",

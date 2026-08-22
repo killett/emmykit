@@ -52,6 +52,17 @@ from emmykit.net_targets import (
     IPV4_TARGETS,
     IPV6_TARGETS,
 )
+# `palette` is deliberately absent from the submodule scrub-list at the bottom
+# of this file: the name is rebound here to the lookup *function*, and popping
+# it would take the function with it. `from emmykit.palette import palette`
+# keeps working either way, since that form resolves through sys.modules.
+from emmykit.palette import (
+    MIN_CONTRAST_RATIO,
+    Palette,
+    contrast_ratio,
+    palette,
+    palette_names,
+)
 
 # === Layer 1 ===
 from emmykit._version import PY_VERSION, __version__
@@ -275,6 +286,7 @@ __all__ = [
     "LLMConfig",
     "LLMs",
     "LSQUOTE",
+    "MIN_CONTRAST_RATIO",
     "MaxLevelFilter",
     "MemoryHandler",
     "ModelInfo",
@@ -287,6 +299,7 @@ __all__ = [
     "PYTHON_EXTENSIONS",
     "PYTHON_EXTENSIONS_SET",
     "PY_VERSION",
+    "Palette",
     "PlotOptions",
     "Precision",
     "QUOTES_TO_DELETE",
@@ -318,6 +331,7 @@ __all__ = [
     "compile_code",
     "configure_logging",
     "contains_mojibake",
+    "contrast_ratio",
     "decimal_year_to_datetime",
     "decode_cp1252",
     "decode_utf8",
@@ -379,6 +393,8 @@ __all__ = [
     "open_in_vlc",
     "open_playlist_in_VLC",
     "open_terminal_and_run_command",
+    "palette",
+    "palette_names",
     "parse_datetime",
     "parse_timezone",
     "print_all_errors",
