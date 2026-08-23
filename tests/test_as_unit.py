@@ -14,6 +14,7 @@ from emmykit.humanize import (
     METERS,
     WATTS,
     _resolve_as_unit,
+    choose_prefix,
     human_quantity,
 )
 
@@ -237,3 +238,59 @@ def test_as_unit_none_is_unchanged_automatic_behaviour() -> None:
     """The default path must be untouched: 0.02 m is still 20.0 mm."""
     assert human_quantity(0.02, METERS) == "20.0 mm"
     assert human_quantity(0.02, METERS, as_unit=None) == "20.0 mm"
+
+
+def test_choose_prefix_returns_the_requested_scale() -> None:
+    """An axis pinned to cm gets centi and 0.01 whatever its ticks say.
+
+    Fails if the forced path still consults the values and picks milli.
+    """
+    symbol, factor = choose_prefix([0.001, 0.002], METERS, as_unit="cm")
+    assert symbol == "c"
+    assert factor == pytest.approx(0.01)
+    assert [f"{v / factor:.1f}" for v in [0.001, 0.002]] == ["0.1", "0.2"]
+
+
+def test_choose_prefix_long_request_returns_the_long_prefix() -> None:
+    """"centimeters" gives ("centi", 0.01) so the label composes in words."""
+    assert choose_prefix([0.02], METERS, as_unit="centimeters") == ("centi", 0.01)
+
+
+def test_choose_prefix_does_not_consume_values_when_pinned() -> None:
+    """The values are irrelevant to a pinned scale, so they must not be read.
+
+    Fails if the implementation scans first and forces afterwards — this
+    generator raises the moment anything iterates it.
+    """
+    def exploding():
+        raise AssertionError("values must not be consumed when as_unit is given")
+        yield 1.0  # pragma: no cover
+
+    assert choose_prefix(exploding(), METERS, as_unit="cm") == ("c", 0.01)
+
+
+@pytest.mark.parametrize(
+    "values", [[], [0.0, 0, -0.0], [float("nan"), float("inf")]],
+    ids=["empty", "all-zero", "all-non-finite"],
+)
+def test_choose_prefix_pinned_scale_survives_degenerate_input(
+    values: list[float],
+) -> None:
+    """The cases that fall back to ("", 1.0) automatically stay pinned."""
+    assert choose_prefix(values, METERS, as_unit="cm") == ("c", 0.01)
+
+
+def test_choose_prefix_binary_request() -> None:
+    """"KiB" pins a byte axis to 1024 without a system argument."""
+    assert choose_prefix([2048.0], BYTES, as_unit="KiB") == ("Ki", 1024.0)
+
+
+def test_choose_prefix_requires_a_unit_to_parse_against() -> None:
+    """as_unit is parsed against the unit, so omitting the unit is an error."""
+    with pytest.raises(ValueError, match="as_unit needs the unit"):
+        choose_prefix([1.0], as_unit="cm")
+
+
+def test_choose_prefix_without_as_unit_is_unchanged() -> None:
+    """The automatic path must be untouched."""
+    assert choose_prefix([0.001, 0.002, 0.011], METERS) == ("m", 0.001)

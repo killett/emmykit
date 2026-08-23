@@ -309,6 +309,7 @@ def _select(table: tuple[tuple[float, str, str], ...],
 
 def choose_prefix(values: Iterable[float | int], unit: Unit | None = None, *,
                   system: str = "si", mode: str = "engineering",
+                  as_unit: str | None = None,
                   ascii_micro: bool = False) -> tuple[str, float]:
     """Pick one prefix for a whole set of values, e.g. every tick on one axis.
 
@@ -329,6 +330,11 @@ def choose_prefix(values: Iterable[float | int], unit: Unit | None = None, *,
         system:      "si" for powers of 1000, "iec" for powers of 1024.
         mode:        "engineering" for powers of 1000 only, or "full_si" to
                      additionally allow deci, centi, deka and hecto.
+        as_unit:     Pin the scale to a unit you name, e.g. "cm" or
+                     "centimeters", instead of deriving it from `values`. The
+                     values are not read at all in that case. Requires `unit`,
+                     since the string is parsed against it. A long spelling
+                     returns the long prefix, so the label composes in words.
         ascii_micro: Emit "u" instead of "µ" for micro.
 
     Returns:
@@ -346,6 +352,14 @@ def choose_prefix(values: Iterable[float | int], unit: Unit | None = None, *,
     if unit is not None and not isinstance(unit, Unit):
         raise TypeError(f"unit must be a Unit or None, got {type(unit).__name__}")
     _validate_system_mode(system, mode)
+    if as_unit is not None:
+        if unit is None:
+            raise ValueError(
+                "as_unit needs the unit it is written against: pass unit= too"
+            )
+        resolved = _resolve_as_unit(as_unit, unit, system)
+        prefix = resolved.long_prefix if resolved.long_input else resolved.symbol
+        return (prefix, resolved.factor)
     table = _prefix_table(system, mode, submultiples=system == "si",
                           ascii_micro=ascii_micro)
 
