@@ -6,6 +6,35 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-08-23
+
+### Added
+
+- `as_unit` on `human_quantity` and `choose_prefix`: name the unit you want
+  and the formatter stops choosing for you. `human_quantity(0.02, METERS,
+  as_unit="cm")` is `"2.0 cm"` under the default engineering mode, and
+  `choose_prefix(ticks, METERS, as_unit="cm")` pins a whole axis to `("c",
+  0.01)` without reading the ticks at all — the case that matters for a
+  colorbar whose data would otherwise pick its own scale.
+- The string is parsed against the `Unit` you passed, so custom units work
+  too: `"cm"`, `"centimeter"`, `"centimeters"`, `"m"`, `"KiB"`,
+  `"kibibytes"`, and both micro spellings, `"µm"` and `"um"`, each echoed
+  back as written. The spelling of the request decides the spelling of the
+  result. Matching is case-sensitive: `"KB"` raises rather than guessing
+  between `"kB"` and `"KiB"`.
+- `mode` is bypassed, since it only ever governed automatic selection, and a
+  binary prefix implies the binary system. `system="iec"` is never a default,
+  so a decimal prefix under it raises.
+
+### Changed
+
+- `human_quantity`'s `long_units` default is now `None`, meaning "follow the
+  `as_unit` spelling, short otherwise". Every 0.5.0 call behaves identically;
+  the sentinel is what lets an explicit `long_units=False` beat a long
+  `as_unit`.
+- Public surface unchanged at 193 names. `human_bytesize` is untouched, and
+  its 4032-case baseline still passes byte-for-byte.
+
 ## [0.5.0] - 2026-08-23
 
 ### Added

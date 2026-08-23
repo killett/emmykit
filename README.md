@@ -1627,7 +1627,7 @@ BYTES = Unit(symbol='B', singular='byte', plural='bytes')
 <summary><code>choose_prefix</code> — Pick one prefix for a whole set of values, e.g. every tick on one axis.</summary>
 
 ```python
-choose_prefix(values: 'Iterable[float | int]', unit: 'Unit | None' = None, *, system: 'str' = 'si', mode: 'str' = 'engineering', ascii_micro: 'bool' = False) -> 'tuple[str, float]'
+choose_prefix(values: 'Iterable[float | int]', unit: 'Unit | None' = None, *, system: 'str' = 'si', mode: 'str' = 'engineering', as_unit: 'str | None' = None, ascii_micro: 'bool' = False) -> 'tuple[str, float]'
 ```
 
 ```text
@@ -1650,22 +1650,31 @@ Args:
     system:      "si" for powers of 1000, "iec" for powers of 1024.
     mode:        "engineering" for powers of 1000 only, or "full_si" to
                  additionally allow deci, centi, deka and hecto.
+    as_unit:     Pin the scale to a unit you name, e.g. "cm" or
+                 "centimeters", instead of deriving it from `values`. The
+                 values are not read at all in that case. Requires `unit`,
+                 since the string is parsed against it. A long spelling
+                 returns the long prefix, so the label composes in words.
     ascii_micro: Emit "u" instead of "µ" for micro.
 
 Returns:
     A (prefix symbol, divisor) pair. The unprefixed scale is ("", 1.0).
 
 Raises:
-    TypeError:  If `unit` is neither None nor a `Unit`.
+    TypeError:  If `unit` is neither None nor a `Unit`, or `as_unit` is
+        given and is not a string.
     ValueError: If `system` or `mode` is unknown, or submultiples are
-        requested for the binary system.
+        requested for the binary system. Also if `as_unit` is given
+        without `unit`, or `as_unit` cannot be resolved against `unit`
+        (wrong tail, unknown prefix, mixed symbol/long spellings, or a
+        decimal prefix requested under `system="iec"`).
 
 Example:
     >>> choose_prefix([0.001, 0.002, 0.011], METERS, mode="full_si")
     ('c', 0.01)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L180)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L310)
 
 </details>
 
@@ -1728,7 +1737,7 @@ Raises:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L415)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L597)
 
 </details>
 
@@ -1737,7 +1746,7 @@ Raises:
 <summary><code>human_quantity</code> — Format one value with the prefix that scales it into [1, step).</summary>
 
 ```python
-human_quantity(num: 'float | int | None', unit: 'Unit', *, system: 'str' = 'si', mode: 'str' = 'engineering', precision: 'int' = 1, space: 'bool' = True, trim_trailing_zeros: 'bool' = False, long_units: 'bool' = False, ascii_micro: 'bool' = False) -> 'str'
+human_quantity(num: 'float | int | None', unit: 'Unit', *, system: 'str' = 'si', mode: 'str' = 'engineering', as_unit: 'str | None' = None, precision: 'int' = 1, space: 'bool' = True, trim_trailing_zeros: 'bool' = False, long_units: 'bool | None' = None, ascii_micro: 'bool' = False) -> 'str'
 ```
 
 ```text
@@ -1756,6 +1765,12 @@ Args:
                          of 1000, so 0.02 m is "20.0 mm". "full_si" also
                          allows deci, centi, deka and hecto, so 0.02 m is
                          "2.0 cm".
+    as_unit:             Pin the output to a unit you name, e.g. "cm",
+                         "centimeter", "centimeters", "KiB", "kibibytes".
+                         Parsed against `unit`, so a custom `Unit` works too.
+                         `mode` is bypassed, and a binary prefix implies
+                         `system="iec"`. Both micro spellings are accepted
+                         and the one you write is the one you get back.
     precision:           If >= 0, digits after the decimal point.
                          If < 0, constrains the total returned string length
                          to `-precision` (width-constrained mode;
@@ -1766,16 +1781,22 @@ Args:
     long_units:          Spell prefix and unit out ("1.5 kilometers",
                          "1.5 kibibytes"). The unit's singular form is used
                          when the formatted number reads exactly "1".
+                         Defaults to None, meaning "follow the `as_unit`
+                         spelling, short otherwise"; pass True or False to
+                         decide outright.
     ascii_micro:         Emit "u" instead of "µ" for micro.
 
 Returns:
     A string such as "3.2 ZJ", "2.0 cm", "1.5 KiB" or "1.5 kilometers".
 
 Raises:
-    TypeError:  If `unit` is not a `Unit`.
+    TypeError:  If `unit` is not a `Unit`, or `as_unit` is given and is
+        not a string.
     ValueError: If `system` or `mode` is unknown, if submultiples are
-        requested for the binary system, or if a width-constrained request
-        cannot fit.
+        requested for the binary system, if a width-constrained request
+        cannot fit, or if `as_unit` cannot be resolved against `unit`
+        (wrong tail, unknown prefix, mixed symbol/long spellings, or a
+        decimal prefix requested under `system="iec"`).
 
 Example:
     >>> human_quantity(3.2e21, JOULES)
@@ -1784,7 +1805,7 @@ Example:
     '2.0 cm'
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L358)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L515)
 
 </details>
 
@@ -1835,7 +1856,7 @@ Returns:
     float: The rounded number, or the original number if it is smaller than 10^(-max_digits).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L481)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L663)
 
 </details>
 
@@ -1852,7 +1873,7 @@ Return floor(log10(|x|)), clamped to -max_digits for very small |x|.
 For x == 0, returns -max_digits.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L467)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L649)
 
 </details>
 

@@ -341,9 +341,13 @@ def choose_prefix(values: Iterable[float | int], unit: Unit | None = None, *,
         A (prefix symbol, divisor) pair. The unprefixed scale is ("", 1.0).
 
     Raises:
-        TypeError:  If `unit` is neither None nor a `Unit`.
+        TypeError:  If `unit` is neither None nor a `Unit`, or `as_unit` is
+            given and is not a string.
         ValueError: If `system` or `mode` is unknown, or submultiples are
-            requested for the binary system.
+            requested for the binary system. Also if `as_unit` is given
+            without `unit`, or `as_unit` cannot be resolved against `unit`
+            (wrong tail, unknown prefix, mixed symbol/long spellings, or a
+            decimal prefix requested under `system="iec"`).
 
     Example:
         >>> choose_prefix([0.001, 0.002, 0.011], METERS, mode="full_si")
@@ -554,10 +558,13 @@ def human_quantity(num: float | int | None, unit: Unit, *, system: str = "si",
         A string such as "3.2 ZJ", "2.0 cm", "1.5 KiB" or "1.5 kilometers".
 
     Raises:
-        TypeError:  If `unit` is not a `Unit`.
+        TypeError:  If `unit` is not a `Unit`, or `as_unit` is given and is
+            not a string.
         ValueError: If `system` or `mode` is unknown, if submultiples are
-            requested for the binary system, or if a width-constrained request
-            cannot fit.
+            requested for the binary system, if a width-constrained request
+            cannot fit, or if `as_unit` cannot be resolved against `unit`
+            (wrong tail, unknown prefix, mixed symbol/long spellings, or a
+            decimal prefix requested under `system="iec"`).
 
     Example:
         >>> human_quantity(3.2e21, JOULES)

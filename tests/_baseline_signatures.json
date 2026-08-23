@@ -304,7 +304,7 @@
   },
   "choose_prefix": {
     "kind": "function",
-    "signature": "(values: 'Iterable[float | int]', unit: 'Unit | None' = None, *, system: 'str' = 'si', mode: 'str' = 'engineering', ascii_micro: 'bool' = False) -> 'tuple[str, float]'"
+    "signature": "(values: 'Iterable[float | int]', unit: 'Unit | None' = None, *, system: 'str' = 'si', mode: 'str' = 'engineering', as_unit: 'str | None' = None, ascii_micro: 'bool' = False) -> 'tuple[str, float]'"
   },
   "combine_html_files": {
     "kind": "function",
@@ -468,7 +468,7 @@
   },
   "human_quantity": {
     "kind": "function",
-    "signature": "(num: 'float | int | None', unit: 'Unit', *, system: 'str' = 'si', mode: 'str' = 'engineering', precision: 'int' = 1, space: 'bool' = True, trim_trailing_zeros: 'bool' = False, long_units: 'bool' = False, ascii_micro: 'bool' = False) -> 'str'"
+    "signature": "(num: 'float | int | None', unit: 'Unit', *, system: 'str' = 'si', mode: 'str' = 'engineering', as_unit: 'str | None' = None, precision: 'int' = 1, space: 'bool' = True, trim_trailing_zeros: 'bool' = False, long_units: 'bool | None' = None, ascii_micro: 'bool' = False) -> 'str'"
   },
   "human_timespan": {
     "kind": "function",
