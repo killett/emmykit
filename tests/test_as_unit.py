@@ -12,7 +12,9 @@ from emmykit.humanize import (
     BYTES,
     HERTZ,
     METERS,
+    WATTS,
     _resolve_as_unit,
+    human_quantity,
 )
 
 
@@ -142,3 +144,96 @@ def test_decimal_prefix_under_an_explicit_binary_system_raises() -> None:
         _resolve_as_unit("cm", METERS, "iec")
     message = str(exc_info.value)
     assert "'cm'" in message and "iec" in message
+
+
+def test_forced_unit_overrides_engineering_mode() -> None:
+    """centi is absent from engineering mode, but asking for it by name works.
+
+    Fails if `as_unit` is validated against the mode's table instead of the
+    full prefix set.
+    """
+    assert human_quantity(0.02, METERS, as_unit="cm") == "2.0 cm"
+
+
+def test_forced_unit_long_input_gives_long_output() -> None:
+    """The spelling of the request decides the spelling of the result."""
+    assert human_quantity(0.02, METERS, as_unit="centimeters") == "2.0 centimeters"
+
+
+def test_forced_binary_unit_needs_no_system_argument() -> None:
+    """"KiB" implies the binary system, so 1536 B is 1.5 KiB with no system=."""
+    assert human_quantity(1536, BYTES, as_unit="KiB") == "1.5 KiB"
+    assert human_quantity(1536, BYTES, as_unit="kibibytes") == "1.5 kibibytes"
+
+
+def test_explicit_long_units_false_beats_a_long_request() -> None:
+    """long_units=False is a deliberate choice and must win over the spelling."""
+    assert human_quantity(0.02, METERS, as_unit="centimeters",
+                          long_units=False) == "2.0 cm"
+
+
+def test_explicit_long_units_true_beats_a_short_request() -> None:
+    """long_units=True composes the long prefix even from a symbol request."""
+    assert human_quantity(0.02, METERS, as_unit="cm",
+                          long_units=True) == "2.0 centimeters"
+
+
+def test_forced_unit_keeps_the_existing_plural_rule() -> None:
+    """The number decides singular vs plural, not the requested spelling."""
+    assert human_quantity(0.01, METERS, as_unit="centimeter",
+                          precision=0) == "1 centimeter"
+    assert human_quantity(0.02, METERS, as_unit="centimeter") == "2.0 centimeters"
+
+
+def test_forced_unit_is_not_promoted_after_rounding() -> None:
+    """999.99 kW rounds to 1000.0 but the caller asked for kW, so it stays kW.
+
+    Fails if the promotion step still runs on a forced prefix, silently
+    relabelling the axis the caller pinned.
+    """
+    assert human_quantity(999_999, WATTS, as_unit="kW") == "1000.0 kW"
+
+
+def test_forced_unit_applies_to_zero_and_non_finite_values() -> None:
+    """A pinned scale must label every tick, including 0, nan and inf."""
+    assert human_quantity(0, METERS, as_unit="cm") == "0.0 cm"
+    assert human_quantity(float("nan"), METERS, as_unit="cm") == "nan cm"
+    assert human_quantity(float("inf"), METERS, as_unit="cm") == "inf cm"
+    assert human_quantity(float("-inf"), METERS, as_unit="cm") == "-inf cm"
+
+
+def test_forced_unit_respects_space_and_trim() -> None:
+    """The existing formatting switches keep working under a forced prefix."""
+    assert human_quantity(0.02, METERS, as_unit="cm", space=False) == "2.0cm"
+    assert human_quantity(0.01, METERS, as_unit="cm",
+                          trim_trailing_zeros=True) == "1 cm"
+
+
+def test_forced_unit_in_width_mode_uses_the_symbol_form() -> None:
+    """Width mode is symbol-only, so a long request still measures as "cm"."""
+    result = human_quantity(0.02, METERS, as_unit="centimeters", precision=-7)
+    assert result == "2.00 cm"
+    assert len(result) == 7
+
+
+def test_forced_micro_keeps_the_requested_spelling() -> None:
+    """"um" stays ASCII and "µm" stays U+00B5, whatever ascii_micro says."""
+    assert human_quantity(2e-6, METERS, as_unit="um") == "2.0 um"
+    assert human_quantity(2e-6, METERS, as_unit="µm", ascii_micro=True) == "2.0 µm"
+
+
+def test_forced_unit_can_ask_for_no_prefix_at_all() -> None:
+    """"m" pins the bare unit, defeating automatic promotion to km."""
+    assert human_quantity(1500, METERS, as_unit="m") == "1500.0 m"
+
+
+def test_decimal_request_under_explicit_binary_system_raises() -> None:
+    """The one real conflict still raises at the public boundary."""
+    with pytest.raises(ValueError, match="does not exist in the binary system"):
+        human_quantity(0.02, METERS, system="iec", as_unit="cm")
+
+
+def test_as_unit_none_is_unchanged_automatic_behaviour() -> None:
+    """The default path must be untouched: 0.02 m is still 20.0 mm."""
+    assert human_quantity(0.02, METERS) == "20.0 mm"
+    assert human_quantity(0.02, METERS, as_unit=None) == "20.0 mm"

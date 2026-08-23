@@ -364,7 +364,8 @@ def choose_prefix(values: Iterable[float | int], unit: Unit | None = None, *,
 def _format_quantity(num: float | int | None, unit: Unit, *, system: str, mode: str,
                      precision: int, space: bool, trim_trailing_zeros: bool,
                      long_units: bool, ascii_micro: bool, submultiples: bool,
-                     promote: bool, clamp_non_finite: bool) -> str:
+                     promote: bool, clamp_non_finite: bool,
+                     resolved: _ResolvedUnit | None = None) -> str:
     """Shared formatting machinery behind `human_quantity` and `human_bytesize`.
 
     Args:
@@ -383,6 +384,10 @@ def _format_quantity(num: float | int | None, unit: Unit, *, system: str, mode: 
         clamp_non_finite:    Legacy `human_bytesize` behaviour: let infinity walk
                              the table and clamp to the largest prefix, instead
                              of formatting it unprefixed.
+        resolved:            A prefix the caller pinned by name. When given,
+                             automatic selection and promotion are both skipped:
+                             a forced scale stays forced, including for zero and
+                             non-finite values.
 
     Returns:
         The formatted string.
@@ -394,16 +399,20 @@ def _format_quantity(num: float | int | None, unit: Unit, *, system: str, mode: 
     if num is None:
         return "None"
 
-    table = _prefix_table(system, mode, submultiples=submultiples,
-                          ascii_micro=ascii_micro)
     sign = "-" if num < 0 else ""
     magnitude = abs(float(num))
 
-    if math.isnan(magnitude) or (not math.isfinite(magnitude)
-                                 and not clamp_non_finite) or magnitude == 0.0:
-        factor, symbol, long_prefix = 1.0, "", ""
+    if resolved is not None:
+        factor, symbol, long_prefix = (resolved.factor, resolved.symbol,
+                                       resolved.long_prefix)
     else:
-        factor, symbol, long_prefix = _select(table, magnitude)
+        table = _prefix_table(system, mode, submultiples=submultiples,
+                              ascii_micro=ascii_micro)
+        if math.isnan(magnitude) or (not math.isfinite(magnitude)
+                                     and not clamp_non_finite) or magnitude == 0.0:
+            factor, symbol, long_prefix = 1.0, "", ""
+        else:
+            factor, symbol, long_prefix = _select(table, magnitude)
     scaled = magnitude / factor
 
     if precision < 0:
@@ -414,7 +423,7 @@ def _format_quantity(num: float | int | None, unit: Unit, *, system: str, mode: 
 
     text = f"{scaled:.{precision}f}"
 
-    if promote and magnitude and math.isfinite(magnitude):
+    if resolved is None and promote and magnitude and math.isfinite(magnitude):
         # Rounding can push the value onto the next prefix ("1000.0 k" -> "1.0 M").
         promoted = _select(table, float(text) * factor)
         if promoted[0] != factor:
@@ -486,8 +495,10 @@ def _format_width_constrained(scaled: float, *, sign: str, symbol: str, unit: Un
 
 
 def human_quantity(num: float | int | None, unit: Unit, *, system: str = "si",
-                   mode: str = "engineering", precision: int = 1, space: bool = True,
-                   trim_trailing_zeros: bool = False, long_units: bool = False,
+                   mode: str = "engineering", as_unit: str | None = None,
+                   precision: int = 1, space: bool = True,
+                   trim_trailing_zeros: bool = False,
+                   long_units: bool | None = None,
                    ascii_micro: bool = False) -> str:
     """Format one value with the prefix that scales it into [1, step).
 
@@ -504,6 +515,12 @@ def human_quantity(num: float | int | None, unit: Unit, *, system: str = "si",
                              of 1000, so 0.02 m is "20.0 mm". "full_si" also
                              allows deci, centi, deka and hecto, so 0.02 m is
                              "2.0 cm".
+        as_unit:             Pin the output to a unit you name, e.g. "cm",
+                             "centimeter", "centimeters", "KiB", "kibibytes".
+                             Parsed against `unit`, so a custom `Unit` works too.
+                             `mode` is bypassed, and a binary prefix implies
+                             `system="iec"`. Both micro spellings are accepted
+                             and the one you write is the one you get back.
         precision:           If >= 0, digits after the decimal point.
                              If < 0, constrains the total returned string length
                              to `-precision` (width-constrained mode;
@@ -514,6 +531,9 @@ def human_quantity(num: float | int | None, unit: Unit, *, system: str = "si",
         long_units:          Spell prefix and unit out ("1.5 kilometers",
                              "1.5 kibibytes"). The unit's singular form is used
                              when the formatted number reads exactly "1".
+                             Defaults to None, meaning "follow the `as_unit`
+                             spelling, short otherwise"; pass True or False to
+                             decide outright.
         ascii_micro:         Emit "u" instead of "µ" for micro.
 
     Returns:
@@ -534,11 +554,22 @@ def human_quantity(num: float | int | None, unit: Unit, *, system: str = "si",
     if not isinstance(unit, Unit):
         raise TypeError(f"unit must be a Unit, got {type(unit).__name__}")
     _validate_system_mode(system, mode)
+
+    resolved = None
+    if as_unit is not None:
+        resolved = _resolve_as_unit(as_unit, unit, system)
+        system = resolved.system
+
+    if long_units is None:
+        use_long = resolved.long_input if resolved is not None else False
+    else:
+        use_long = long_units
+
     return _format_quantity(
         num, unit, system=system, mode=mode, precision=precision, space=space,
-        trim_trailing_zeros=trim_trailing_zeros, long_units=long_units,
+        trim_trailing_zeros=trim_trailing_zeros, long_units=use_long,
         ascii_micro=ascii_micro, submultiples=system == "si", promote=True,
-        clamp_non_finite=False,
+        clamp_non_finite=False, resolved=resolved,
     )
 
 
