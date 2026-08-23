@@ -84,6 +84,136 @@ def _decimal_factor(power: int) -> float:
     return 1.0 / float(10 ** -power)
 
 
+def _build_prefix_lookups() -> tuple[
+    dict[str, tuple[float, str, str, str]],
+    dict[str, tuple[float, str, str, str]],
+]:
+    """Build symbol -> entry and long-name -> entry maps from the prefix tables.
+
+    Reversing the tables here keeps one source of truth: a prefix added to
+    `_SI_MULTIPLES` or `_IEC_MULTIPLES` becomes spellable in `as_unit` with no
+    second edit.
+
+    Returns:
+        Two dicts, keyed by prefix symbol and by prefix long name. Each value is
+        (factor, symbol, long name, system).
+    """
+    by_symbol: dict[str, tuple[float, str, str, str]] = {}
+    by_long: dict[str, tuple[float, str, str, str]] = {}
+
+    decimal = (_SI_MULTIPLES + _SI_FULL_MULTIPLES + _SI_FULL_SUBMULTIPLES
+               + _SI_SUBMULTIPLES)
+    for power, symbol, long_name in decimal:
+        entry = (_decimal_factor(power), symbol, long_name, "si")
+        by_symbol[symbol] = entry
+        by_long[long_name] = entry
+
+    for power, symbol, long_name in _IEC_MULTIPLES:
+        entry = (float(2 ** power), symbol, long_name, "iec")
+        by_symbol[symbol] = entry
+        by_long[long_name] = entry
+
+    # ASCII spelling of micro: accepted on input, echoed back on output, so a
+    # caller who wrote "um" does not get "µm" handed back.
+    micro_factor, _, micro_long, micro_system = by_symbol["µ"]
+    by_symbol["u"] = (micro_factor, "u", micro_long, micro_system)
+
+    return by_symbol, by_long
+
+
+_PREFIX_BY_SYMBOL, _PREFIX_BY_LONG = _build_prefix_lookups()
+
+
+@dataclass(frozen=True)
+class _ResolvedUnit:
+    """One prefix, pinned by name instead of chosen from a value.
+
+    Attributes:
+        factor:      Divisor the prefix stands for.
+        symbol:      Prefix symbol, in the spelling the caller used ("c", "u").
+        long_prefix: Prefix long name ("centi", "micro").
+        long_input:  Whether the caller spelled the unit out, which decides the
+                     output form unless `long_units` was passed explicitly.
+        system:      System the prefix belongs to, "si" or "iec".
+    """
+
+    factor: float
+    symbol: str
+    long_prefix: str
+    long_input: bool
+    system: str
+
+
+def _resolve_as_unit(as_unit: str, unit: Unit, system: str) -> _ResolvedUnit:
+    """Parse a requested unit string against the unit the caller passed.
+
+    Matched from the right, longest spelling first: plural long name, singular
+    long name, then symbol. Whatever precedes the match is the prefix, which
+    must be spelled in the same register as the unit.
+
+    Args:
+        as_unit: The requested unit, e.g. "cm", "centimeters", "KiB".
+        unit:    The unit `as_unit` is written against.
+        system:  System the caller passed. Only "iec" is treated as deliberate,
+                 since "si" is the default and carries no intent.
+
+    Returns:
+        The resolved prefix.
+
+    Raises:
+        TypeError:  If `as_unit` is not a string.
+        ValueError: If the tail does not match the unit, the prefix is unknown,
+            symbol and long spellings are mixed, or a decimal prefix is asked
+            for under an explicit binary system.
+    """
+    if not isinstance(as_unit, str):
+        raise TypeError(
+            f"as_unit must be a string, got {type(as_unit).__name__}"
+        )
+
+    for tail, long_form in ((unit.plural, True), (unit.singular, True),
+                            (unit.symbol, False)):
+        if tail and as_unit.endswith(tail):
+            prefix_text = as_unit[:len(as_unit) - len(tail)]
+            break
+    else:
+        raise ValueError(
+            f"as_unit={as_unit!r} does not end in the unit passed: expected an "
+            f"optional prefix followed by {unit.symbol!r}, {unit.singular!r} "
+            f"or {unit.plural!r}"
+        )
+
+    if prefix_text == "":
+        return _ResolvedUnit(1.0, "", "", long_form, system)
+
+    lookup = _PREFIX_BY_LONG if long_form else _PREFIX_BY_SYMBOL
+    entry = lookup.get(prefix_text)
+    if entry is None:
+        other = _PREFIX_BY_SYMBOL if long_form else _PREFIX_BY_LONG
+        if prefix_text in other:
+            written, wanted = (("symbol", "long name") if long_form
+                               else ("long name", "symbol"))
+            raise ValueError(
+                f"as_unit={as_unit!r} mixes spellings: {prefix_text!r} is a "
+                f"prefix {written} but the unit is written as a {wanted}; use "
+                f"symbols throughout or long names throughout"
+            )
+        raise ValueError(
+            f"unknown prefix {prefix_text!r} in as_unit={as_unit!r}; prefixes "
+            f"are case-sensitive (SI kilo is 'k', as in 'kB'; binary kibi is "
+            f"'Ki', as in 'KiB')"
+        )
+
+    factor, symbol, long_prefix, prefix_system = entry
+    if system == "iec" and prefix_system == "si":
+        raise ValueError(
+            f"as_unit={as_unit!r} asks for the decimal prefix {symbol!r}, which "
+            f"does not exist in the binary system (system='iec'); drop the "
+            f"system argument to use decimal prefixes"
+        )
+    return _ResolvedUnit(factor, symbol, long_prefix, long_form, prefix_system)
+
+
 def _prefix_table(system: str, mode: str, *, submultiples: bool,
                   ascii_micro: bool) -> tuple[tuple[float, str, str], ...]:
     """Build the ordered (factor, symbol, long name) table for one configuration.
