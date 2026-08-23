@@ -6,6 +6,8 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-08-23
+
 ### Added
 
 - `human_quantity(num, unit, ...)` in `emmykit.humanize`: the general

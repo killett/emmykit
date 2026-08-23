@@ -8,6 +8,6 @@ __all__ = ["__version__", "PY_VERSION"]
 
 # Annotation deliberately omitted so hatchling's default version-extraction
 # regex (`__version__\s*=\s*['"]([^'"]+)['"]`) can read this line.
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 PY_VERSION: Final[float] = 3.12
