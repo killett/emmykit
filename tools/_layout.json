@@ -16,7 +16,7 @@
   "io_subprocess": ["MyPopenResult","my_critical_error","my_fopen","my_popen"],
   "prompts": ["prompt_then_choose","prompt_then_confirm"],
   "introspection": ["_builtin_stub","_sanitize_text_signature","compile_code","if_filepath_then_read","load_ast_var","normalize_to_dict","show_function_source"],
-  "humanize": ["human_bytesize","round_out","sci_exp"],
+  "humanize": ["BYTES","GRAMS","HERTZ","JOULES","METERS","SECONDS","Unit","WATTS","choose_prefix","human_bytesize","human_quantity","round_out","sci_exp"],
   "datetime_utils": ["ADAPTIVE_FORMAT_LEVELS","AdaptiveDateFormatter","AnyDateTimeType","Precision","_JD_MJD_CAPTURE_RE","_JD_MJD_SIMPLE_RE","_JD_UNIX_EPOCH","_OFFSET_IN_STR_RE","_TIMESTAMP_PATTERN_RE","_TZ_ABBREV_TO_ZONE","_TZ_OFFSET_RE","_finalize_datetime","_normalize_to_datetime","_parse_iso","_should_convert","adaptive_date_labels","decimal_year_to_datetime","extract_timestamp","format_date_range","human_timespan","parse_datetime","parse_timezone"],
   "json_io": ["BUILTIN_JSON_TAGS","_coerce_log_mode","_to_jsonable","from_jsonable","load_options_from_json","register_json_type","save_options_to_json","to_jsonable","unregister_json_type"],
   "diff_view": ["_vis_all_ws","_vis_trailing_ws","diff_and_confirm","highlight_changes","is_python_script","my_diff"],

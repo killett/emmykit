@@ -169,9 +169,19 @@ the converters internally.
   - [`normalize_to_dict`](#normalize_to_dict)
   - [`show_function_source`](#show_function_source)
 - [`humanize` — Human-readable number formatting](#m-humanize)
+  - [`BYTES`](#bytes)
+  - [`choose_prefix`](#choose_prefix)
+  - [`GRAMS`](#grams)
+  - [`HERTZ`](#hertz)
   - [`human_bytesize`](#human_bytesize)
+  - [`human_quantity`](#human_quantity)
+  - [`JOULES`](#joules)
+  - [`METERS`](#meters)
   - [`round_out`](#round_out)
   - [`sci_exp`](#sci_exp)
+  - [`SECONDS`](#seconds)
+  - [`Unit`](#unit)
+  - [`WATTS`](#watts)
 - [`numeric_helpers` — Numeric parsing + unit-to-seconds conversion](#m-numeric_helpers)
   - [`is_float`](#is_float)
   - [`seconds_in_unit`](#seconds_in_unit)
@@ -1598,7 +1608,90 @@ Raises:
 
 _Layer 4._  `from emmykit.humanize import …`
 
-Byte sizes (`1.0 GiB`), scientific-notation exponents, and away-from-zero rounding (lazy numpy).
+Any quantity with an SI or IEC prefix (`3.2 ZJ`, `2.0 cm`, `1.0 GiB`), one shared prefix for a whole set of values (`choose_prefix`, for axis and colorbar labels), scientific-notation exponents, and away-from-zero rounding (lazy numpy).
+
+<a id="bytes"></a>
+<details>
+<summary><code>BYTES</code> — Unit</summary>
+
+```python
+BYTES = Unit(symbol='B', singular='byte', plural='bytes')
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L29)
+
+</details>
+
+<a id="choose_prefix"></a>
+<details>
+<summary><code>choose_prefix</code> — Pick one prefix for a whole set of values, e.g. every tick on one axis.</summary>
+
+```python
+choose_prefix(values: 'Iterable[float | int]', unit: 'Unit | None' = None, *, system: 'str' = 'si', mode: 'str' = 'engineering', ascii_micro: 'bool' = False) -> 'tuple[str, float]'
+```
+
+```text
+Pick one prefix for a whole set of values, e.g. every tick on one axis.
+
+Formatting axis ticks one at a time gives "1 mm", "2 mm", "1 cm" — three
+scales on one axis. Instead, label the axis once with `<symbol><unit>` and
+divide every tick by the returned factor.
+
+The choice is driven by the largest finite magnitude in `values`; NaN and
+infinity are ignored, and an empty or all-zero set yields the unprefixed
+scale.
+
+Args:
+    values:      Iterable of values, consumed once. May contain NaN/inf.
+    unit:        The unit the values are expressed in. It does not affect
+                 the chosen prefix — it is accepted so call sites read as
+                 `choose_prefix(ticks, METERS)`, and so passing something
+                 that is not a `Unit` fails immediately.
+    system:      "si" for powers of 1000, "iec" for powers of 1024.
+    mode:        "engineering" for powers of 1000 only, or "full_si" to
+                 additionally allow deci, centi, deka and hecto.
+    ascii_micro: Emit "u" instead of "µ" for micro.
+
+Returns:
+    A (prefix symbol, divisor) pair. The unprefixed scale is ("", 1.0).
+
+Raises:
+    TypeError:  If `unit` is neither None nor a `Unit`.
+    ValueError: If `system` or `mode` is unknown, or submultiples are
+        requested for the binary system.
+
+Example:
+    >>> choose_prefix([0.001, 0.002, 0.011], METERS, mode="full_si")
+    ('c', 0.01)
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L180)
+
+</details>
+
+<a id="grams"></a>
+<details>
+<summary><code>GRAMS</code> — Unit</summary>
+
+```python
+GRAMS = Unit(symbol='g', singular='gram', plural='grams')
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L31)
+
+</details>
+
+<a id="hertz"></a>
+<details>
+<summary><code>HERTZ</code> — Unit</summary>
+
+```python
+HERTZ = Unit(symbol='Hz', singular='hertz', plural='hertz')
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L35)
+
+</details>
 
 <a id="human_bytesize"></a>
 <details>
@@ -1635,7 +1728,87 @@ Raises:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L6)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L415)
+
+</details>
+
+<a id="human_quantity"></a>
+<details>
+<summary><code>human_quantity</code> — Format one value with the prefix that scales it into [1, step).</summary>
+
+```python
+human_quantity(num: 'float | int | None', unit: 'Unit', *, system: 'str' = 'si', mode: 'str' = 'engineering', precision: 'int' = 1, space: 'bool' = True, trim_trailing_zeros: 'bool' = False, long_units: 'bool' = False, ascii_micro: 'bool' = False) -> 'str'
+```
+
+```text
+Format one value with the prefix that scales it into [1, step).
+
+Args:
+    num:                 The value. Negative values keep a leading minus.
+                         If None, returns "None". NaN and infinity are
+                         rendered unprefixed ("nan m", "-inf m").
+    unit:                Unit to append, e.g. `METERS` or `JOULES`.
+    system:              "si" for powers of 1000 with SI prefixes, or "iec"
+                         for powers of 1024 with binary prefixes. The binary
+                         system has no submultiples, so values below 1 stay
+                         unprefixed there.
+    mode:                "engineering" (default) restricts prefixes to powers
+                         of 1000, so 0.02 m is "20.0 mm". "full_si" also
+                         allows deci, centi, deka and hecto, so 0.02 m is
+                         "2.0 cm".
+    precision:           If >= 0, digits after the decimal point.
+                         If < 0, constrains the total returned string length
+                         to `-precision` (width-constrained mode;
+                         `long_units` is ignored).
+    space:               Insert a space between number and unit (ignored when
+                         `long_units` is True, which always uses one space).
+    trim_trailing_zeros: Remove trailing zeros and any dangling decimal point.
+    long_units:          Spell prefix and unit out ("1.5 kilometers",
+                         "1.5 kibibytes"). The unit's singular form is used
+                         when the formatted number reads exactly "1".
+    ascii_micro:         Emit "u" instead of "µ" for micro.
+
+Returns:
+    A string such as "3.2 ZJ", "2.0 cm", "1.5 KiB" or "1.5 kilometers".
+
+Raises:
+    TypeError:  If `unit` is not a `Unit`.
+    ValueError: If `system` or `mode` is unknown, if submultiples are
+        requested for the binary system, or if a width-constrained request
+        cannot fit.
+
+Example:
+    >>> human_quantity(3.2e21, JOULES)
+    '3.2 ZJ'
+    >>> human_quantity(0.02, METERS, mode="full_si")
+    '2.0 cm'
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L358)
+
+</details>
+
+<a id="joules"></a>
+<details>
+<summary><code>JOULES</code> — Unit</summary>
+
+```python
+JOULES = Unit(symbol='J', singular='joule', plural='joules')
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L33)
+
+</details>
+
+<a id="meters"></a>
+<details>
+<summary><code>METERS</code> — Unit</summary>
+
+```python
+METERS = Unit(symbol='m', singular='meter', plural='meters')
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L30)
 
 </details>
 
@@ -1662,7 +1835,7 @@ Returns:
     float: The rounded number, or the original number if it is smaller than 10^(-max_digits).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L124)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L481)
 
 </details>
 
@@ -1679,7 +1852,58 @@ Return floor(log10(|x|)), clamped to -max_digits for very small |x|.
 For x == 0, returns -max_digits.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L110)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L467)
+
+</details>
+
+<a id="seconds"></a>
+<details>
+<summary><code>SECONDS</code> — Unit</summary>
+
+```python
+SECONDS = Unit(symbol='s', singular='second', plural='seconds')
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L32)
+
+</details>
+
+<a id="unit"></a>
+<details>
+<summary><code>Unit</code> — A unit of measurement, in the three spellings a formatter needs.</summary>
+
+```python
+Unit(symbol: 'str', singular: 'str', plural: 'str') -> None
+```
+
+```text
+A unit of measurement, in the three spellings a formatter needs.
+
+Long names cannot be derived from the symbol ("m" -> "meter"/"meters",
+"Hz" -> "hertz"/"hertz"), so all three are carried explicitly.
+
+Attributes:
+    symbol:   Short symbol, appended after the prefix symbol ("m", "B", "Hz").
+    singular: Long name used when the formatted number reads exactly "1".
+    plural:   Long name used otherwise; equal to `singular` for units such as
+              hertz that have no plural "s".
+```
+
+**Fields:** `symbol`, `singular`, `plural`.
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L11)
+
+</details>
+
+<a id="watts"></a>
+<details>
+<summary><code>WATTS</code> — Unit</summary>
+
+```python
+WATTS = Unit(symbol='W', singular='watt', plural='watts')
+```
+
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L34)
 
 </details>
 

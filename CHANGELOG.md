@@ -8,6 +8,26 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ### Added
 
+- `human_quantity(num, unit, ...)` in `emmykit.humanize`: the general
+  form of `human_bytesize`, formatting any quantity with an SI or IEC
+  prefix (`"3.2 ZJ"`, `"1.5 KiB"`, `"1.5 kilometers"`). Units are
+  `Unit` value objects carrying symbol, singular and plural long names,
+  since long names are not derivable from the symbol (`"Hz"` →
+  `"hertz"`/`"hertz"`); `BYTES`, `METERS`, `GRAMS`, `SECONDS`, `JOULES`,
+  `WATTS` and `HERTZ` ship ready-made.
+- Values below 1.0 now reach a prefix. `mode="engineering"` (default)
+  keeps to powers of 1000, so `0.02` metres is `"20.0 mm"`;
+  `mode="full_si"` also allows deci, centi, deka and hecto, so the same
+  value is `"2.0 cm"`. Micro is `"µ"` (U+00B5), or `"u"` with
+  `ascii_micro=True`. The binary system has no submultiples, so
+  `system="iec"` with `mode="full_si"` raises `ValueError` rather than
+  silently falling back to decimal prefixes.
+- `choose_prefix(values, unit, ...)` returns one `(symbol, factor)` pair
+  for a whole set of values — the shared scale an axis or colorbar needs,
+  so ticks read `"0.1"`, `"0.2"`, `"1.1"` against a single `"cm"` label
+  instead of drifting between `"1 mm"` and `"1 cm"`. The choice comes
+  from the largest finite magnitude; NaN and infinity are ignored, and
+  empty or all-zero sets return the unprefixed scale `("", 1.0)`.
 - `emmykit.palette` (layer 0, stdlib-only): `Palette`, a frozen value
   object holding an ordered tuple of qualitative `series` colours plus
   the `background` / `foreground` / `grid` roles a figure needs;
@@ -98,6 +118,16 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ### Changed
 
+- `human_bytesize` is now a thin wrapper over the general formatter. Its
+  name, signature and output are unchanged byte-for-byte, including the
+  three behaviours the general formatter deliberately does not inherit:
+  no submultiples (`0.5` stays `"0.5 B"`), no prefix promotion after
+  rounding (`999999` with `si=True` stays `"1000.0 kB"`, where
+  `human_quantity` gives `"1.0 MW"` for the same shape of input), and
+  infinity walking the table to the largest prefix (`"inf QiB"`, where
+  `human_quantity` renders non-finite values unprefixed, `"inf m"`).
+  `tests/_baseline_human_bytesize.json` pins 4032 (value, option)
+  combinations, including both width-constrained `ValueError` messages.
 - Public surface: 205 → 202 names.
 - `tests/_baseline_signatures.json` updated to match.
 - Options JSON written by 0.4.0 still loads. `load_options_from_json`
@@ -115,6 +145,8 @@ All notable changes to `emmykit` are documented here. Format follows
 - `tools/generate_readme.py` no longer carries the `STDLIB_REEXPORTS`
   frozenset, which existed solely to keep the 24 out of the README.
 - Public surface: 178 → 183 names, the five `emmykit.palette` exports.
+- Public surface: 183 → 193 names, the ten `emmykit.humanize` exports
+  (`Unit`, seven ready-made units, `human_quantity`, `choose_prefix`).
 - `PlotOptions` now holds a `Palette` (new `palette` attribute) and
   exposes `colors`, `lightcolors`, `background_color` and `text_color` as
   read-only properties delegating to it. Readers are unaffected; the

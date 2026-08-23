@@ -111,7 +111,9 @@ MODULE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
                          "Render a function's source with original whitespace, parse module-level constants out of a file, normalize objects "
                          "into dicts, compile source snippets in-memory, and conditionally read-and-eval embedded scripts."),
     "humanize":         ("Human-readable number formatting",
-                         "Byte sizes (`1.0 GiB`), scientific-notation exponents, and away-from-zero rounding (lazy numpy)."),
+                         "Any quantity with an SI or IEC prefix (`3.2 ZJ`, `2.0 cm`, `1.0 GiB`), one shared prefix for a whole set of "
+                         "values (`choose_prefix`, for axis and colorbar labels), scientific-notation exponents, and away-from-zero "
+                         "rounding (lazy numpy)."),
     "datetime_utils":   ("Date / time parsing, formatting, timezone handling",
                          "`parse_datetime` is the load-bearing dispatcher (handles ISO, JD/MJD, decimal years, dateutil fallbacks); "
                          "supplemented by `AdaptiveDateFormatter` for matplotlib, `human_timespan` for durations, and a small zoo of "

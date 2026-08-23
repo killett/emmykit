@@ -100,7 +100,8 @@ emmykit/src/emmykit/
 │   ├── introspection.py          # show_function_source, load_ast_var,
 │   │                             # _sanitize_text_signature, _builtin_stub,
 │   │                             # normalize_to_dict, compile_code, if_filepath_then_read
-│   ├── humanize.py               # human_bytesize, sci_exp, round_out
+│   ├── humanize.py               # Unit + ready-made units, human_quantity, choose_prefix,
+│   │                             # human_bytesize, sci_exp, round_out
 │   ├── datetime_utils.py         # parse_datetime, parse_timezone, AdaptiveDateFormatter,
 │   │                             # adaptive_date_labels, decimal_year_to_datetime,
 │   │                             # format_date_range, human_timespan, extract_timestamp,
@@ -187,7 +188,7 @@ emmykit/src/emmykit/
 | 3     | `io_subprocess`      | `my_fopen` / `my_popen` / `my_critical_error` — subprocess + critical-error wrappers.                                  |
 | 4     | `prompts`            | Interactive Y/N + choose helpers.                                                                                       |
 | 4     | `introspection`      | Source inspection + AST helpers.                                                                                       |
-| 4     | `humanize`           | `human_bytesize` / `sci_exp` / `round_out` — display-side numeric formatters.                                          |
+| 4     | `humanize`           | `human_quantity` / `choose_prefix` / `human_bytesize` / `sci_exp` / `round_out` — display-side numeric formatters.     |
 | 4     | `datetime_utils`     | All datetime parsing, formatting, adaptive labels, JD/MJD support.                                                     |
 | 4     | `json_io`            | `to_jsonable`/`from_jsonable` + Options JSON load/save.                                                                |
 | 4     | `diff_view`          | Visible-whitespace highlighting and `my_diff` invocations — placed low so `text`, `files`, and `lint` can reuse.        |

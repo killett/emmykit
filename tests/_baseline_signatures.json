@@ -54,6 +54,9 @@
   "BUILTIN_JSON_TAGS": {
     "kind": "frozenset"
   },
+  "BYTES": {
+    "kind": "Unit"
+  },
   "CHARACTERS_TO_SPACE": {
     "kind": "str"
   },
@@ -83,6 +86,12 @@
   "FormatChecker": {
     "kind": "type",
     "signature": "(source: 'str', doc_style: 'str' = 'None') -> 'None'"
+  },
+  "GRAMS": {
+    "kind": "Unit"
+  },
+  "HERTZ": {
+    "kind": "Unit"
   },
   "HORIZONTAL_ELLIPSIS": {
     "kind": "str"
@@ -121,6 +130,9 @@
     "kind": "_ProtocolMeta",
     "signature": "(*args, **kwargs)"
   },
+  "JOULES": {
+    "kind": "Unit"
+  },
   "LDQUOTE": {
     "kind": "str"
   },
@@ -134,6 +146,9 @@
   },
   "LSQUOTE": {
     "kind": "str"
+  },
+  "METERS": {
+    "kind": "Unit"
   },
   "MIN_CONTRAST_RATIO": {
     "kind": "float"
@@ -203,6 +218,9 @@
   "RSQUOTE": {
     "kind": "str"
   },
+  "SECONDS": {
+    "kind": "Unit"
+  },
   "SETUP_CARTOPY_SCRIPT": {
     "kind": "str"
   },
@@ -239,11 +257,18 @@
   "TRANSLATION_TABLE": {
     "kind": "dict"
   },
+  "Unit": {
+    "kind": "type",
+    "signature": "(symbol: 'str', singular: 'str', plural: 'str') -> None"
+  },
   "VIDEO_EXTENSIONS": {
     "kind": "tuple"
   },
   "VIDEO_EXTENSIONS_SET": {
     "kind": "frozenset"
+  },
+  "WATTS": {
+    "kind": "Unit"
   },
   "adaptive_date_labels": {
     "kind": "function",
@@ -276,6 +301,10 @@
   "check_python_version": {
     "kind": "function",
     "signature": "(command: 'str') -> 'bool'"
+  },
+  "choose_prefix": {
+    "kind": "function",
+    "signature": "(values: 'Iterable[float | int]', unit: 'Unit | None' = None, *, system: 'str' = 'si', mode: 'str' = 'engineering', ascii_micro: 'bool' = False) -> 'tuple[str, float]'"
   },
   "combine_html_files": {
     "kind": "function",
@@ -436,6 +465,10 @@
   "human_bytesize": {
     "kind": "function",
     "signature": "(num: 'float | int | None', *, suffix: 'str' = 'B', si: 'bool' = False, precision: 'int' = 1, space: 'bool' = True, trim_trailing_zeros: 'bool' = False, long_units: 'bool' = False) -> 'str'"
+  },
+  "human_quantity": {
+    "kind": "function",
+    "signature": "(num: 'float | int | None', unit: 'Unit', *, system: 'str' = 'si', mode: 'str' = 'engineering', precision: 'int' = 1, space: 'bool' = True, trim_trailing_zeros: 'bool' = False, long_units: 'bool' = False, ascii_micro: 'bool' = False) -> 'str'"
   },
   "human_timespan": {
     "kind": "function",
