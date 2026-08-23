@@ -335,10 +335,12 @@ def choose_prefix(values: Iterable[float | int], unit: Unit | None = None, *,
                      values are not read at all in that case. Requires `unit`,
                      since the string is parsed against it. A long spelling
                      returns the long prefix, so the label composes in words.
-        ascii_micro: Emit "u" instead of "µ" for micro.
+        ascii_micro: Emit "u" instead of "µ" for micro. Inert when `as_unit`
+                     is given: the requested spelling decides micro's form.
 
     Returns:
-        A (prefix symbol, divisor) pair. The unprefixed scale is ("", 1.0).
+        A (prefix, divisor) pair: the prefix symbol, or the long prefix name
+        when `as_unit` was spelled out. The unprefixed scale is ("", 1.0).
 
     Raises:
         TypeError:  If `unit` is neither None nor a `Unit`, or `as_unit` is
@@ -523,7 +525,9 @@ def human_quantity(num: float | int | None, unit: Unit, *, system: str = "si",
     Args:
         num:                 The value. Negative values keep a leading minus.
                              If None, returns "None". NaN and infinity are
-                             rendered unprefixed ("nan m", "-inf m").
+                             rendered unprefixed ("nan m", "-inf m") unless
+                             `as_unit` pins a prefix, which applies to every
+                             value, finite or not.
         unit:                Unit to append, e.g. `METERS` or `JOULES`.
         system:              "si" for powers of 1000 with SI prefixes, or "iec"
                              for powers of 1024 with binary prefixes. The binary
@@ -543,8 +547,12 @@ def human_quantity(num: float | int | None, unit: Unit, *, system: str = "si",
                              If < 0, constrains the total returned string length
                              to `-precision` (width-constrained mode;
                              `long_units` is ignored).
-        space:               Insert a space between number and unit (ignored when
-                             `long_units` is True, which always uses one space).
+        space:               Insert a space between number and unit. Ignored
+                             whenever the output is long-form, whether that
+                             comes from `long_units=True` or from a long
+                             `as_unit` spelling under the default
+                             `long_units=None` — long-form output always uses
+                             one space.
         trim_trailing_zeros: Remove trailing zeros and any dangling decimal point.
         long_units:          Spell prefix and unit out ("1.5 kilometers",
                              "1.5 kibibytes"). The unit's singular form is used
@@ -552,7 +560,9 @@ def human_quantity(num: float | int | None, unit: Unit, *, system: str = "si",
                              Defaults to None, meaning "follow the `as_unit`
                              spelling, short otherwise"; pass True or False to
                              decide outright.
-        ascii_micro:         Emit "u" instead of "µ" for micro.
+        ascii_micro:         Emit "u" instead of "µ" for micro. Inert when
+                             `as_unit` is given: the requested spelling
+                             decides micro's form.
 
     Returns:
         A string such as "3.2 ZJ", "2.0 cm", "1.5 KiB" or "1.5 kilometers".

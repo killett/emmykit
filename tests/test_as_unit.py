@@ -42,8 +42,16 @@ def test_long_input_sets_the_long_input_flag() -> None:
 
 
 def test_singular_long_input_is_accepted() -> None:
-    """"centimeter" is matched via the unit's singular name."""
-    assert _resolve_as_unit("centimeter", METERS, "si").long_input is True
+    """"centimeter" is matched via the unit's singular name.
+
+    Asserts the same (factor, symbol, long_prefix) triple as its plural
+    sibling, not just the long_input flag — a resolver that matched the
+    singular tail but returned the wrong factor would otherwise pass.
+    """
+    resolved = _resolve_as_unit("centimeter", METERS, "si")
+    assert (resolved.factor, resolved.symbol, resolved.long_prefix) == (
+        pytest.approx(0.01), "c", "centi")
+    assert resolved.long_input is True
 
 
 def test_binary_prefix_implies_the_binary_system() -> None:
@@ -162,9 +170,16 @@ def test_forced_unit_long_input_gives_long_output() -> None:
 
 
 def test_forced_binary_unit_needs_no_system_argument() -> None:
-    """"KiB" implies the binary system, so 1536 B is 1.5 KiB with no system=."""
+    """"KiB" implies the binary system, so 1536 B is 1.5 KiB with no system=.
+
+    Also covers system="iec" explicitly agreeing with the binary prefix —
+    only the conflicting case (binary prefix + system="si") was covered
+    before, so a future guard that over-rejects any explicit `system`
+    argument would still have passed.
+    """
     assert human_quantity(1536, BYTES, as_unit="KiB") == "1.5 KiB"
     assert human_quantity(1536, BYTES, as_unit="kibibytes") == "1.5 kibibytes"
+    assert human_quantity(1536, BYTES, as_unit="KiB", system="iec") == "1.5 KiB"
 
 
 def test_explicit_long_units_false_beats_a_long_request() -> None:
