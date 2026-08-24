@@ -7,7 +7,7 @@ name = "emmykit"
 dynamic = ["version"]
 description = "Layered Python utility package — datetime parsing, logging, safe filesystem ops, mojibake fixing, lint runners, media tools, LLM wrappers. Stdlib-only base."
 readme = "README.md"
-requires-python = ">=3.12,<3.14"
+requires-python = ">=3.12"
 license = { file = "LICENSE" }
 authors = [{ name = "Emmy Killett", email = "EmmyKillett@gmail.com" }]
 keywords = [

@@ -18,7 +18,7 @@
 | Build backend             | `hatchling`                                                                                               |
 | Package version           | Bump `__version__` → `"0.3.0"` to mark the restructure                                                     |
 | Smoke-test depth          | Signature-diff for every public symbol **plus** invocation of ~5–10 pure helpers vs pre-split baseline    |
-| Python floor              | `>=3.12,<3.14` (matches current `PY_VERSION`)                                                              |
+| Python floor              | `>=3.12` (matches current `PY_VERSION`); no upper pin — new Pythons are not locked out                     |
 | Embedded `.git`           | Fix the stale `worktree = /media/emmy/...` config line before any commit                                   |
 
 ---

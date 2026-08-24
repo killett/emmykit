@@ -34,6 +34,12 @@ All notable changes to `emmykit` are documented here. Format follows
   `as_unit`.
 - Public surface unchanged at 193 names. `human_bytesize` is untouched, and
   its 4032-case baseline still passes byte-for-byte.
+- `requires-python` drops its upper bound: `>=3.12,<3.14` becomes `>=3.12`.
+  The cap locked the package out of every Python after 3.13 for no reason
+  the code supports — the base is stdlib-only and nothing here depends on a
+  language feature that a later release removes. The floor stays 3.12, and
+  the `Programming Language :: Python` classifiers still list only the
+  versions actually tested.
 
 ## [0.5.0] - 2026-08-23
 
