@@ -145,21 +145,21 @@
         3.14159,
         3
       ],
-      "result": "np.float64(3.15)"
+      "result": "3.15"
     },
     {
       "args": [
         -2.5,
         0
       ],
-      "result": "np.float64(-10.0)"
+      "result": "-10.0"
     },
     {
       "args": [
         1.0,
         5
       ],
-      "result": "np.float64(1.0)"
+      "result": "1.0"
     }
   ],
   "sci_exp": [

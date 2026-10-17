@@ -692,4 +692,6 @@ def round_out(x: float, round_digits: int = 3, max_digits: int = 15) -> float:
     x = x/thisfactor
     if x > 0: x = np.ceil(x)
     else:     x = np.floor(x)
-    return x*(thisfactor*1.0)
+    # float(), not the np.float64 that np.ceil/np.floor produce: the
+    # annotation promises a float, and numpy 2 reprs its scalars differently.
+    return float(x*(thisfactor*1.0))
