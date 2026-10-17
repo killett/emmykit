@@ -2013,7 +2013,7 @@ Returns:
     for NaT/NaN values.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L667)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L668)
 
 </details>
 
@@ -2022,7 +2022,7 @@ Returns:
 <summary><code>AdaptiveDateFormatter</code> — Matplotlib Formatter that auto-selects date label precision.</summary>
 
 ```python
-AdaptiveDateFormatter(*, min_precision: 'int' = 0, max_precision: 'int' = 4, format_levels: "'list[str] | None'" = None) -> 'None'
+AdaptiveDateFormatter(*, min_precision: 'int' = 0, max_precision: 'int' = 4, format_levels: "'list[str] | None'" = None) -> 'AdaptiveDateFormatter'
 ```
 
 ```text
@@ -2032,10 +2032,21 @@ Uses adaptive disambiguation: labels start at the coarsest level and
 refine until all tick labels are unique. Drop-in replacement for any
 matplotlib axis formatter or colorbar formatter.
 
+Every instance is a real `matplotlib.ticker.Formatter`, so matplotlib
+installs it as-is and hands `format_ticks` all the ticks at once, which
+is what lets it compare them. matplotlib is imported on first
+construction rather than with this module, so ``import emmykit`` stays
+stdlib-only. An instance's class is a subclass built at that point;
+``isinstance(fmt, AdaptiveDateFormatter)`` holds as usual.
+
 Args:
     min_precision: Minimum precision level (default: Precision.YEAR).
     max_precision: Maximum precision level (default: Precision.SECOND).
     format_levels: Custom format strings per level.
+
+Raises:
+    ImportError: On construction, if matplotlib is not installed
+        (``pip install 'emmykit[datetime]'``).
 
 Example:
     >>> ax.xaxis.set_major_formatter(AdaptiveDateFormatter())
@@ -2044,7 +2055,7 @@ Example:
 
 **Public methods:** `format_ticks`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L723)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L751)
 
 </details>
 
@@ -2056,7 +2067,7 @@ Example:
 AnyDateTimeType: TypeAlias = 'str | float | int | np.datetime64 | pd.Timestamp | dt.datetime'
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L324)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L325)
 
 </details>
 
@@ -2074,7 +2085,7 @@ If use_astropy is True, astropy.time is used for sub-second and leap-second–aw
 Usage: new_datetime_datetime_object = decimal_year_to_datetime(2002.291)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L282)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L283)
 
 </details>
 
@@ -2090,7 +2101,7 @@ extract_timestamp(the_string: 'str') -> 'str | None'
 Extract timestamp string (in format YYYYMMDD-HHMMSS) from the_string, or None if not found.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L122)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L123)
 
 </details>
 
@@ -2119,7 +2130,7 @@ Raises:
     ValueError: If either date1 or date2 is not a datetime.datetime object.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L64)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L65)
 
 </details>
 
@@ -2147,7 +2158,7 @@ Raises:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L15)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L16)
 
 </details>
 
@@ -2213,7 +2224,7 @@ Raises:
     TypeError:   If the given_date is not a string, float, int, numpy.datetime64, pandas.Timestamp, or datetime.datetime object.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L393)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L394)
 
 </details>
 
@@ -2248,7 +2259,7 @@ Raises:
     ValueError if the string cannot be converted to a valid timezone.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L185)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L186)
 
 </details>
 
@@ -2266,7 +2277,7 @@ Integer constants representing date-formatting precision levels.
 Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L617)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L618)
 
 </details>
 

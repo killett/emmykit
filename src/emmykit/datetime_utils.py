@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import functools
 import logging
 import re
 
@@ -720,6 +721,33 @@ def adaptive_date_labels(
     fmt = levels[max_precision]
     return [d.strftime(fmt) if d is not None else "" for d in normalized]
 
+@functools.cache
+def _formatter_class(cls: type[AdaptiveDateFormatter]) -> type[AdaptiveDateFormatter]:
+    """Return a subclass of both `cls` and `matplotlib.ticker.Formatter`.
+
+    Built on first use and cached per class, so matplotlib is imported when a
+    formatter is first constructed rather than when this module is imported.
+
+    Args:
+        cls: `AdaptiveDateFormatter` or a subclass of it.
+
+    Returns:
+        A class named like `cls` whose instances matplotlib accepts as a
+        `Formatter` as-is, instead of wrapping them in a `FuncFormatter`.
+
+    Raises:
+        ImportError: If matplotlib is not installed.
+    """
+    try:
+        import matplotlib.ticker as mticker
+    except ImportError as exc:
+        msg = ("AdaptiveDateFormatter needs matplotlib, an optional dependency: "
+               "pip install 'emmykit[datetime]'")
+        raise ImportError(msg) from exc
+
+    namespace = {"__module__": cls.__module__, "__qualname__": cls.__qualname__}
+    return type(cls.__name__, (cls, mticker.Formatter), namespace)
+
 class AdaptiveDateFormatter:
     """Matplotlib Formatter that auto-selects date label precision.
 
@@ -727,15 +755,48 @@ class AdaptiveDateFormatter:
     refine until all tick labels are unique. Drop-in replacement for any
     matplotlib axis formatter or colorbar formatter.
 
+    Every instance is a real `matplotlib.ticker.Formatter`, so matplotlib
+    installs it as-is and hands `format_ticks` all the ticks at once, which
+    is what lets it compare them. matplotlib is imported on first
+    construction rather than with this module, so ``import emmykit`` stays
+    stdlib-only. An instance's class is a subclass built at that point;
+    ``isinstance(fmt, AdaptiveDateFormatter)`` holds as usual.
+
     Args:
         min_precision: Minimum precision level (default: Precision.YEAR).
         max_precision: Maximum precision level (default: Precision.SECOND).
         format_levels: Custom format strings per level.
 
+    Raises:
+        ImportError: On construction, if matplotlib is not installed
+            (``pip install 'emmykit[datetime]'``).
+
     Example:
         >>> ax.xaxis.set_major_formatter(AdaptiveDateFormatter())
         >>> cbar.ax.yaxis.set_major_formatter(AdaptiveDateFormatter())
     """
+
+    def __new__(
+        cls,
+        *,
+        min_precision: int = Precision.YEAR,
+        max_precision: int = Precision.SECOND,
+        format_levels: "list[str] | None" = None,
+    ) -> AdaptiveDateFormatter:
+        """Create an instance whose class is also a matplotlib `Formatter`.
+
+        The keywords are accepted here only so that construction matches
+        `__init__`, which is what stores them.
+
+        Args:
+            min_precision: Minimum precision level.
+            max_precision: Maximum precision level.
+            format_levels: Custom format strings per level.
+
+        Returns:
+            An instance of `cls` that is also a `matplotlib.ticker.Formatter`.
+        """
+        return super().__new__(_formatter_class(cls))
 
     def __init__(
         self,
@@ -751,12 +812,24 @@ class AdaptiveDateFormatter:
             max_precision: Maximum precision level.
             format_levels: Custom format strings per level.
         """
-        import matplotlib.ticker as mticker  # noqa: F401
         self._min_precision = min_precision
         self._max_precision = max_precision
         self._format_levels = format_levels
-        self._formatter = mticker.Formatter.__new__(mticker.Formatter)
         self._cached_labels: dict[float, str] = {}
+
+    def __reduce__(self) -> tuple[Any, ...]:
+        """Pickle by the public class rather than the run-time one.
+
+        An instance's real class comes from `_formatter_class` and cannot be
+        found by name, so pickling it as-is would fail, and with it any
+        matplotlib figure the formatter is installed on.
+
+        Returns:
+            The class to call on unpickling, its (empty) arguments, and the
+            instance state to restore afterwards.
+        """
+        public_class = type(self).__bases__[0]
+        return (public_class, (), self.__dict__)
 
     def format_ticks(self, values: list[float]) -> list[str]:
         """Format all tick values collectively with disambiguation.

@@ -37,7 +37,7 @@
   },
   "AdaptiveDateFormatter": {
     "kind": "type",
-    "signature": "(*, min_precision: 'int' = 0, max_precision: 'int' = 4, format_levels: \"'list[str] | None'\" = None) -> 'None'"
+    "signature": "(*, min_precision: 'int' = 0, max_precision: 'int' = 4, format_levels: \"'list[str] | None'\" = None) -> 'AdaptiveDateFormatter'"
   },
   "AnyDateTimeType": {
     "kind": "str"

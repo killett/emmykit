@@ -6,6 +6,30 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-10-17
+
+### Fixed
+
+- `AdaptiveDateFormatter` never adapted on a real axis. It was not a
+  `matplotlib.ticker.Formatter`, so `set_major_formatter` silently wrapped
+  it in a `FuncFormatter`, which asks for one label at a time;
+  `format_ticks`, the method that compares the ticks, never ran, and every
+  label fell back to day precision. A four-year axis read `2021-01-01,
+  2021-07-01, ...` instead of `2021-01, 2021-07, ...`, on the x axis and on
+  colorbars alike. Every instance is now a real `Formatter`, so matplotlib
+  installs it as-is. `adaptive_date_labels` was always correct and is
+  unchanged.
+- `import emmykit` still does not import matplotlib: the formatter builds
+  its matplotlib-backed class on first construction. Without matplotlib,
+  construction raises an `ImportError` that names `emmykit[datetime]`.
+  Figures carrying the formatter still pickle.
+- The constructor keywords are unchanged. Its signature now reads
+  `-> 'AdaptiveDateFormatter'` rather than `-> 'None'`, because it comes
+  from the new `__new__`; the public surface is otherwise unchanged at
+  193 names.
+- New tests draw the formatter on a real x axis and colorbar. There were
+  none before, which is how this shipped.
+
 ## [0.6.0] - 2026-08-23
 
 ### Added
