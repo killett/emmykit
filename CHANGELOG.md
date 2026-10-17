@@ -6,6 +6,28 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.6.2] - 2026-10-17
+
+### Fixed
+
+- Type checkers rejected `AdaptiveDateFormatter` where matplotlib wants a
+  `Formatter`: `ax.xaxis.set_major_formatter(AdaptiveDateFormatter())` was
+  an `arg-type` error under mypy, though every instance is a `Formatter` at
+  run time. The class now declares `Formatter` as its base for type
+  checkers only (behind `TYPE_CHECKING`); at run time nothing changes and
+  `import emmykit` still does not import matplotlib. A
+  `cast(Formatter, ...)` workaround can go.
+- `type(fmt)(...)` built a second run-time class on top of the first, and
+  the result could not be pickled. It now constructs an ordinary
+  formatter of the same class.
+- `round_out` returned a `numpy.float64` despite its `-> float`
+  annotation, so its repr depended on the numpy major version
+  (`np.float64(3.15)` under numpy 2, `3.15` under numpy 1), and three
+  pinned results failed on numpy 1.26. It now returns a plain `float`.
+  `np.float64` already subclassed `float`, so arithmetic and `isinstance`
+  checks behave as before. The test suite passes on numpy 1.26.4 with
+  matplotlib 3.8.4 as well as on numpy 2.
+
 ## [0.6.1] - 2026-10-17
 
 ### Fixed

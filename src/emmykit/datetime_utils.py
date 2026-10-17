@@ -11,7 +11,7 @@ from emmykit.logging_utils import fallback_logging_config
 from emmykit.numeric_helpers import is_float, seconds_in_unit
 
 from collections.abc import Sequence
-from typing import Any, Final, TypeAlias
+from typing import TYPE_CHECKING, Any, Final, TypeAlias
 
 def human_timespan(timespan: int | float) -> str:
     """
@@ -734,6 +734,7 @@ def _formatter_class(cls: type[AdaptiveDateFormatter]) -> type[AdaptiveDateForma
     Returns:
         A class named like `cls` whose instances matplotlib accepts as a
         `Formatter` as-is, instead of wrapping them in a `FuncFormatter`.
+        `cls` itself if it already is one, as ``type(fmt)`` is.
 
     Raises:
         ImportError: If matplotlib is not installed.
@@ -745,10 +746,20 @@ def _formatter_class(cls: type[AdaptiveDateFormatter]) -> type[AdaptiveDateForma
                "pip install 'emmykit[datetime]'")
         raise ImportError(msg) from exc
 
+    if issubclass(cls, mticker.Formatter):
+        return cls
     namespace = {"__module__": cls.__module__, "__qualname__": cls.__qualname__}
     return type(cls.__name__, (cls, mticker.Formatter), namespace)
 
-class AdaptiveDateFormatter:
+# Type checkers are told the base every instance really has (see
+# `_formatter_class`); at run time it stays `object`, so importing this
+# module still does not import matplotlib.
+if TYPE_CHECKING:
+    from matplotlib.ticker import Formatter as _FormatterBase
+else:
+    _FormatterBase = object
+
+class AdaptiveDateFormatter(_FormatterBase):
     """Matplotlib Formatter that auto-selects date label precision.
 
     Uses adaptive disambiguation: labels start at the coarsest level and
@@ -760,7 +771,9 @@ class AdaptiveDateFormatter:
     is what lets it compare them. matplotlib is imported on first
     construction rather than with this module, so ``import emmykit`` stays
     stdlib-only. An instance's class is a subclass built at that point;
-    ``isinstance(fmt, AdaptiveDateFormatter)`` holds as usual.
+    ``isinstance(fmt, AdaptiveDateFormatter)`` holds as usual. Type checkers
+    see `Formatter` as the declared base, so passing an instance to
+    ``set_major_formatter`` type-checks without a cast.
 
     Args:
         min_precision: Minimum precision level (default: Precision.YEAR).

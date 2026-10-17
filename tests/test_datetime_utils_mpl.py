@@ -202,6 +202,27 @@ def test_figure_pickle_round_trip_keeps_the_formatter_and_its_settings() -> None
     ]
 
 
+def test_formatter_built_from_type_of_another_pickles_with_its_settings() -> None:
+    """`type(fmt)(...)` gives an ordinary formatter, not a doubly built one.
+
+    `type(fmt)` is the run-time class, already a `Formatter`. Fails if
+    construction wraps it in another run-time layer: the new instance's
+    public class would then be the unimportable run-time one, and pickling
+    raises `PicklingError`.
+    """
+    levels = ["%Y", "%Y/%m", "%Y/%m/%d", "%Y/%m/%d %H:%M", "%Y/%m/%d %H:%M:%S"]
+    fmt = AdaptiveDateFormatter()
+    clone = type(fmt)(format_levels=levels)
+
+    assert type(clone) is type(fmt)
+    restored = pickle.loads(pickle.dumps(clone))
+    assert restored.format_ticks(_new_year_ticks(2021, 2022)) == ["2021", "2022"]
+    assert restored.format_ticks(
+        [mdates.date2num(dt.datetime(2021, 1, 1)),
+         mdates.date2num(dt.datetime(2021, 7, 1))]
+    ) == ["2021/01", "2021/07"]
+
+
 def test_importing_emmykit_does_not_import_matplotlib() -> None:
     """The stdlib-only base stays stdlib-only, star import included.
 

@@ -2037,7 +2037,9 @@ installs it as-is and hands `format_ticks` all the ticks at once, which
 is what lets it compare them. matplotlib is imported on first
 construction rather than with this module, so ``import emmykit`` stays
 stdlib-only. An instance's class is a subclass built at that point;
-``isinstance(fmt, AdaptiveDateFormatter)`` holds as usual.
+``isinstance(fmt, AdaptiveDateFormatter)`` holds as usual. Type checkers
+see `Formatter` as the declared base, so passing an instance to
+``set_major_formatter`` type-checks without a cast.
 
 Args:
     min_precision: Minimum precision level (default: Precision.YEAR).
@@ -2055,7 +2057,7 @@ Example:
 
 **Public methods:** `format_ticks`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L751)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L762)
 
 </details>
 
