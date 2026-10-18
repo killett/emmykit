@@ -6,6 +6,39 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.6.3] - 2026-10-17
+
+### Fixed
+
+- Some `AdaptiveDateFormatter` subclasses came back from `pickle` or
+  `copy.deepcopy` as the wrong class, a regression in 0.6.2. A subclass
+  that lists `Formatter` itself, `class S(AdaptiveDateFormatter,
+  Formatter)`, silently came back as a plain `AdaptiveDateFormatter`
+  without its overrides; with `Formatter` listed first it came back as a
+  bare matplotlib `Formatter`; and a subclass of `type(fmt)` could not be
+  pickled. Every subclass now comes back as itself. Subclasses that list
+  only `AdaptiveDateFormatter` were never affected.
+- Subclasses lost ordinary Python behaviour in 0.6.1. A constructor
+  parameter of their own, positional or keyword, raised `TypeError` from
+  `AdaptiveDateFormatter.__new__()`; their `__getstate__` and
+  `__setstate__` were ignored by `pickle` and `copy.deepcopy`, so a
+  subclass holding a lock could not be pickled; and values kept in
+  `__slots__` were lost. Construction and copying now work as for any
+  class. The switch to the `Formatter`-backed class moved from `__new__`
+  into `__init__`, so a subclass's `__init__` must call
+  `super().__init__()`, and the signature is 0.6.0's again. Pickling takes
+  the state from `__getstate__` and restores it without calling
+  `__init__`, as Python's default pickling does, so a subclass whose
+  `__init__` has required arguments unpickles too.
+
+### Changed
+
+- Formatters pickled by 0.6.3 cannot be unpickled by earlier versions.
+  Pickles from earlier versions still load.
+- The class docstring now says that `__init_subclass__` hooks also see the
+  class built at run time, and that a subclass listing `Formatter` among
+  its bases, `class S(AdaptiveDateFormatter, Formatter)`, gets none.
+
 ## [0.6.2] - 2026-10-17
 
 ### Fixed

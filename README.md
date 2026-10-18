@@ -2022,7 +2022,7 @@ Returns:
 <summary><code>AdaptiveDateFormatter</code> — Matplotlib Formatter that auto-selects date label precision.</summary>
 
 ```python
-AdaptiveDateFormatter(*, min_precision: 'int' = 0, max_precision: 'int' = 4, format_levels: "'list[str] | None'" = None) -> 'AdaptiveDateFormatter'
+AdaptiveDateFormatter(*, min_precision: 'int' = 0, max_precision: 'int' = 4, format_levels: "'list[str] | None'" = None) -> 'None'
 ```
 
 ```text
@@ -2041,6 +2041,12 @@ stdlib-only. An instance's class is a subclass built at that point;
 see `Formatter` as the declared base, so passing an instance to
 ``set_major_formatter`` type-checks without a cast.
 
+A subclass's ``__init__`` must call ``super().__init__()``, which is
+where the class is swapped. The built class is itself a subclass, so
+``__init_subclass__`` hooks see it too; a subclass that lists
+`Formatter` among its bases, ``class S(AdaptiveDateFormatter,
+Formatter)``, is used as it is and gets no built class.
+
 Args:
     min_precision: Minimum precision level (default: Precision.YEAR).
     max_precision: Maximum precision level (default: Precision.SECOND).
@@ -2057,7 +2063,7 @@ Example:
 
 **Public methods:** `format_ticks`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L762)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L779)
 
 </details>
 

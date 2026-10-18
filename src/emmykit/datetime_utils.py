@@ -734,7 +734,8 @@ def _formatter_class(cls: type[AdaptiveDateFormatter]) -> type[AdaptiveDateForma
     Returns:
         A class named like `cls` whose instances matplotlib accepts as a
         `Formatter` as-is, instead of wrapping them in a `FuncFormatter`.
-        `cls` itself if it already is one, as ``type(fmt)`` is.
+        It records `cls` as its ``_public_class``, the class to pickle by.
+        `cls` itself if it already is a `Formatter`, as ``type(fmt)`` is.
 
     Raises:
         ImportError: If matplotlib is not installed.
@@ -748,8 +749,24 @@ def _formatter_class(cls: type[AdaptiveDateFormatter]) -> type[AdaptiveDateForma
 
     if issubclass(cls, mticker.Formatter):
         return cls
-    namespace = {"__module__": cls.__module__, "__qualname__": cls.__qualname__}
+    namespace = {"__module__": cls.__module__, "__qualname__": cls.__qualname__,
+                 "_public_class": cls}
     return type(cls.__name__, (cls, mticker.Formatter), namespace)
+
+def _new_without_init(cls: type[AdaptiveDateFormatter]) -> AdaptiveDateFormatter:
+    """Create an uninitialized instance of `cls` that is also a `Formatter`.
+
+    Unpickling and copying call this and then restore the instance's state,
+    as Python's default pickling does, so ``__init__`` does not run again.
+
+    Args:
+        cls: The public class: `AdaptiveDateFormatter` or a subclass of it.
+
+    Returns:
+        An instance of `_formatter_class(cls)`, without its state.
+    """
+    formatter_class = _formatter_class(cls)
+    return formatter_class.__new__(formatter_class)
 
 # Type checkers are told the base every instance really has (see
 # `_formatter_class`); at run time it stays `object`, so importing this
@@ -775,6 +792,12 @@ class AdaptiveDateFormatter(_FormatterBase):
     see `Formatter` as the declared base, so passing an instance to
     ``set_major_formatter`` type-checks without a cast.
 
+    A subclass's ``__init__`` must call ``super().__init__()``, which is
+    where the class is swapped. The built class is itself a subclass, so
+    ``__init_subclass__`` hooks see it too; a subclass that lists
+    `Formatter` among its bases, ``class S(AdaptiveDateFormatter,
+    Formatter)``, is used as it is and gets no built class.
+
     Args:
         min_precision: Minimum precision level (default: Precision.YEAR).
         max_precision: Maximum precision level (default: Precision.SECOND).
@@ -789,28 +812,6 @@ class AdaptiveDateFormatter(_FormatterBase):
         >>> cbar.ax.yaxis.set_major_formatter(AdaptiveDateFormatter())
     """
 
-    def __new__(
-        cls,
-        *,
-        min_precision: int = Precision.YEAR,
-        max_precision: int = Precision.SECOND,
-        format_levels: "list[str] | None" = None,
-    ) -> AdaptiveDateFormatter:
-        """Create an instance whose class is also a matplotlib `Formatter`.
-
-        The keywords are accepted here only so that construction matches
-        `__init__`, which is what stores them.
-
-        Args:
-            min_precision: Minimum precision level.
-            max_precision: Maximum precision level.
-            format_levels: Custom format strings per level.
-
-        Returns:
-            An instance of `cls` that is also a `matplotlib.ticker.Formatter`.
-        """
-        return super().__new__(_formatter_class(cls))
-
     def __init__(
         self,
         *,
@@ -824,7 +825,13 @@ class AdaptiveDateFormatter(_FormatterBase):
             min_precision: Minimum precision level.
             max_precision: Maximum precision level.
             format_levels: Custom format strings per level.
+
+        Raises:
+            ImportError: If matplotlib is not installed.
         """
+        # Swapped here rather than in __new__, so construction stays plain
+        # Python: whatever a subclass's __init__ takes reaches it untouched.
+        self.__class__ = _formatter_class(type(self))
         self._min_precision = min_precision
         self._max_precision = max_precision
         self._format_levels = format_levels
@@ -833,16 +840,24 @@ class AdaptiveDateFormatter(_FormatterBase):
     def __reduce__(self) -> tuple[Any, ...]:
         """Pickle by the public class rather than the run-time one.
 
-        An instance's real class comes from `_formatter_class` and cannot be
-        found by name, so pickling it as-is would fail, and with it any
-        matplotlib figure the formatter is installed on.
+        A class built by `_formatter_class` cannot be found by name, so
+        pickling its instances as-is would fail, and with it any matplotlib
+        figure the formatter is installed on. Instances of a class that
+        already was a `Formatter` keep that class and pickle by it.
+
+        As with default pickling, the state is whatever ``__getstate__``
+        returns (``__dict__`` plus any slot values, unless a subclass
+        overrides it), and unpickling restores it without calling
+        ``__init__``, so a subclass may give ``__init__`` required arguments.
 
         Returns:
-            The class to call on unpickling, its (empty) arguments, and the
+            `_new_without_init`, its argument (the public class), and the
             instance state to restore afterwards.
         """
-        public_class = type(self).__bases__[0]
-        return (public_class, (), self.__dict__)
+        # vars(), not getattr(): a subclass of a built class inherits the
+        # attribute, but it is a public class in its own right.
+        public_class = vars(type(self)).get("_public_class", type(self))
+        return (_new_without_init, (public_class,), self.__getstate__())
 
     def format_ticks(self, values: list[float]) -> list[str]:
         """Format all tick values collectively with disambiguation.
