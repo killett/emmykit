@@ -1445,7 +1445,7 @@ Raises:
     TypeError:   If 'source_or_filepath' is not a string or a file path.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L427)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L414)
 
 </details>
 
@@ -1494,7 +1494,7 @@ Notes:
     result in an empty string.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L321)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L308)
 
 </details>
 
@@ -1539,7 +1539,7 @@ normalize_to_dict(value: 'Any', var_name: 'str', script_path: 'str | os.PathLike
 Ensure that 'value' is a dict. If it's a JSON-style string, try to parse it. Otherwise, log a warning and return an empty dict.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L300)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L287)
 
 </details>
 

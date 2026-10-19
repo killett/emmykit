@@ -264,19 +264,6 @@ def show_function_source(target: object | str, *, unwrap: bool = True,
         note = (f"# Appending to existing file: {os.fspath(path)}"
                 if exists
                 else f"# Creating new file: {os.fspath(path)}")
-        # Try atomic write helper if available; fall back on any failure.
-        _maw = globals().get("my_atomic_write")
-        if callable(_maw):
-            try:
-                # newline hygiene: one newline after note; ensure src ends with exactly one
-                payload = (note + "\n") + (src if src.endswith("\n") else src + "\n")
-                _maw(path, payload, "a", encoding=DEFAULT_ENCODING)
-                return src
-            except Exception as e:
-                # Non-atomic fallback below
-                if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug(
-                    "my_atomic_write failed for %s: %s", path, e
-                )
         # newline="" lets print() manage newlines consistently across platforms
         out = path.open("a", encoding=DEFAULT_ENCODING, newline="")
         closer = out.close

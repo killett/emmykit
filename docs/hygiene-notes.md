@@ -83,10 +83,6 @@ with the reason, so later passes don't argue about them again. Locations are
   and the `9e9` unknown-price placeholder.** The placeholder is an open bug
   (it flips the cheapest-model choice), and the rest is best cleaned up with
   `llm`'s other open bugs.
-- **`introspection.show_function_source`'s `globals().get("my_atomic_write")`
-  branch**, dead since the split. Now that `my_atomic_write` works, restoring
-  the atomic append (an import from `file_io`) would change behaviour, so it
-  awaits a decision rather than deletion.
 - **Private entries in `tools/_layout.json`.** Only public names are read now;
   the private ones served the deleted `tools/extract_symbols.py`. Deriving the
   whole map from the module ASTs would retire the file.
