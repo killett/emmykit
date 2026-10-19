@@ -107,6 +107,10 @@ All notable changes to `emmykit` are documented here. Format follows
   seconds at a time waiting for room that could never exist. Such a
   request now waits only until no other request is in the minute window,
   then goes out with a warning.
+- `ensure_file`'s messages for an empty file read "BLAHFile is empty" (the
+  `raise_on_empty` error) and "BLAH2File is empty" (the warning), debugging
+  leftovers seen by every function that checks its input file. Both now
+  read "File is empty: <path>".
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

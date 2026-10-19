@@ -50,9 +50,9 @@ def ensure_file(path: str | os.PathLike[str],
         raise ValueError(f"Path exists but is not a regular file: {os.fspath(p)}")
     if (p_size := safe_size(p, follow_symlinks=follow_symlinks)) is not None:
         if raise_on_empty and p_size == 0:
-            raise ValueError(f"BLAHFile is empty: {os.fspath(p)}")
+            raise ValueError(f"File is empty: {os.fspath(p)}")
         elif verbose and p_size == 0:
-            logging.warning("BLAH2File is empty: %s", os.fspath(p))
+            logging.warning("File is empty: %s", os.fspath(p))
     else:
         if raise_on_empty:
             raise ValueError(f"File size is unknown (permissions?): {os.fspath(p)}")
