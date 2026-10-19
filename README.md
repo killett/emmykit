@@ -196,7 +196,7 @@ the converters internally.
   - [`parse_datetime`](#parse_datetime)
   - [`parse_timezone`](#parse_timezone)
   - [`Precision`](#precision)
-- [`json_io` — JSON serialization + dataclass conversion](#m-json_io)
+- [`json_io` — JSON serialization with type tags](#m-json_io)
   - [`BUILTIN_JSON_TAGS`](#builtin_json_tags)
   - [`from_jsonable`](#from_jsonable)
   - [`load_options_from_json`](#load_options_from_json)
@@ -948,7 +948,7 @@ Raises:
 
 _Layer 1._  `from emmykit.paths_ensure import …`
 
-Leaf helper that coerces `os.PathLike` / `str` arguments into resolved `Path` objects.
+Leaf helper that coerces `os.PathLike` / `str` arguments into `~`-expanded absolute `Path` objects (symlinks are not resolved).
 
 <a id="ensure_path"></a><a id="user-content-ensure_path"></a>
 <details>
@@ -978,7 +978,7 @@ Returns:
 
 _Layer 2._  `from emmykit.safe_paths import …`
 
-`safe_*` wrappers around `os.stat`/`Path.exists`/`is_file`/`is_dir` that never raise, plus `ensure_file`/`ensure_dir` builders that compose on top of them.
+`safe_*` wrappers around `os.stat`/`Path.exists`/`is_file`/`is_dir` that return a value instead of raising on permission and similar errors, plus `ensure_file`/`ensure_dir`, which raise when the path is missing or the wrong kind.
 
 <a id="ensure_dir"></a><a id="user-content-ensure_dir"></a>
 <details>
@@ -1935,7 +1935,7 @@ WATTS = Unit(symbol='W', singular='watt', plural='watts')
 
 _Layer 1._  `from emmykit.numeric_helpers import …`
 
-Tiny helpers shared by `humanize` and `datetime_utils` so neither has to pull in the other.
+Tiny helpers kept below `datetime_utils` (which uses them) so it doesn't depend on modules above it.
 
 <a id="is_float"></a><a id="user-content-is_float"></a>
 <details>
@@ -2282,11 +2282,11 @@ Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
 </details>
 
 <a id="m-json_io"></a><a id="user-content-m-json_io"></a>
-### `json_io` — JSON serialization + dataclass conversion
+### `json_io` — JSON serialization with type tags
 
 _Layer 4._  `from emmykit.json_io import …`
 
-`to_jsonable`/`from_jsonable` round-trip recursively-typed structures including `Path`, `datetime`, and dataclasses, with paired `save_options_to_json`/`load_options_from_json` helpers for `Options` objects.
+`to_jsonable`/`from_jsonable` round-trip nested structures including `Path`, `datetime`, tuples, sets and enums (other types via `register_json_type`; anything else is stored as its `str()`), with paired `save_options_to_json`/`load_options_from_json` helpers for `Options` objects.
 
 <a id="builtin_json_tags"></a><a id="user-content-builtin_json_tags"></a>
 <details>
@@ -3056,7 +3056,7 @@ Find the command for the preferred version of python (stored here as PY_VERSION)
 
 _Layer 5._  `from emmykit.files import …`
 
-`download_file` with progress, `calculate_checksum`, `query_free_space` via shutil, `filename_format` for legal-on-most-OSes name munging, and `verify_script` to confirm a shell script is well-formed.
+`download_file` with progress, `calculate_checksum`, `query_free_space` (statvfs, else shutil), `filename_format` for legal-on-most-OSes name munging, and `verify_script`, which creates or overwrites a file so it holds exactly the given text.
 
 <a id="calculate_checksum"></a><a id="user-content-calculate_checksum"></a>
 <details>

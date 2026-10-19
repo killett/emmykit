@@ -90,17 +90,17 @@ MODULE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
     "text_constants":   ("Translation tables for text normalization",
                          "Character maps used by `normalize_for_search` to fold quotes, ellipses, and other punctuation into ASCII equivalents."),
     "numeric_helpers":  ("Numeric parsing + unit-to-seconds conversion",
-                         "Tiny helpers shared by `humanize` and `datetime_utils` so neither has to pull in the other."),
+                         "Tiny helpers kept below `datetime_utils` (which uses them) so it doesn't depend on modules above it."),
     "paths_ensure":     ("Path normalization",
-                         "Leaf helper that coerces `os.PathLike` / `str` arguments into resolved `Path` objects."),
+                         "Leaf helper that coerces `os.PathLike` / `str` arguments into `~`-expanded absolute `Path` objects (symlinks are not resolved)."),
     "inflect_utils":    ("Grammar + pluralization helpers",
                          "Lazy wrapper over the `inflect` package with a stdlib-only fallback table for common nouns when the extra isn't installed."),
     "logging_utils":    ("Logging configuration and custom handlers",
                          "Drop-in `configure_logging`, level-filtering handlers, an in-memory ring-buffer handler, and an introspection helper "
                          "(`return_method_name`) used throughout the package for self-naming log messages."),
     "safe_paths":       ("Exception-swallowing filesystem queries",
-                         "`safe_*` wrappers around `os.stat`/`Path.exists`/`is_file`/`is_dir` that never raise, plus `ensure_file`/`ensure_dir` "
-                         "builders that compose on top of them."),
+                         "`safe_*` wrappers around `os.stat`/`Path.exists`/`is_file`/`is_dir` that return a value instead of raising on permission "
+                         "and similar errors, plus `ensure_file`/`ensure_dir`, which raise when the path is missing or the wrong kind."),
     "file_io":          ("Atomic file-write helper",
                          "`my_atomic_write` — writes text or bytes to a path all-or-nothing (temp file + rename), under a `filelock` lock for cross-process safety."),
     "io_subprocess":    ("Subprocess wrappers + critical-error reporter",
@@ -119,8 +119,9 @@ MODULE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
                          "`parse_datetime` is the load-bearing dispatcher (handles ISO, JD/MJD, decimal years, dateutil fallbacks); "
                          "supplemented by `AdaptiveDateFormatter` for matplotlib, `human_timespan` for durations, and a small zoo of "
                          "tz/JD helpers."),
-    "json_io":          ("JSON serialization + dataclass conversion",
-                         "`to_jsonable`/`from_jsonable` round-trip recursively-typed structures including `Path`, `datetime`, and dataclasses, "
+    "json_io":          ("JSON serialization with type tags",
+                         "`to_jsonable`/`from_jsonable` round-trip nested structures including `Path`, `datetime`, tuples, sets and enums (other "
+                         "types via `register_json_type`; anything else is stored as its `str()`), "
                          "with paired `save_options_to_json`/`load_options_from_json` helpers for `Options` objects."),
     "diff_view":        ("Diff rendering with visible whitespace",
                          "`my_diff` (color unified diff), `diff_and_confirm` (interactive accept/reject loop), `highlight_changes` (per-line "
@@ -137,8 +138,8 @@ MODULE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
     "python_env":       ("Python interpreter discovery",
                          "`find_preferred_python_version` locates the preferred interpreter on PATH; `check_python_version` confirms a given python command meets the minimum version."),
     "files":            ("Checksums, downloads, filename formatting, free-space queries",
-                         "`download_file` with progress, `calculate_checksum`, `query_free_space` via shutil, `filename_format` for legal-on-most-OSes "
-                         "name munging, and `verify_script` to confirm a shell script is well-formed."),
+                         "`download_file` with progress, `calculate_checksum`, `query_free_space` (statvfs, else shutil), `filename_format` for "
+                         "legal-on-most-OSes name munging, and `verify_script`, which creates or overwrites a file so it holds exactly the given text."),
     "lint":             ("flake8 / autopep8 / mypy interactive runners + multireplace",
                          "Run linters, gather + display findings with color, prompt-and-apply autopep8 fixes, and the `multireplace` regex-driven "
                          "search-and-replace tool that shares lint internals."),
