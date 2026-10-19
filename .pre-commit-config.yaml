@@ -1,0 +1,29 @@
+repos:
+  - repo: local
+    hooks:
+      # Built-in pygrep — no remote pre-commit-hooks dep, no network.
+      # Real conflict markers: `<<<<<<< <ref>` and `>>>>>>> <ref>` (with
+      # trailing space) and `=======` *alone on a line*. The bare-`=======`
+      # form would otherwise false-positive on pytest's `======== … ========`
+      # header lines (>7 equals followed by text), so we anchor it $.
+      - id: check-merge-conflict
+        name: check-merge-conflict
+        entry: '^(<<<<<<< |>>>>>>> |={7}$)'
+        language: pygrep
+
+      # Local reimplementation of pre-commit-hooks' check-added-large-files
+      # (default maxkb=500 → 500000 bytes). System bash + wc only; bash's
+      # arithmetic context strips BSD-wc's leading whitespace so no tr needed.
+      - id: check-added-large-files
+        name: check-added-large-files (limit 500 KB)
+        entry: 'bash -c ''max=500000; rc=0; for f in "$@"; do sz=$(wc -c < "$f"); if (( sz > max )); then echo "$f: $sz bytes exceeds limit of $max" >&2; rc=1; fi; done; exit $rc'' --'
+        language: system
+
+      # Local reimplementation of pre-commit-hooks' check-toml. `language:
+      # python` runs it on the interpreter pre-commit itself runs on, not on
+      # whatever `python3` is first on PATH (macOS's may predate tomllib).
+      - id: check-toml
+        name: check-toml
+        entry: 'python -c ''import sys,tomllib;[tomllib.load(open(f,"rb")) for f in sys.argv[1:]]'''
+        language: python
+        types: [toml]
