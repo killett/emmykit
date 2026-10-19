@@ -49,7 +49,7 @@ text       = ["ftfy", "Unidecode"]
 lint       = ["flake8", "autopep8", "flake8-bugbear"]
 llm        = ["litellm", "tenacity", "tiktoken"]
 media      = ["opencv-python", "Pillow", "imageio-ffmpeg", "pulsectl"]
-files      = ["atomicwrites", "filelock", "requests"]
+files      = ["filelock", "requests"]
 inflection = ["inflect"]
 html       = ["beautifulsoup4"]
 # Umbrella that pulls in every optional dep — used by the Phase-4 test env.
@@ -59,7 +59,7 @@ all = [
     "flake8", "autopep8", "flake8-bugbear",
     "litellm", "tenacity", "tiktoken",
     "opencv-python", "Pillow", "imageio-ffmpeg", "pulsectl",
-    "atomicwrites", "filelock", "requests",
+    "filelock", "requests",
     "inflect",
     "beautifulsoup4",
 ]

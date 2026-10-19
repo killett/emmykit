@@ -1234,7 +1234,7 @@ Raises:
 
 _Layer 2._  `from emmykit.file_io import …`
 
-`my_atomic_write` — lazy `atomicwrites` + `filelock` wrapper that lets you write text to a path with cross-process safety.
+`my_atomic_write` — writes text or bytes to a path all-or-nothing (temp file + rename), under a `filelock` lock for cross-process safety.
 
 <a id="my_atomic_write"></a><a id="user-content-my_atomic_write"></a>
 <details>
@@ -1247,7 +1247,12 @@ my_atomic_write(filepath: 'str | Path | os.PathLike[str]', data: 'str | bytes | 
 ```text
 Atomically write 'data' to 'filepath' with an advisory lock.
 
-- If write_mode="a" and file exists, data is appended.
+The new contents go to a temp file in the same folder, which is flushed to
+disk and then renamed over 'filepath', so readers see the old file or the
+new one, never a partial write. An existing file keeps its permissions.
+
+- If write_mode="a" and file exists, data is appended (the old contents
+  and the new data are written out together).
 - If write_mode="a" and file does *not* exist, file is created.
 - A '.lock' file beside 'filepath' prevents concurrent writers.
 
@@ -1263,9 +1268,10 @@ Returns:
 
 Raises:
     RuntimeError: If the lock cannot be acquired within the specified timeout.
+    OSError:      If writing fails; 'filepath' is then left as it was.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/file_io.py#L13)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/file_io.py#L15)
 
 </details>
 

@@ -16,6 +16,14 @@ All notable changes to `emmykit` are documented here. Format follows
 - The README's `palette` link opened the `Palette` class, because both
   names had the anchor `palette`. The function's anchor is now
   `palette-1`; all other anchors are unchanged.
+- `my_atomic_write` failed on every call. Current filelock rejects the
+  default `lock_timeout=None`, and `atomicwrites` refused both append
+  mode and an option the function passed it. It now uses only the
+  standard library: the new contents go to a temp file in the same folder,
+  are flushed to disk and are renamed over the target. An existing file
+  keeps its permissions, append mode writes the old contents and the new
+  data together, and `lock_timeout=None` waits for the lock indefinitely,
+  as documented.
 
 ### Removed (breaking)
 
@@ -37,6 +45,8 @@ All notable changes to `emmykit` are documented here. Format follows
 - The README's opening line now gives the size of the public surface as
   `tools/generate_readme.py` counts it, so it can no longer drift. It had
   said 181.
+- The `files` extra no longer installs `atomicwrites`, which is archived
+  upstream and no longer used.
 
 ## [0.6.3] - 2026-10-17
 

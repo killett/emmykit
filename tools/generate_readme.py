@@ -101,7 +101,7 @@ MODULE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
                          "`safe_*` wrappers around `os.stat`/`Path.exists`/`is_file`/`is_dir` that never raise, plus `ensure_file`/`ensure_dir` "
                          "builders that compose on top of them."),
     "file_io":          ("Atomic file-write helper",
-                         "`my_atomic_write` — lazy `atomicwrites` + `filelock` wrapper that lets you write text to a path with cross-process safety."),
+                         "`my_atomic_write` — writes text or bytes to a path all-or-nothing (temp file + rename), under a `filelock` lock for cross-process safety."),
     "io_subprocess":    ("Subprocess wrappers + critical-error reporter",
                          "`my_fopen` (smart-encoding text-file opener), `my_popen` (subprocess with timeout + capture), `my_critical_error` "
                          "(logging + traceback + raise pattern), and the `MyPopenResult` data carrier."),
