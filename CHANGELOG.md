@@ -24,6 +24,12 @@ All notable changes to `emmykit` are documented here. Format follows
   keeps its permissions, append mode writes the old contents and the new
   data together, and `lock_timeout=None` waits for the lock indefinitely,
   as documented.
+- `fix_mojibake` could lose the file it was fixing. With
+  `make_backup=True`, the default, it renamed the original to the backup
+  name before writing the fixed text, so when that write failed (and it
+  always did, see `my_atomic_write` above) only the `.bak` file remained.
+  The backup is now a copy, and the original stays in place until the
+  fixed text replaces it.
 
 ### Removed (breaking)
 

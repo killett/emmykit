@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import os
 import re
+import shutil
 
 from emmykit.extensions import HTML_EXTENSIONS_SET
 from emmykit.logging_utils import fallback_logging_config
@@ -185,7 +186,9 @@ def fix_mojibake(filepath: str | os.PathLike[str], make_backup: bool = True,
                 current_datetime = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
                 backup_path_str = f"{os.fspath(filepath)}_{current_datetime}.bak"
                 try:
-                    filepath.rename(backup_path_str)
+                    # Copy, not rename: the original must stay put until the
+                    # fixed text has replaced it, in case that write fails.
+                    shutil.copy2(filepath, backup_path_str)
                     logging.info("Backup created: %s", backup_path_str)
                 except OSError:
                     logging.exception("Failed to create backup for %s.", os.fspath(filepath))
