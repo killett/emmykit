@@ -3958,7 +3958,7 @@ Raises:
     OSError:           If there is an error during file operations.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/html_files.py#L88)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/html_files.py#L91)
 
 </details>
 
@@ -3980,9 +3980,9 @@ Args:
     prefix:   The prefix to remove from the filename.
 
 Returns:
-    True:  If the file was successfully renamed, or if it didn't need renaming.
-    False: If the file was not renamed because it didn't start with the prefix,
-           or if the new filename already exists.
+    True:  If the file was renamed.
+    False: If it was not: the name doesn't start with the prefix, nothing would be
+           left of it without the prefix, or the new name already exists.
 
 Raises:
     OSError: If the rename operation fails due to an OS error (e.g., permission denied).
@@ -4004,7 +4004,7 @@ remove_prefix_from_html_title(filepath: 'str | os.PathLike[str]', prefix: 'str')
 If the given filepath is an HTML file and its title starts with the given prefix, remove the prefix from the title and save the file, then return True. Otherwise, return False.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/html_files.py#L59)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/html_files.py#L62)
 
 </details>
 

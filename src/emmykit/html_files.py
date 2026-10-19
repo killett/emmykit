@@ -23,9 +23,9 @@ def remove_prefix_from_filename(filepath: str | os.PathLike[str], prefix: str) -
         prefix:   The prefix to remove from the filename.
 
     Returns:
-        True:  If the file was successfully renamed, or if it didn't need renaming.
-        False: If the file was not renamed because it didn't start with the prefix,
-               or if the new filename already exists.
+        True:  If the file was renamed.
+        False: If it was not: the name doesn't start with the prefix, nothing would be
+               left of it without the prefix, or the new name already exists.
 
     Raises:
         OSError: If the rename operation fails due to an OS error (e.g., permission denied).
@@ -38,9 +38,12 @@ def remove_prefix_from_filename(filepath: str | os.PathLike[str], prefix: str) -
     file = filepath.name
     if file.startswith(prefix):
         new_file = file.replace(prefix, "", 1)  # Replace only the first occurrence
-        # If the first character is now in " _-", remove it:
-        while new_file[0] in " _-":
-            new_file = new_file[1:]
+        # Drop the separators (" _-") that followed the prefix
+        new_file = new_file.lstrip(" _-")
+        if not new_file:
+            logging.warning("Cannot rename '%s': nothing is left of the name without the prefix '%s'.",
+                            os.fspath(filepath), prefix)
+            return False
         new_filepath = filepath.parent / new_file
         if not safe_exists(new_filepath):
             try:

@@ -216,6 +216,10 @@ All notable changes to `emmykit` are documented here. Format follows
   converted like a dict. With `roundtrip=True`, an encoder error inside a
   namespace was swallowed and the namespace stored as a string; it now
   propagates, as it does inside a dict.
+- `remove_prefix_from_filename` raised `IndexError` for a name that was
+  nothing but the prefix and separators (`"PFX"`, `"PFX__"`). It now
+  leaves such a file alone and returns False. Its docstring now says True
+  means the file was renamed.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.
