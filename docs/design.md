@@ -2,6 +2,12 @@
 
 **Status:** approved (Phase 2 layout signed off 2026-06-05) — ready for `writing-plans`.
 
+> **Historical record (note added 2026-10-19).** This spec describes the 0.3.0 split, and §2–§3 are a
+> snapshot of that time, not of the current code. Since then, for example: `palette` became a 33rd
+> module (0.5.0) and `options` imports it; `json_io` gained `register_json_type`; `datetime_utils`
+> uses `if TYPE_CHECKING`; and `import emmykit` looks up the computer's name for `COMPUTER_NAME`, so
+> it is not entirely free of side effects. See CHANGELOG.md for what changed when.
+
 **Scope:** restructure the single-file Python module `/workspace/emmykit/univ_defs.py` (9 922 LOC) into a layered, multi-module `emmykit` package suitable for publishing to PyPi. Pure reorganization — preserve every signature, docstring, behaviour, and public symbol verbatim. No logic changes, no renames, no "improvements."
 
 **Non-scope:** publishing to PyPi, adding new features, changing dependencies, touching downstream projects beyond the documented rename `univ_defs → emmykit`.
