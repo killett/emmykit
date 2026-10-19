@@ -171,6 +171,16 @@ def test_pandas_timestamp_keeps_its_time_and_zone(
     assert parse_datetime(stamp, timezone=timezone).isoformat() == expected
 
 
+def test_numpy_datetime64_with_naive_target_keeps_its_utc_wall_time() -> None:
+    """ "Naive" gives the datetime64's own (UTC) wall time on any host.
+
+    Fails under both host timezones if the timestamp is turned into local time.
+    """
+    np = pytest.importorskip("numpy")
+    result = parse_datetime(np.datetime64("2002-10-18T07:00"), timezone="Naive")
+    assert result.isoformat() == "2002-10-18T07:00:00"
+
+
 def test_unparseable_string_raises_value_error() -> None:
     """A string no parser understands is a ValueError naming it."""
     with pytest.raises(ValueError, match="garbage!!"):

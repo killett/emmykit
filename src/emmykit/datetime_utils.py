@@ -516,7 +516,9 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
             ts_ns     = given_date.astype("datetime64[ns]").astype("int64")
             parsed_dt = dt.datetime.fromtimestamp(
                 ts_ns / 1e9,
-                tz=parsed_tz if isinstance(parsed_tz, dt.tzinfo) else None,
+                # UTC, never None, which would give the host's local time; the
+                # finalizer converts to the target zone or, for "Naive", drops it.
+                tz=dt.timezone.utc,
             )
 
     if parsed_dt is None:

@@ -87,6 +87,10 @@ All notable changes to `emmykit` are documented here. Format follows
 - `parse_datetime` raised `UnboundLocalError` instead of the intended
   `ValueError` when the epoch in a format string such as
   `"days since notadate"` couldn't be parsed.
+- `parse_datetime` with `timezone="Naive"` turned a `numpy.datetime64`
+  into the machine's local wall time, so the same call gave different
+  answers on different hosts. It now gives the datetime64's own UTC wall
+  time.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

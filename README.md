@@ -2001,7 +2001,7 @@ Returns:
     for NaT/NaN values.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L636)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L638)
 
 </details>
 
@@ -2051,7 +2051,7 @@ Example:
 
 **Public methods:** `format_ticks`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L747)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L749)
 
 </details>
 
@@ -2273,7 +2273,7 @@ Integer constants representing date-formatting precision levels.
 Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L586)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L588)
 
 </details>
 
