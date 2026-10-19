@@ -123,15 +123,10 @@ _TIMESTAMP_PATTERN_RE: re.Pattern = re.compile(r"(\d{8}-\d{6}).pkl$")
 def extract_timestamp(the_string: str) -> str | None:
     """Extract timestamp string (in format YYYYMMDD-HHMMSS) from the_string, or None if not found."""
     if (m := _TIMESTAMP_PATTERN_RE.search(the_string)):
-        try:
-            return m.group(1)
-        except ValueError:
-            return None
+        return m.group(1)
     return None
 
 _TZ_ABBREV_TO_ZONE: dict[str, str] = {
-    "UTC"  : "UTC",
-    "GMT"  : "Etc/GMT",
     "EST"  : "America/New_York",
     "EDT"  : "America/New_York",
     "CST"  : "America/Chicago",  # WARNING! "CST" can also mean China Standard Time (Asia/Shanghai, UTC+8), so use with caution!
@@ -227,15 +222,12 @@ def parse_timezone(tz_arg: str | dt.tzinfo | None = None) -> dt.tzinfo | str:
             return tz_arg
 
         # Bare UTC/GMT/Z
-        if up in ("Z", "UTC", "GMT") and len(s) <= 3:
+        if up in ("Z", "UTC", "GMT"):
             return dt.timezone.utc
 
         # Strip leading "UTC" or "GMT" prefix
         if up.startswith(("UTC", "GMT")):
-            rest = s[3:].strip()
-            if rest == "":
-                return dt.timezone.utc
-            s = rest  # now s begins with + or -
+            s = s[3:].strip()  # now s begins with + or -
 
         # Try fixed-offset patterns
         m = _TZ_OFFSET_RE.fullmatch(s)
@@ -304,12 +296,8 @@ def decimal_year_to_datetime(dec: float, use_astropy: bool = False) -> dt.dateti
 
 def _parse_iso(given_date: str) -> dt.datetime:
     """Parse an ISO8601 date string and return a datetime object. Raises ValueError if the date string is invalid."""
-    from dateutil.parser import isoparse, ParserError
-
-    try:
-        return isoparse(given_date)
-    except ParserError as e:
-        raise ValueError(f"Invalid ISO8601 date '{given_date}'") from e
+    from dateutil.parser import isoparse
+    return isoparse(given_date)
 
 _JD_MJD_CAPTURE_RE: re.Pattern = re.compile(r"\s*(?P<prefix>JD|MJD)?\s*(?P<value>[+-]?\d+(?:\.\d+)?)\s*", re.IGNORECASE)
 
@@ -474,8 +462,6 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
             # Try to split by since or after, whichever works:
             format_parts = re.split(r'\s+(since|after)\s+', format_str, maxsplit=1)
             if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Parsing date with format string: '%s' split into parts: %s", format_str, format_parts)
-            if len(format_parts) > 3:
-                raise ValueError(f"Invalid format string: '{format_str}'. Expected at most three parts: 'units', 'since/after', and 'epoch'.")
             # The first part should be acceptable by seconds_in_unit():
             try:
                 units      = format_parts[0].strip()

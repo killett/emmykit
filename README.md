@@ -2000,7 +2000,7 @@ Returns:
     for NaT/NaN values.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L635)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L621)
 
 </details>
 
@@ -2050,7 +2050,7 @@ Example:
 
 **Public methods:** `format_ticks`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L746)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L732)
 
 </details>
 
@@ -2062,7 +2062,7 @@ Example:
 AnyDateTimeType: TypeAlias = 'str | float | int | np.datetime64 | pd.Timestamp | dt.datetime'
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L318)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L306)
 
 </details>
 
@@ -2080,7 +2080,7 @@ If use_astropy is True, astropy.time is used for sub-second and leap-second–aw
 Usage: new_datetime_datetime_object = decimal_year_to_datetime(2002.291)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L280)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L272)
 
 </details>
 
@@ -2219,7 +2219,7 @@ Raises:
     TypeError:   If the given_date is not a string, float, int, numpy.datetime64, pandas.Timestamp, or datetime.datetime object.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L357)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L345)
 
 </details>
 
@@ -2254,7 +2254,7 @@ Raises:
     ValueError if the string cannot be converted to a valid timezone.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L186)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L181)
 
 </details>
 
@@ -2272,7 +2272,7 @@ Integer constants representing date-formatting precision levels.
 Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L585)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L571)
 
 </details>
 
