@@ -1,6 +1,7 @@
 """Sanity tests for tools/generate_readme.py."""
 from __future__ import annotations
 
+import difflib
 import json
 import re
 import sys
@@ -181,3 +182,27 @@ def test_intro_counts_the_public_surface() -> None:
     baseline = Path(__file__).parent / "_baseline_signatures.json"
     count = len(json.loads(baseline.read_text()))
     assert f"Personal Python utility kit: {count} importable" in build_readme()
+
+
+# Constants whose rendered value depends on the machine that generates the README.
+_HOST_DEPENDENT = ("COMPUTER_NAME", "IS_NASA_COMPUTER")
+
+
+def _mask_host_values(text: str) -> str:
+    """Replace the rendered values of the host-dependent constants with ``<host>``."""
+    for name in _HOST_DEPENDENT:
+        text = re.sub(rf"(\b{name}(?:</code> —|:) \w+ = )[^<\n]+", r"\1<host>", text)
+    return text
+
+
+def test_readme_matches_generator() -> None:
+    """README.md is what the generator produces now, apart from host-dependent values.
+
+    Nothing runs ``generate_readme.py --check``, and it would fail on any other
+    machine anyway, so without this a docstring or surface change could ship
+    with a stale README.
+    """
+    readme = _mask_host_values((ROOT / "README.md").read_text()).splitlines()
+    generated = _mask_host_values(build_readme()).splitlines()
+    diff = list(difflib.unified_diff(readme, generated, "README.md", "generated", lineterm="", n=1))
+    assert diff == [], "README.md is stale; run tools/generate_readme.py:\n" + "\n".join(diff[:40])
