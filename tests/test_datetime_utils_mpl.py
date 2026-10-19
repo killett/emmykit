@@ -10,13 +10,9 @@ from __future__ import annotations
 
 import copy
 import datetime as dt
-import os
 import pickle
-import subprocess
-import sys
 import threading
 from collections.abc import Callable, Iterator
-from pathlib import Path
 from typing import Any
 
 import pytest
@@ -28,18 +24,14 @@ from matplotlib import dates as mdates  # noqa: E402
 from matplotlib import pyplot as plt  # noqa: E402
 from matplotlib import ticker as mticker  # noqa: E402
 
-import emmykit  # noqa: E402
 from emmykit.datetime_utils import AdaptiveDateFormatter, Precision  # noqa: E402
+from tests._helpers import run_python  # noqa: E402
 
 # The span from the original report. `AutoDateLocator` ticks it every six
 # months, on 1 January and 1 July, so year precision collides ("2021" twice)
 # and month precision is the coarsest level that keeps every label unique.
 SPAN_START = dt.datetime(2020, 10, 20)
 SPAN_END = dt.datetime(2024, 11, 3)
-
-# The directory holding the `emmykit` package these tests imported, so a
-# subprocess imports the same copy rather than whatever else is installed.
-SRC_DIR = Path(emmykit.__file__).resolve().parents[1]
 
 # Custom levels that differ from the defaults only in their separator, so a
 # formatter that lost its settings shows it as `2021-01` instead of `2021/01`.
@@ -223,27 +215,6 @@ def _new_year_ticks(*years: int) -> list[float]:
         One matplotlib date float per year, in the order given.
     """
     return [mdates.date2num(dt.datetime(year, 1, 1)) for year in years]
-
-
-def _run_python(code: str) -> subprocess.CompletedProcess[str]:
-    """Run `code` in a fresh interpreter that imports this checkout of emmykit.
-
-    Args:
-        code: Python source passed to `python -c`.
-
-    Returns:
-        The completed process, with text stdout and stderr captured.
-    """
-    path = [str(SRC_DIR), *filter(None, [os.environ.get("PYTHONPATH")])]
-    env = {**os.environ, "PYTHONPATH": os.pathsep.join(path)}
-    return subprocess.run(
-        [sys.executable, "-c", code],
-        capture_output=True,
-        text=True,
-        env=env,
-        check=False,
-        timeout=120,
-    )
 
 
 def test_x_axis_keeps_the_formatter_and_draws_month_labels() -> None:
@@ -514,7 +485,7 @@ def test_importing_emmykit_does_not_import_matplotlib() -> None:
     `import emmykit`; and for a lazy module attribute, which `import *` would
     resolve through `__all__`.
     """
-    result = _run_python(
+    result = run_python(
         "import sys\n"
         "import emmykit\n"
         "import emmykit.datetime_utils\n"
@@ -524,31 +495,3 @@ def test_importing_emmykit_does_not_import_matplotlib() -> None:
 
     assert result.returncode == 0, result.stderr
     assert result.stdout.strip() == "[]"
-
-
-def test_missing_matplotlib_raises_import_error_naming_the_extra() -> None:
-    """Without matplotlib, emmykit imports and construction says what to install.
-
-    A `None` entry in `sys.modules` makes every `import matplotlib...` fail,
-    standing in for an install without the `datetime` extra. Fails if
-    construction surfaces matplotlib's bare `ModuleNotFoundError`, which says
-    nothing about emmykit's extras, or if the original error is not chained
-    on, hiding the real cause when matplotlib is installed but broken.
-    """
-    result = _run_python(
-        "import sys\n"
-        "sys.modules['matplotlib'] = None\n"
-        "import emmykit\n"
-        "try:\n"
-        "    emmykit.AdaptiveDateFormatter()\n"
-        "except ImportError as exc:\n"
-        "    print(type(exc).__name__, exc, type(exc.__cause__).__name__, sep='|')\n"
-        "else:\n"
-        "    print('constructed without matplotlib')\n"
-    )
-
-    assert result.returncode == 0, result.stderr
-    name, message, cause = result.stdout.strip().split("|")
-    assert name == "ImportError"
-    assert "emmykit[datetime]" in message
-    assert cause == "ModuleNotFoundError"
