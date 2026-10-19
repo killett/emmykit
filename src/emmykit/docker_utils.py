@@ -8,18 +8,29 @@ from collections.abc import Callable, Iterable
 from pathlib import Path
 
 from emmykit.constants import DEFAULT_ENCODING
-from emmykit.io_subprocess import MyPopenResult, my_critical_error, my_popen
+from emmykit.io_subprocess import MyPopenResult, my_popen
 
 
 def ensure_docker_installed() -> None:
-    """Check if the Docker CLI is installed; if not, raise an error."""
+    """
+    Check that the Docker CLI is on PATH.
+
+    Raises:
+        RuntimeError: If `docker` is not found.
+    """
     import shutil
     if shutil.which("docker") is not None:
         return
-    my_critical_error("Docker CLI not found. Please install Docker: https://docs.docker.com/get-docker/")
+    raise RuntimeError("Docker CLI not found. Please install Docker: https://docs.docker.com/get-docker/")
 
 def ensure_daemon_running() -> None:
-    """Check if the Docker daemon is running; if not, attempt to start it."""
+    """
+    Check if the Docker daemon is running; if not, attempt to start it.
+
+    Raises:
+        RuntimeError: If the daemon can't be started, doesn't come up within
+                      30 seconds (macOS), or the OS isn't Linux or macOS.
+    """
     info = my_popen(["docker", "info"])
     if info.success:
         return
@@ -29,11 +40,11 @@ def ensure_daemon_running() -> None:
         if not start.success:
             start = my_popen(["sudo", "service", "docker", "start"])
         if not start.success:
-            my_critical_error(f"Could not start Docker daemon:\n{start.stderr}")
+            raise RuntimeError(f"Could not start Docker daemon:\n{start.stderr}")
     elif sys.platform == "darwin":
         launcher = my_popen(["open", "-a", "Docker"])
         if not launcher.success:
-            my_critical_error("Failed to launch Docker Desktop. Please start it from your Applications folder.")
+            raise RuntimeError("Failed to launch Docker Desktop. Please start it from your Applications folder.")
         # Wait for the daemon to start...
         import time
         for _ in range(10):
@@ -42,9 +53,9 @@ def ensure_daemon_running() -> None:
             if info.success:
                 logging.info("Docker daemon is running!")
                 return
-        my_critical_error("Docker Desktop did not finish starting within 30 seconds.\nPlease open Docker Desktop manually.")
+        raise RuntimeError("Docker Desktop did not finish starting within 30 seconds.\nPlease open Docker Desktop manually.")
     else:
-        my_critical_error(f"Unsupported OS for auto-starting Docker: {sys.platform}")
+        raise RuntimeError(f"Unsupported OS for auto-starting Docker: {sys.platform}")
 
 def ensure_image_built(image: str, *,
                        dockerfile: Path | None = None,
@@ -53,8 +64,12 @@ def ensure_image_built(image: str, *,
     """
     Ensure that a Docker image with the given name exists; if not, build it.
     You can specify either a dockerfile (whose first line is a comment with the build command)
-    or a build_cmd (and optionally a build_dir). If both dockerfile and build_cmd are None,
-    the function will raise an error.
+    or a build_cmd (and optionally a build_dir).
+
+    Raises:
+        ValueError:   If the image is missing and both dockerfile and build_cmd are None.
+        RuntimeError: If the Dockerfile can't be read or has no build command on its
+                      first line, or if the build fails.
     """
     inspect = my_popen(["docker", "image", "inspect", image])
     if inspect.success:
@@ -66,10 +81,10 @@ def ensure_image_built(image: str, *,
         try:
             with open(dockerfile, "r", encoding=DEFAULT_ENCODING) as f:
                 first = f.readline().strip()
-        except OSError:
-            my_critical_error(f"Cannot read {os.fspath(dockerfile)} to build {image}")
+        except OSError as e:
+            raise RuntimeError(f"Cannot read {os.fspath(dockerfile)} to build {image}") from e
         if not first.startswith("#"):
-            my_critical_error(f"No build command found in {os.fspath(dockerfile)}")
+            raise RuntimeError(f"No build command found in {os.fspath(dockerfile)}")
         build_cmd = first.lstrip("# ").strip()
         if build_dir is None:
             build_dir = dockerfile.parent
@@ -79,7 +94,7 @@ def ensure_image_built(image: str, *,
     full_cmd = f"cd {shlex.quote(os.fspath(build_dir or Path.cwd()))} && {build_cmd}"
     build = my_popen(["sh", "-c", full_cmd])
     if not build.success:
-        my_critical_error(f"Failed to build {image}:\n{build.stderr}")
+        raise RuntimeError(f"Failed to build {image}:\n{build.stderr}")
 
 def run_with_docker_fixes(base_args: list[str], *,
                           ensure_build:         Callable[[], None]  | None = None,
@@ -98,7 +113,8 @@ def run_with_docker_fixes(base_args: list[str], *,
         The result of the successful command.
 
     Raises:
-        RuntimeError: If all fixes fail and the command still does not succeed.
+        RuntimeError: If a fix fails (for example, Docker isn't installed), or if
+                      all fixes run and the command still does not succeed.
     """
     fixes = [ensure_docker_installed, ensure_daemon_running]
     if ensure_build is not None:

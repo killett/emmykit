@@ -265,6 +265,13 @@ All notable changes to `emmykit` are documented here. Format follows
   said 181.
 - The `files` extra no longer installs `atomicwrites`, which is archived
   upstream and no longer used.
+- Library functions no longer end the program when they fail; they raise,
+  with the message they used to log, so the caller decides what happens.
+  `my_critical_error` itself still exits, for scripts.
+  - `ensure_docker_installed`, `ensure_daemon_running` and
+    `ensure_image_built` raise `RuntimeError` instead of calling
+    `sys.exit(1)`, and `run_with_docker_fixes` passes it on. When the
+    Dockerfile can't be read, the `OSError` is the cause.
 
 ## [0.6.3] - 2026-10-17
 

@@ -3507,22 +3507,29 @@ ensure_daemon_running() -> 'None'
 
 ```text
 Check if the Docker daemon is running; if not, attempt to start it.
+
+Raises:
+    RuntimeError: If the daemon can't be started, doesn't come up within
+                  30 seconds (macOS), or the OS isn't Linux or macOS.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L21)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L26)
 
 </details>
 
 <a id="ensure_docker_installed"></a><a id="user-content-ensure_docker_installed"></a>
 <details>
-<summary><code>ensure_docker_installed</code> — Check if the Docker CLI is installed; if not, raise an error.</summary>
+<summary><code>ensure_docker_installed</code> — Check that the Docker CLI is on PATH.</summary>
 
 ```python
 ensure_docker_installed() -> 'None'
 ```
 
 ```text
-Check if the Docker CLI is installed; if not, raise an error.
+Check that the Docker CLI is on PATH.
+
+Raises:
+    RuntimeError: If `docker` is not found.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L14)
@@ -3540,11 +3547,15 @@ ensure_image_built(image: 'str', *, dockerfile: 'Path | None' = None, build_dir:
 ```text
 Ensure that a Docker image with the given name exists; if not, build it.
 You can specify either a dockerfile (whose first line is a comment with the build command)
-or a build_cmd (and optionally a build_dir). If both dockerfile and build_cmd are None,
-the function will raise an error.
+or a build_cmd (and optionally a build_dir).
+
+Raises:
+    ValueError:   If the image is missing and both dockerfile and build_cmd are None.
+    RuntimeError: If the Dockerfile can't be read or has no build command on its
+                  first line, or if the build fails.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L49)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L60)
 
 </details>
 
@@ -3570,10 +3581,11 @@ Returns:
     The result of the successful command.
 
 Raises:
-    RuntimeError: If all fixes fail and the command still does not succeed.
+    RuntimeError: If a fix fails (for example, Docker isn't installed), or if
+                  all fixes run and the command still does not succeed.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L84)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L99)
 
 </details>
 
