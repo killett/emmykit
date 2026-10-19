@@ -1,4 +1,5 @@
-"""`kill_process`, with `pgrep`, `os.kill` and `time.sleep` replaced.
+"""`emmykit.system`: `kill_process` (with `pgrep`, `os.kill` and `time.sleep` replaced),
+`detect_country` and `check_if_command_exists`.
 
 `pgrep` exits 0 with matching PIDs, 1 when nothing matches, and 2 or 3 when it
 fails; the fake below follows that.
@@ -6,11 +7,13 @@ fails; the fake below follows that.
 
 from __future__ import annotations
 
+import logging
 import os
 import signal
 import subprocess
 import time
 from collections.abc import Iterator
+from pathlib import Path
 
 import pytest
 
@@ -88,3 +91,59 @@ def test_pgrep_failure_raises_value_error(
     with pytest.raises(ValueError, match="Failed to find process with name myproc"):
         kill_process("myproc")
     assert kills == []
+
+
+# --- detect_country and check_if_command_exists ------------------------------
+
+class _FakeResponse:
+    """The parts of a requests.Response that detect_country uses."""
+
+    def __init__(self, payload: dict[str, str]) -> None:
+        self._payload = payload
+
+    def raise_for_status(self) -> None:
+        """Succeed, as for a 200 response."""
+
+    def json(self) -> dict[str, str]:
+        """Return the canned payload."""
+        return self._payload
+
+
+def test_detect_country_asks_ipinfo_about_the_callers_address(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    """IPinfo is asked about "me", with the token in a header that is never logged.
+
+    Fails if it looks up 8.8.8.8 (Google's DNS server, not the caller) or puts
+    the token in a URL, a command line or a log line.
+    """
+    requests = pytest.importorskip("requests")
+    calls: list[tuple[str, dict[str, str]]] = []
+
+    def get(url: str, headers: dict[str, str] | None = None, **kwargs: object) -> _FakeResponse:
+        calls.append((url, dict(headers or {})))
+        return _FakeResponse({"ip": "203.0.113.7", "country": "Norway", "country_code": "NO"})
+
+    monkeypatch.setattr(requests, "get", get)
+    monkeypatch.setenv("IPINFO_API_TOKEN", "secret-token")
+    caplog.set_level(logging.DEBUG)
+
+    from emmykit.system import detect_country
+    assert detect_country() == "Norway"
+
+    assert calls == [("https://api.ipinfo.io/lite/me", {"Authorization": "Bearer secret-token"})]
+    assert "secret-token" not in caplog.text
+
+
+def test_check_if_command_exists_without_a_which_command(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Commands are looked up on PATH directly, so a system without `which` still works."""
+    tool = tmp_path / "mytool"
+    tool.write_text("#!/bin/sh\n")
+    tool.chmod(0o755)
+    monkeypatch.setenv("PATH", os.fspath(tmp_path))
+
+    from emmykit.system import check_if_command_exists
+    assert check_if_command_exists("mytool") is True
+    assert check_if_command_exists("no-such-tool-xyz") is False

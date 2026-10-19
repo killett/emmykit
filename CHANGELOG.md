@@ -169,6 +169,14 @@ All notable changes to `emmykit` are documented here. Format follows
   resolver's NXDOMAIN) gave False although another name would have
   resolved. Any success now counts. The DNS and TCP steps also return as
   soon as one attempt succeeds, instead of waiting for the slowest.
+- `detect_country` asked IPinfo where 8.8.8.8 (Google's DNS server) is, so
+  with a token set it reported the same country wherever you were. It
+  now asks about your own address (`/lite/me`). The token travels in an
+  `Authorization` header instead of the URL of a `curl` command, so it no
+  longer shows up in the process list or in DEBUG logs.
+- `check_if_command_exists` ran the `which` program, so it raised
+  `FileNotFoundError` on systems without one. It now uses
+  `shutil.which`.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

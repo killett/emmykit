@@ -21,8 +21,8 @@ def check_if_command_exists(command: str) -> bool:
     Returns:
         True if the command exists, False otherwise.
     """
-    import subprocess
-    return subprocess.run(["which", command], capture_output=True).returncode == 0
+    import shutil
+    return shutil.which(command) is not None
 
 def open_terminal_and_run_command(the_command: str, close_after: bool = False,
                                   maximize_window: bool = False) -> None:
@@ -183,15 +183,16 @@ def detect_country(force_wtfismyip: bool = False) -> str | None:
     Args:
         force_wtfismyip: If True, always use wtfismyip.com
 
+    IPinfo needs an access token in the IPINFO_API_TOKEN environment variable;
+    without one, or if IPinfo fails, wtfismyip.com is asked instead.
+
     Returns:
         The country name as a string, or None if detection fails.
 
     Raises:
-        ValueError: If the IPINFO_API_TOKEN environment variable is not set.
+        None.
     """
-    import subprocess
     import requests
-    import json
     thecountryname = None
     if not force_wtfismyip:
         if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("force_wtfismyip=%s.", force_wtfismyip)
@@ -209,18 +210,15 @@ def detect_country(force_wtfismyip: bool = False) -> str | None:
             # details = handler.getDetails()
             # if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("IPinfo DETAILS:\n%s", details)
             # thecountryname = details.country
-            the_command = ["curl", f"https://api.ipinfo.io/lite/8.8.8.8?token={ipinfo_access_token}"]
-            if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Running command: %s", " ".join(the_command))
-            result = subprocess.run(the_command, capture_output=True,
-                                    text=True, timeout=5)
-            if result.returncode != 0:
-                logging.error("curl command failed with return code %d", result.returncode)
-                raise Exception("Curl command failed")
-            if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("curl output: %s", result.stdout)
-            dct = json.loads(result.stdout)
+            # "me" is the caller's own address. The token goes in a header, so it
+            # appears in no URL, log line or process list.
+            resp = requests.get("https://api.ipinfo.io/lite/me",
+                                headers={"Authorization": f"Bearer {ipinfo_access_token}"}, timeout=5)
+            resp.raise_for_status()
+            dct = resp.json()
             thecountryname = dct.get("country", "")
-            if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Detected country from curl: %s", thecountryname)
-        except (subprocess.TimeoutExpired, json.JSONDecodeError, Exception) as e:
+            if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Detected country from IPinfo: %s", thecountryname)
+        except Exception as e:  # no token, network trouble or a bad response: fall back
             logging.warning("IPinfo exception: %s\nFalling back to wtfismyip.com.", e)
 
     if not thecountryname:

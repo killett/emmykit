@@ -3620,11 +3620,14 @@ If the request fails, it falls back to wtfismyip.com service.
 Args:
     force_wtfismyip: If True, always use wtfismyip.com
 
+IPinfo needs an access token in the IPINFO_API_TOKEN environment variable;
+without one, or if IPinfo fails, wtfismyip.com is asked instead.
+
 Returns:
     The country name as a string, or None if detection fails.
 
 Raises:
-    ValueError: If the IPINFO_API_TOKEN environment variable is not set.
+    None.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L178)
