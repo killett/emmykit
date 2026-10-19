@@ -84,6 +84,9 @@ All notable changes to `emmykit` are documented here. Format follows
 - `parse_datetime` cut a `pandas.Timestamp` to midnight and dropped its
   timezone, the docstring's own example included, because a Timestamp
   is also a `datetime.date`. It now keeps its time and zone.
+- `parse_datetime` raised `UnboundLocalError` instead of the intended
+  `ValueError` when the epoch in a format string such as
+  `"days since notadate"` couldn't be parsed.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

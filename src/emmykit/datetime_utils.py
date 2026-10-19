@@ -496,7 +496,7 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
             try:
                 epoch = parse_datetime(epoch_str, timezone=parsed_tz)
             except ValueError as e:
-                raise ValueError(f"Invalid epoch '{epoch}' in format string '{format_str}': {e}") from e
+                raise ValueError(f"Invalid epoch '{epoch_str}' in format string '{format_str}': {e}") from e
             # Now we can calculate the datetime based on the given_date (and the multiplier from 'units') and the epoch
             parsed_dt = epoch + dt.timedelta(seconds=float(given_date) * multiplier)
 

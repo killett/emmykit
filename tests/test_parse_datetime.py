@@ -177,6 +177,16 @@ def test_unparseable_string_raises_value_error() -> None:
         parse_datetime("garbage!!")
 
 
+def test_unparseable_epoch_raises_value_error_naming_it() -> None:
+    """A bad epoch in the format string is a ValueError that quotes it.
+
+    Fails with UnboundLocalError if the message refers to the epoch that failed
+    to parse instead of the text it came from.
+    """
+    with pytest.raises(ValueError, match="Invalid epoch 'notadate'"):
+        parse_datetime(5, format_str="days since notadate")
+
+
 def test_unsupported_type_raises_type_error() -> None:
     """An object that isn't a date of any kind is a TypeError."""
     with pytest.raises(TypeError):
