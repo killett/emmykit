@@ -74,6 +74,13 @@ All notable changes to `emmykit` are documented here. Format follows
   offset is converted and anything without one is attached, and a naive
   value that `should_convert=True` forces to convert is read as UTC
   rather than as local time.
+- `parse_datetime` shifted years into the target timezone: `"2002"` or
+  `2002.0` with New York gave 19:00 on 31 December 2001, although the
+  docstring says midnight on 1 January and `"2002-10"` already gave
+  midnight. Years and decimal years are now read in the target timezone,
+  so `"2002"` is midnight on 1 January there and 2002.5 is noon on 2 July
+  there; results in UTC, the default, are unchanged. An epoch written as
+  a year (`"days since 2000"`) follows suit.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

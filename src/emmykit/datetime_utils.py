@@ -382,11 +382,11 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
     Accepts:
         'NOW' (case-insensitive) → current datetime
         strings in YYYY, YYYY-MM, YYYY-MM-DD, YYYY-MM-DDTHH:MM:SS, or other ISO8601 formats (e.g. '2002-10-18T07:00:00Z', '2002-10-18 07:00:00+00:00').
-        If YYYY is provided, it will default to January 1st of that year at midnight.
+        If YYYY is provided, it will default to January 1st of that year at midnight in the target timezone.
         If YYYY-MM is provided, it will default to the first day of that month at midnight.
         If YYYY-MM-DD is provided, it will default to midnight on that day.
         fallback to dateutil.parser.parse for free-form strings ("18 Oct 2002", "March 5th, 2020", etc.)
-        floats (e.g. 2002.29178082191777) or integer (e.g. 2002) → decimal year
+        floats (e.g. 2002.29178082191777) or integer (e.g. 2002) → decimal year, read in the target timezone
         numpy.datetime64 objects (e.g. np.datetime64('2002-10-18T07:00:00'))
         pandas.Timestamp objects (e.g. pd.Timestamp('2002-10-18 07:00:00'))
         datetime.datetime objects (e.g. datetime.datetime(2002, 10, 18, 7, 0, 0))
@@ -467,9 +467,9 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
     # Check if the given_date is a float or int but NOT a boolean
     if parsed_dt is None and isinstance(given_date, (int, float)) and not isinstance(given_date, bool):
         if format_str is None:
-            # If the given_date is a decimal year, convert it to datetime in the specified timezone
-            # Note: This will not shift the clock, just attach the tzinfo.
-            parsed_dt = decimal_year_to_datetime(float(given_date))
+            # A decimal year is read in the target timezone: 2002 is midnight on
+            # 1 January there. Dropping the UTC zone makes the finalizer attach it.
+            parsed_dt = decimal_year_to_datetime(float(given_date)).replace(tzinfo=None)
         else:  # If format is provided, parse the date using the specified format.
             if not isinstance(format_str, str):
                 raise TypeError(f"Expected 'format' to be a string, got {type(format_str).__name__!r}")

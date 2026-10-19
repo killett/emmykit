@@ -93,6 +93,30 @@ def test_named_zone_in_the_text_is_converted(given: str, timezone: str | None, e
     assert parse_datetime(given, timezone=timezone).isoformat() == expected
 
 
+@pytest.mark.parametrize(
+    ("given", "expected"),
+    [
+        ("2002", "2002-01-01T00:00:00-05:00"),
+        (2002, "2002-01-01T00:00:00-05:00"),
+        (2002.0, "2002-01-01T00:00:00-05:00"),
+        (2002.5, "2002-07-02T12:00:00-04:00"),
+    ],
+)
+def test_year_is_read_in_the_target_zone(given: str | float, expected: str) -> None:
+    """A year means midnight on 1 January in the target zone, like "2002-10" does.
+
+    Fails if the year is taken as a UTC instant and converted, which puts
+    "2002" in New York at 19:00 on 31 December 2001.
+    """
+    assert parse_datetime(given, timezone=NY).isoformat() == expected
+
+
+def test_epoch_given_as_a_year_is_midnight_in_the_target_zone() -> None:
+    """ "days since 2000" counts from midnight on 1 January 2000 in the target zone."""
+    result = parse_datetime(1, timezone=NY, format_str="days since 2000")
+    assert result.isoformat() == "2000-01-02T00:00:00-05:00"
+
+
 def test_trailing_year_is_not_mistaken_for_an_offset() -> None:
     """ "-2002" at the end is a year, so the result is midnight UTC on any host.
 
