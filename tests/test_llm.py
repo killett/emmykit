@@ -11,6 +11,7 @@ import sqlite3
 import sys
 import time
 import types
+from contextlib import closing
 from pathlib import Path
 
 import pytest
@@ -112,7 +113,8 @@ def throttled(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> LLMs:
 
 def _rows(models: LLMs) -> int:
     """Count the requests recorded in the rate log."""
-    with sqlite3.connect(models.get_config().rate_db_path) as conn:
+    # closing(): a sqlite3 connection's own `with` commits but doesn't close.
+    with closing(sqlite3.connect(models.get_config().rate_db_path)) as conn:
         return int(conn.execute("SELECT COUNT(*) FROM requests").fetchone()[0])
 
 
