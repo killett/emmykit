@@ -3226,7 +3226,7 @@ Returns:
 
 Raises:
     FileNotFoundError: If the specified file does not exist.
-    ValueError: If the specified path is not a file. The function which raises this exception is autopep8.fix_file().
+    ValueError: If the file is empty.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L516)

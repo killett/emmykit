@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 
 import pytest
 
-from emmykit.lint import check_python_formatting, interactive_flake8
+from emmykit.lint import ask_and_autopep8, check_python_formatting, interactive_flake8
 from emmykit.options import Options
 
 
@@ -75,3 +76,31 @@ def test_interactive_flake8_stops_early_on_a_clean_file(
 
     assert interactive_flake8(Options(), path) is True
     assert "No flake8 errors—nothing to do." in caplog.text
+
+
+def test_ask_and_autopep8_names_an_empty_file(tmp_path: Path) -> None:
+    """The ValueError for an empty file reads "Empty file: <path>", not a tuple."""
+    pytest.importorskip("autopep8")
+    path = tmp_path / "empty.py"
+    path.touch()
+
+    with pytest.raises(ValueError) as excinfo:
+        ask_and_autopep8(path, "E302")
+
+    assert str(excinfo.value) == f"Empty file: {os.fspath(path)}"
+
+
+def test_ask_and_autopep8_reports_a_bad_diff_choice(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A non-integer diff_choice is logged by value and refused.
+
+    Fails if the message formats it with %d, which raises inside logging.
+    """
+    pytest.importorskip("autopep8")
+    path = tmp_path / "e302.py"
+    path.write_text("def a():\n    pass\ndef b():\n    pass\n")
+    caplog.set_level(logging.INFO)
+
+    assert ask_and_autopep8(path, "E302", diff_choice="unified") is False  # type: ignore[arg-type]
+    assert "Invalid diff_choice='unified'" in caplog.text

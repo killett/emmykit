@@ -538,7 +538,7 @@ def ask_and_autopep8(path: str | os.PathLike[str], code: str,
 
     Raises:
         FileNotFoundError: If the specified file does not exist.
-        ValueError: If the specified path is not a file. The function which raises this exception is autopep8.fix_file().
+        ValueError: If the file is empty.
     """
     import autopep8
     fallback_logging_config()
@@ -553,7 +553,7 @@ def ask_and_autopep8(path: str | os.PathLike[str], code: str,
     }
     orig_text = my_fopen(path)
     if not orig_text:
-        raise ValueError("Empty file: %s", os.fspath(path))
+        raise ValueError(f"Empty file: {os.fspath(path)}")
     changed_text = orig_text
     for level in (0, 1, 2):  # try with 0, 1, then 2 "-a" flags
         flags = ["-a"] * level
@@ -568,7 +568,7 @@ def ask_and_autopep8(path: str | os.PathLike[str], code: str,
         logging.info("No changes for %s in %s using %s.", code, os.fspath(path), the_fix)
         return True
     if not isinstance(diff_choice, int) or diff_choice < 0:
-        logging.error("Invalid diff_choice=%d. Must be a non-negative integer.", diff_choice)
+        logging.error("Invalid diff_choice=%r. Must be a non-negative integer.", diff_choice)
         return False
     # If this is a blank‑line code, force unified with the number of context lines specified in blank_line_overrides.
     if code in blank_line_overrides:
