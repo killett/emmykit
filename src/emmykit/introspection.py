@@ -13,7 +13,7 @@ from typing import Any, TextIO
 from emmykit.constants import DEFAULT_ENCODING
 from emmykit.logging_utils import fallback_logging_config, return_method_name
 from emmykit.paths_ensure import ensure_path
-from emmykit.safe_paths import ensure_file, safe_exists, safe_is_dir, safe_is_file
+from emmykit.safe_paths import ensure_file, safe_exists, safe_is_dir, safe_is_file, safe_size
 from emmykit.io_subprocess import my_fopen
 
 
@@ -31,19 +31,20 @@ def load_ast_var(var_name: str, script_path: str | os.PathLike[str],
         The value of the variable if found, or None.
 
     Raises:
-        FileNotFoundError: If the script file does not exist.
-        AttributeError:    If the variable is not found at the top level of the script.
+        FileNotFoundError: If the script file does not exist or cannot be read.
+        SyntaxError:       If the script is not valid Python.
         ValueError:        If the value of the variable cannot be evaluated as a literal expression.
     """
     import ast
     fallback_logging_config(rawlog=rawlog)
     script_path  = ensure_file(script_path)
+    if safe_size(script_path) == 0:  # my_fopen can't tell an empty file from an unreadable one
+        logging.info("Top-level variable %r not found in %s (the file is empty)", var_name, os.fspath(script_path))
+        return None
     file_content = my_fopen(script_path, rawlog=rawlog)
     if not file_content:
         raise FileNotFoundError(f"Failed to open {os.fspath(script_path)}")
     tree = ast.parse(file_content, script_path)
-    if tree is None:
-        raise SyntaxError(f"Could not parse {os.fspath(script_path)}")
 
     for node in tree.body:
         # handle plain assignments: var_name = <expr>

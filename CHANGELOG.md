@@ -181,6 +181,10 @@ All notable changes to `emmykit` are documented here. Format follows
   always reset the cutoff to 0, so every file counted as new. The
   caller's `last_mtime` is now used; `last_file_path`, when given, still
   takes precedence.
+- `load_ast_var` raised `FileNotFoundError("Failed to open …")` for an
+  empty module. It now returns None, as for any variable the module
+  doesn't define. Its docstring no longer promises an `AttributeError`
+  that was never raised.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

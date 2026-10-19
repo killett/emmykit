@@ -1445,7 +1445,7 @@ Raises:
     TypeError:   If 'source_or_filepath' is not a string or a file path.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L414)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L415)
 
 </details>
 
@@ -1494,7 +1494,7 @@ Notes:
     result in an empty string.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L308)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L309)
 
 </details>
 
@@ -1518,8 +1518,8 @@ Returns:
     The value of the variable if found, or None.
 
 Raises:
-    FileNotFoundError: If the script file does not exist.
-    AttributeError:    If the variable is not found at the top level of the script.
+    FileNotFoundError: If the script file does not exist or cannot be read.
+    SyntaxError:       If the script is not valid Python.
     ValueError:        If the value of the variable cannot be evaluated as a literal expression.
 ```
 
@@ -1539,7 +1539,7 @@ normalize_to_dict(value: 'Any', var_name: 'str', script_path: 'str | os.PathLike
 Ensure that 'value' is a dict. If it's a JSON-style string, try to parse it. Otherwise, log a warning and return an empty dict.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L287)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L288)
 
 </details>
 
@@ -1587,7 +1587,7 @@ Raises:
     TypeError: If the resolved object isn't suitable for source extraction.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L133)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L134)
 
 </details>
 
