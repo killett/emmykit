@@ -1,14 +1,16 @@
-"""`set_system_volume` falling back to pactl, with pulsectl and pactl faked."""
+"""`emmykit.media`: `set_system_volume` falling back to pactl (pulsectl and pactl faked), and `find_ffmpeg`."""
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 import types
+from pathlib import Path
 
 import pytest
 
-from emmykit.media import set_system_volume
+from emmykit.media import find_ffmpeg, set_system_volume
 
 # What `pactl get-sink-volume` prints for a sink at 50%.
 PACTL_AT_50 = (
@@ -62,3 +64,22 @@ def test_falls_back_to_pactl_when_pulsectl_is_not_installed(
     set_system_volume(50)
 
     assert ["pactl", "set-sink-volume", "@DEFAULT_SINK@", "50%"] in pactl_calls
+
+
+def test_stale_ffmpeg_variable_falls_through_to_path(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    """An FFMPEG variable naming a missing file is skipped with a warning.
+
+    Fails if find_ffmpeg raises FileNotFoundError instead of trying PATH next.
+    """
+    ffmpeg = tmp_path / "ffmpeg"
+    ffmpeg.write_text("#!/bin/sh\n")
+    ffmpeg.chmod(0o755)
+    monkeypatch.setenv("FFMPEG", os.fspath(tmp_path / "gone" / "ffmpeg"))
+    for key in ("FFMPEG_PATH", "IMAGEIO_FFMPEG_EXE"):
+        monkeypatch.delenv(key, raising=False)
+    monkeypatch.setenv("PATH", os.fspath(tmp_path))
+
+    assert find_ffmpeg() == os.fspath(ffmpeg)
+    assert "FFMPEG" in caplog.text

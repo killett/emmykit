@@ -230,6 +230,10 @@ All notable changes to `emmykit` are documented here. Format follows
   one, and logged "Saved combined HTML" even after the write had failed.
   It now uses each body's contents (or a bare fragment whole), skips a
   missing head, and lets a failed write raise `OSError`, as documented.
+- `find_ffmpeg` raised `FileNotFoundError` when `FFMPEG` (or
+  `FFMPEG_PATH`, `IMAGEIO_FFMPEG_EXE`) named a file that no longer
+  exists. It now warns and goes on to `PATH` and the other places, and
+  its docstring gives the order it actually searches in.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

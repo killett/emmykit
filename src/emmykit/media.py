@@ -41,8 +41,9 @@ def ensure_even_dimensions(image_path: str | os.PathLike[str]) -> None:
 def find_ffmpeg() -> str | None:
     """
     Return a full path string to an ffmpeg executable if found, else None.
-    Tries: env vars, PATH, common Conda and Windows/Cygwin/MSYS installs,
-    and (optionally) imageio-ffmpeg if available.
+    Tries, in order: the FFMPEG, FFMPEG_PATH and IMAGEIO_FFMPEG_EXE environment
+    variables (one naming a missing file is skipped with a warning), PATH,
+    imageio-ffmpeg if installed, then common Conda and Windows/Cygwin/MSYS installs.
 
     Args:
         None
@@ -58,8 +59,10 @@ def find_ffmpeg() -> str | None:
     for env_key in ("FFMPEG", "FFMPEG_PATH", "IMAGEIO_FFMPEG_EXE"):
         p = os.environ.get(env_key)
         if p:
-            path_p = ensure_file(p)
-            return os.fspath(path_p)
+            path_p = ensure_path(p)
+            if safe_is_file(path_p):
+                return os.fspath(path_p)
+            logging.warning("%s=%s is not a file; looking for ffmpeg elsewhere.", env_key, p)
 
     # 2) On PATH (handles .exe on Windows automatically)
     for name in ("ffmpeg", "ffmpeg.exe"):
