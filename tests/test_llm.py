@@ -7,6 +7,9 @@ socket connection fails, so a test that reached the network would notice.
 from __future__ import annotations
 
 import socket
+import sqlite3
+import time
+from pathlib import Path
 
 import pytest
 
@@ -70,3 +73,83 @@ def test_refresh_selection_keeps_the_same_model_when_nothing_changed() -> None:
     models.refresh_selection()
 
     assert models.model == chosen
+
+
+# --- rate throttle -----------------------------------------------------------
+
+class _SleptForever(BaseException):
+    """Raised by the fake sleep; a BaseException, so the throttle's fail-open can't swallow it."""
+
+
+@pytest.fixture
+def clock(monkeypatch: pytest.MonkeyPatch) -> list[float]:
+    """Make time.time a fake clock that time.sleep advances; return the list of sleeps."""
+    now = [1_000_000.0]
+    sleeps: list[float] = []
+
+    def sleep(seconds: float) -> None:
+        sleeps.append(seconds)
+        if len(sleeps) > 5:
+            raise _SleptForever(sleeps)
+        now[0] += seconds
+
+    monkeypatch.setattr(time, "time", lambda: now[0])
+    monkeypatch.setattr(time, "sleep", sleep)
+    return sleeps
+
+
+@pytest.fixture
+def throttled(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> LLMs:
+    """An LLMs whose model may take 1000 input tokens a minute (900 after the 0.9 headroom)."""
+    models = LLMs()
+    models.apply_config(LLMConfig(**CONFIG, rate_db_path=tmp_path / "rate.db"))
+    limits = {"scope": "model", "rpm": 0, "tpm_in": 1000, "tpm_out": 0, "tpm_sum": 0}
+    monkeypatch.setattr(models, "_get_rate_limits_for", lambda model: limits)
+    return models
+
+
+def _rows(models: LLMs) -> int:
+    """Count the requests recorded in the rate log."""
+    with sqlite3.connect(models.get_config().rate_db_path) as conn:
+        return int(conn.execute("SELECT COUNT(*) FROM requests").fetchone()[0])
+
+
+def test_throttle_waits_until_the_oldest_request_leaves_the_window(
+    throttled: LLMs, clock: list[float]
+) -> None:
+    """500 + 500 input tokens exceed 900, so the second waits for the first to expire."""
+    throttled._throttle_if_needed("OpenAI", throttled.model, 500, 0)
+    time.sleep(15)
+
+    throttled._throttle_if_needed("OpenAI", throttled.model, 500, 0)
+
+    assert clock == [15, pytest.approx(45.0)]
+    assert _rows(throttled) == 2
+
+
+def test_oversized_request_is_sent_at_once_when_the_window_is_empty(
+    throttled: LLMs, clock: list[float], caplog: pytest.LogCaptureFixture
+) -> None:
+    """A request bigger than the cap on its own goes out with a warning, not after a wait.
+
+    Fails, by sleeping forever, if the throttle waits for room that can never exist.
+    """
+    throttled._throttle_if_needed("OpenAI", throttled.model, 2000, 0)
+
+    assert clock == []
+    assert _rows(throttled) == 1
+    assert "exceeds the per-minute token cap" in caplog.text
+
+
+def test_oversized_request_waits_only_for_an_empty_window(
+    throttled: LLMs, clock: list[float], caplog: pytest.LogCaptureFixture
+) -> None:
+    """With other traffic in the window, an oversized request waits for it to clear, once."""
+    throttled._throttle_if_needed("OpenAI", throttled.model, 100, 0)
+    time.sleep(10)
+
+    throttled._throttle_if_needed("OpenAI", throttled.model, 2000, 0)
+
+    assert clock == [10, pytest.approx(50.0)]
+    assert _rows(throttled) == 2
+    assert "exceeds the per-minute token cap" in caplog.text

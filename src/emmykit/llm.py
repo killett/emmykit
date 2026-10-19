@@ -1670,65 +1670,51 @@ class LLMs:
                     need_sleep = max(need_sleep, (oldest + 60.0) - now)
 
             # Tokens per minute (in/out/sum)
-            def _sum(col: str) -> int:
-                """Sum a column over the current window, return 0 if no rows."""
-                cur.execute(f"SELECT COALESCE(SUM({col}),0) FROM requests WHERE {where}", params)
-                v = cur.fetchone()[0]
-                return int(v or 0)
+            oversized = False
+
+            def _wait_for_room(col: str, cap: int, new: int) -> float:
+                """
+                Return the seconds until the window has room for 'new' more of 'col' under 'cap'.
+
+                A request bigger than 'cap' on its own can never fit; it waits for an
+                empty window instead and is then sent anyway (see 'oversized').
+                """
+                nonlocal oversized
+                cur.execute(f"SELECT ts, {col} FROM requests WHERE {where} ORDER BY ts ASC", params)
+                rows  = cur.fetchall()
+                total = sum(int(t) for _, t in rows)
+                if total + new <= cap:
+                    return 0.0
+                if new > cap:
+                    oversized = True
+                    return (float(rows[-1][0]) + 60.0) - now if rows else 0.0
+                # Wait until enough of the oldest requests have left the window.
+                for ts, t in rows:
+                    total -= int(t)
+                    if total + new <= cap:
+                        return (float(ts) + 60.0) - now
+                return 0.0  # unreachable: with every row gone, total + new = new <= cap
 
             if tpm_in > 0:
-                used_in = _sum("tokens_in")
-                if used_in + int(tokens_in) > tpm_in:
-                    # compute earliest drop time to get under the cap
-                    cur.execute(f"""
-                        SELECT ts, tokens_in FROM requests
-                        WHERE {where} ORDER BY ts ASC
-                    """, params)
-                    total = used_in
-                    cutoff_ts = now
-                    for ts, t in cur.fetchall():
-                        total -= int(t)
-                        if total + int(tokens_in) <= tpm_in:
-                            cutoff_ts = float(ts); break
-                    need_sleep = max(need_sleep, (cutoff_ts + 60.0) - now)
-
+                need_sleep = max(need_sleep, _wait_for_room("tokens_in", tpm_in, int(tokens_in)))
             if tpm_out > 0:
-                used_out = _sum("tokens_out")
-                if used_out + int(tokens_out) > tpm_out:
-                    cur.execute(f"""
-                        SELECT ts, tokens_out FROM requests
-                        WHERE {where} ORDER BY ts ASC
-                    """, params)
-                    total = used_out
-                    cutoff_ts = now
-                    for ts, t in cur.fetchall():
-                        total -= int(t)
-                        if total + int(tokens_out) <= tpm_out:
-                            cutoff_ts = float(ts); break
-                    need_sleep = max(need_sleep, (cutoff_ts + 60.0) - now)
-
+                need_sleep = max(need_sleep, _wait_for_room("tokens_out", tpm_out, int(tokens_out)))
             if tpm_sum > 0:
-                used_sum = _sum("(tokens_in + tokens_out)")
-                new_sum  = int(tokens_in) + int(tokens_out)
-                if used_sum + new_sum > tpm_sum:
-                    cur.execute(f"""
-                        SELECT ts, (tokens_in + tokens_out) AS t FROM requests
-                        WHERE {where} ORDER BY ts ASC
-                    """, params)
-                    total = used_sum
-                    cutoff_ts = now
-                    for ts, t in cur.fetchall():
-                        total -= int(t)
-                        if total + new_sum <= tpm_sum:
-                            cutoff_ts = float(ts); break
-                    need_sleep = max(need_sleep, (cutoff_ts + 60.0) - now)
+                need_sleep = max(need_sleep, _wait_for_room("(tokens_in + tokens_out)", tpm_sum,
+                                                            int(tokens_in) + int(tokens_out)))
 
             if need_sleep > 0.0:
                 cur.execute("COMMIT")   # release lock while sleeping
                 time.sleep(max(0.0, need_sleep))
-                # re-check once after sleep
+                # check again: other processes may have used the room meanwhile
                 self._throttle_if_needed(provider, model, tokens_in, tokens_out)
                 return
+
+            if oversized:
+                logging.warning("%s/%s: this request alone exceeds the per-minute token cap "
+                                "(with %.0f%% headroom); sending it now that the rate window is "
+                                "empty, though the provider may still refuse it.",
+                                provider, model, head * 100)
 
             # Reserve capacity by recording now (serialize bursts)
             cur.execute(

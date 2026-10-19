@@ -101,6 +101,12 @@ All notable changes to `emmykit` are documented here. Format follows
   so the HTTP probe, which works through proxies, never ran. TCP, DNS and
   HTTP now each get `timeout_per_step`, as the name says, so an attempt
   with nothing reachable can take up to about three times that long.
+- `LLMs.send_prompt` could wait forever when one request on its own needed
+  more tokens than 90% of the model's per-minute cap (for example a
+  prompt of over 27,000 tokens to gpt-4.1): the rate throttle slept 60
+  seconds at a time waiting for room that could never exist. Such a
+  request now waits only until no other request is in the minute window,
+  then goes out with a warning.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.
