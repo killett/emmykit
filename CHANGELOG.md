@@ -35,6 +35,13 @@ All notable changes to `emmykit` are documented here. Format follows
   `alternative_model` and (once a config was applied) `get_config`, and
   so on every failover inside `send_prompt`. The 0.3.0 split had dropped
   `replace` from `llm.py`'s `dataclasses` import.
+- `import emmykit` configured the root logger (level INFO, format
+  `%(message)s`) while computing `COMPUTER_NAME`, so a program's own
+  `logging.basicConfig()` after the import silently did nothing.
+  `get_computer_name(rawlog=True)` and
+  `analyze_computer_name_results(..., rawlog=True)`, which log nothing,
+  now leave logging unconfigured too; with `rawlog=False` they behave as
+  before.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

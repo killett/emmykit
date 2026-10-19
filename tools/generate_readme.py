@@ -621,7 +621,8 @@ aliases, probe-target lists, and translation tables are referenced by section ra
 Base install is stdlib-only; heavier helpers
 (datetime parsing via numpy/pandas/dateutil, mojibake fixing via ftfy, lint runners,
 LLM wrappers, ffmpeg/VLC controls) are gated behind optional extras so a bare
-`import emmykit` is fast and side-effect-free.
+`import emmykit` is fast. Its one action at import is looking up the computer's
+name for `COMPUTER_NAME`; it leaves logging for your program to configure.
 
 ## Install
 

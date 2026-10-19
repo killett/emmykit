@@ -63,7 +63,7 @@ def get_computer_name(rawlog: bool = False) -> str:
     Attempts multiple methods to retrieve the computer's name and returns the most common one.
 
     Args:
-        rawlog: If True, print statements are disabled.
+        rawlog: If True, nothing is logged and logging is left unconfigured.
 
     Returns:
         A string representing the most common computer name obtained from the methods.
@@ -72,7 +72,8 @@ def get_computer_name(rawlog: bool = False) -> str:
     Raises:
         None: This function does not raise exceptions, but it may log warnings if no names are retrieved.
     """
-    fallback_logging_config(rawlog=rawlog)
+    # Only when logging: COMPUTER_NAME is computed with rawlog=True at import.
+    if not rawlog: fallback_logging_config()
     methods = {
         "socket_gethostname"  : get_hostname_socket,
         "platform_node"       : get_hostname_platform,
@@ -103,7 +104,7 @@ def analyze_computer_name_results(results: dict[str, str], rawlog: bool = False)
 
     Args:
         results: Dictionary with method names as keys and computer names as values.
-        rawlog:  If True, print statements are disabled.
+        rawlog:  If True, nothing is logged and logging is left unconfigured.
 
     Returns:
         A string representing the most common computer name obtained from the methods.
@@ -114,7 +115,7 @@ def analyze_computer_name_results(results: dict[str, str], rawlog: bool = False)
               no names (or differing names) are retrieved.
     """
     from collections import Counter
-    fallback_logging_config(rawlog=rawlog)
+    if not rawlog: fallback_logging_config()
 
     if not results:
         if not rawlog: logging.error("No methods succeeded in retrieving the computer name.")

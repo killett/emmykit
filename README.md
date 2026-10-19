@@ -6,7 +6,8 @@ aliases, probe-target lists, and translation tables are referenced by section ra
 Base install is stdlib-only; heavier helpers
 (datetime parsing via numpy/pandas/dateutil, mojibake fixing via ftfy, lint runners,
 LLM wrappers, ffmpeg/VLC controls) are gated behind optional extras so a bare
-`import emmykit` is fast and side-effect-free.
+`import emmykit` is fast. Its one action at import is looking up the computer's
+name for `COMPUTER_NAME`; it leaves logging for your program to configure.
 
 ## Install
 
@@ -2793,7 +2794,7 @@ Analyzes the retrieved computer names.
 
 Args:
     results: Dictionary with method names as keys and computer names as values.
-    rawlog:  If True, print statements are disabled.
+    rawlog:  If True, nothing is logged and logging is left unconfigured.
 
 Returns:
     A string representing the most common computer name obtained from the methods.
@@ -2804,7 +2805,7 @@ Raises:
           no names (or differing names) are retrieved.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L100)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L101)
 
 </details>
 
@@ -2816,7 +2817,7 @@ Raises:
 COMPUTER_NAME: str = 'b5ac839dd662'
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L146)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L147)
 
 </details>
 
@@ -2832,7 +2833,7 @@ get_computer_name(rawlog: 'bool' = False) -> 'str'
 Attempts multiple methods to retrieve the computer's name and returns the most common one.
 
 Args:
-    rawlog: If True, print statements are disabled.
+    rawlog: If True, nothing is logged and logging is left unconfigured.
 
 Returns:
     A string representing the most common computer name obtained from the methods.
@@ -2934,7 +2935,7 @@ Retrieves the hostname using the 'scutil --get ComputerName' command on macOS vi
 IS_NASA_COMPUTER: bool = False
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L153)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L154)
 
 </details>
 
@@ -2944,7 +2945,7 @@ IS_NASA_COMPUTER: bool = False
 
 **Includes:** `NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES`, `NASA_COMPUTER_NAME_PREFIXES`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L150)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/hosts.py#L151)
 
 </details>
 
