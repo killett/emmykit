@@ -761,7 +761,7 @@ def interactive_flake8(options: Options,
     if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("At the top of the function %s(), diff_choice=%s", return_method_name(), diff_choice)
     if ignore_codes is None:
         ignore_codes = []
-    if not run_flake8(options, path, ignore_codes=ignore_codes, max_line_length=max_line_length):
+    if run_flake8(options, path, ignore_codes=ignore_codes, max_line_length=max_line_length).total_errors == 0:
         logging.info("No flake8 errors—nothing to do.")
         return True
     codes = _gather_flake8_issues(options, path, ignore_codes=ignore_codes, max_line_length=max_line_length)

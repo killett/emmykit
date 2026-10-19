@@ -7,7 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from emmykit.lint import check_python_formatting
+from emmykit.lint import check_python_formatting, interactive_flake8
+from emmykit.options import Options
 
 
 def _errors(caplog: pytest.LogCaptureFixture) -> list[str]:
@@ -57,3 +58,20 @@ def test_check_python_formatting_logs_no_note_to_self(
     check_python_formatting(path)
 
     assert not [r.getMessage() for r in caplog.records if "LOOK FOR" in r.getMessage()]
+
+
+def test_interactive_flake8_stops_early_on_a_clean_file(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """No violations means "nothing to do" and no further flake8 or autopep8 runs.
+
+    Fails if flake8's Report, which is always truthy, is tested for truth
+    instead of its error count.
+    """
+    pytest.importorskip("flake8")
+    path = tmp_path / "clean.py"
+    path.write_text(CLEAN)
+    caplog.set_level(logging.INFO)
+
+    assert interactive_flake8(Options(), path) is True
+    assert "No flake8 errors—nothing to do." in caplog.text

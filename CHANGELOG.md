@@ -114,6 +114,10 @@ All notable changes to `emmykit` are documented here. Format follows
 - `check_python_formatting` logged a note-to-self in capitals, "LOOK FOR
   logging.debug STATEMENTS THAT USE F-STRINGS…", at WARNING level on every
   call. It is gone.
+- `interactive_flake8` never took its "No flake8 errors—nothing to do."
+  shortcut, because it tested flake8's report object for truth, and that
+  object is always true. On a clean file it went on to run flake8 again
+  as a subprocess and query autopep8. It now checks the error count.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.
