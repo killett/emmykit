@@ -2987,7 +2987,9 @@ Aggregation logic:
     - Otherwise -> return False.
 
 Args:
-    timeout_per_step: Timeout (seconds) per individual network attempt.
+    timeout_per_step: Time budget (seconds) for each step of an attempt (TCP, DNS,
+                      HTTP); with nothing reachable, one attempt can take about
+                      three times this.
     retries:          Number of times to repeat the full check if the result is False.
     workers:          Thread pool size for TCP checks.
     include_ipv6:     Whether to include IPv6 targets.
@@ -3001,7 +3003,7 @@ Raises:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/network.py#L510)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/network.py#L505)
 
 </details>
 

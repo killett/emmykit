@@ -76,9 +76,6 @@ with the reason, so later passes don't argue about them again. Locations are
 - **`safe_paths`' suppressed-errno debug log, written four times.** A helper
   must keep `return_method_name()` pointing at the right frame, and `safe_paths`
   is a third covered by tests.
-- **`network._check_once`'s 0.25 s budget floor and 0.3 s HTTP cutoff.** They
-  are why the HTTP probe never runs once the TCP phase has used the budget (an
-  open bug); rename them when that is fixed.
 - **`llm`'s `getattr(cfg, …, default)` calls, the `"multi_objective"` literal
   and the `9e9` unknown-price placeholder.** The placeholder is an open bug
   (it flips the cheapest-model choice), and the rest is best cleaned up with

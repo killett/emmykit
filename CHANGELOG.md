@@ -96,6 +96,11 @@ All notable changes to `emmykit` are documented here. Format follows
   into the machine's local wall time, so the same call gave different
   answers on different hosts. It now gives the datetime64's own UTC wall
   time.
+- `is_internet_available` reported no connection behind a proxy that
+  drops direct TCP: the TCP step used up the attempt's whole time budget,
+  so the HTTP probe, which works through proxies, never ran. TCP, DNS and
+  HTTP now each get `timeout_per_step`, as the name says, so an attempt
+  with nothing reachable can take up to about three times that long.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

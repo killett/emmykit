@@ -23,6 +23,9 @@ _EXECUTOR: ThreadPoolExecutor | None = None
 # captive portal's page without hanging on a large one.
 _HTTP_BODY_CAP = 2048
 
+# Don't start another HTTP probe with less than this much of the step's budget left.
+_MIN_PROBE_SECONDS = 0.3
+
 def _get_executor() -> ThreadPoolExecutor:
     """Create or return a shared thread pool; never blocks on shutdown."""
     global _EXECUTOR
@@ -435,7 +438,7 @@ def _check_once(timeout: float, workers: int, include_ipv6: bool, ignore_proxies
     Perform one pass of the connectivity checks with a total timeout budget.
 
     Args:
-        timeout:        Total timeout budget (seconds) for the entire attempt.
+        timeout:        Time budget (seconds) for each step: TCP, DNS and HTTP.
         workers:        Thread pool size for parallel network attempts.
         include_ipv6:   Whether to include IPv6 TCP targets.
         ignore_proxies: If True, bypass env proxies for HTTP probes.
@@ -448,17 +451,6 @@ def _check_once(timeout: float, workers: int, include_ipv6: bool, ignore_proxies
     """
     import socket
     import time
-    start = time.monotonic()
-
-    def _remaining() -> float:
-        """
-        Return remaining time budget for the current attempt.
-        Never return below a small floor to allow some progress.
-        """
-        # Allow a little budget spread across phases; never below a small floor.
-        spent = time.monotonic() - start
-        rem = max(0.25, timeout - spent)  # per-attempt budget ~= timeout seconds
-        return rem
 
     tcp_targets: list[tuple[str, int]] = IPV4_TARGETS.copy()
     if include_ipv6 and getattr(socket, "has_ipv6", False):
@@ -473,20 +465,23 @@ def _check_once(timeout: float, workers: int, include_ipv6: bool, ignore_proxies
                                        timeout=min(timeout, 5.0),
                                        requested_workers=workers)
 
-    # 2) DNS (parallel, with hard cap ~timeout seconds total for the phase)
-    dns_ok = _any_dns_name_resolves(DNS_TEST_NAMES, per_name_timeout=min( max(0.5, _remaining()), timeout))
+    # 2) DNS (parallel, with its own budget of ~timeout seconds)
+    dns_ok = _any_dns_name_resolves(DNS_TEST_NAMES, per_name_timeout=timeout)
 
     # 3) HTTP probes: only try if DNS is healthy (avoids another resolver stall)
     if dns_ok:
         opener = _build_http_opener(ignore_proxies=ignore_proxies)
+        # Its own budget, so slow TCP or DNS steps can't leave HTTP no time;
+        # HTTP is the one signal that also works through a proxy.
+        http_start = time.monotonic()
         for probe in HTTP_PROBES:
-            rem = _remaining()
-            if rem <= 0.3:
-                break  # out of budget for this attempt
+            rem = timeout - (time.monotonic() - http_start)
+            if rem <= _MIN_PROBE_SECONDS:
+                break  # out of budget for this step
             ok, status, body, final_url = _http_probe_with_cap(
                 url=probe["url"],
                 method=probe["method"],
-                timeout=min(rem, timeout),
+                timeout=rem,
                 opener=opener,
             )
             if ok and _http_meets_expectations(status, body, probe["expect"]):
@@ -530,7 +525,9 @@ def is_internet_available(timeout_per_step: float = 2.5,
         - Otherwise -> return False.
 
     Args:
-        timeout_per_step: Timeout (seconds) per individual network attempt.
+        timeout_per_step: Time budget (seconds) for each step of an attempt (TCP, DNS,
+                          HTTP); with nothing reachable, one attempt can take about
+                          three times this.
         retries:          Number of times to repeat the full check if the result is False.
         workers:          Thread pool size for TCP checks.
         include_ipv6:     Whether to include IPv6 targets.

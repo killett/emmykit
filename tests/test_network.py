@@ -7,6 +7,8 @@ function's docstring.
 
 from __future__ import annotations
 
+import time
+
 import pytest
 
 from emmykit import network
@@ -52,3 +54,29 @@ def test_tcp_alone_counts_only_when_not_strict(
     monkeypatch.setattr(network, "_http_probe_with_cap", lambda **_: PROBE_FAILS)
 
     assert network.is_internet_available(retries=0, strict=strict) is expected
+
+
+def test_http_probe_still_runs_after_tcp_uses_its_whole_budget(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Behind a proxy that drops direct TCP, the HTTP probe still gets its own time.
+
+    Fails if the steps share one budget: the TCP step's silent timeouts leave
+    nothing for HTTP, so the probe that would succeed is never tried.
+    """
+    step = 0.6
+    probes: list[str] = []
+
+    def tcp_times_out(**_: object) -> bool:
+        time.sleep(step)
+        return False
+
+    def probe(**kwargs: object) -> tuple[bool, int | None, bytes | None, str | None]:
+        probes.append(str(kwargs["url"]))
+        return (True, 204, b"", URL)
+
+    monkeypatch.setattr(network, "_run_tcp_checks_with_pool", tcp_times_out)
+    monkeypatch.setattr(network, "_any_dns_name_resolves", lambda *_, **__: True)
+    monkeypatch.setattr(network, "_build_http_opener", lambda **_: None)
+    monkeypatch.setattr(network, "_http_probe_with_cap", probe)
+
+    assert network.is_internet_available(timeout_per_step=step, retries=0) is True
+    assert len(probes) == 1
