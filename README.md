@@ -2639,7 +2639,7 @@ contains_mojibake(text: 'str') -> 'bool'
 Use ftfy.badness.is_bad() to detect any likely mojibake in the text.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L63)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L78)
 
 </details>
 
@@ -2656,7 +2656,7 @@ Attempt to decode CP1252 bytes and return as a string.
 If it fails, return None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L48)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L63)
 
 </details>
 
@@ -2673,7 +2673,7 @@ If the file at 'path' is valid UTF-8 without lone C1 controls,
 return the decoded string. Otherwise, return None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L31)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L46)
 
 </details>
 
@@ -2693,7 +2693,7 @@ as an http-equiv Content-Type declaration—normalize it to
 after the opening <head> tag.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L103)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L118)
 
 </details>
 
@@ -2710,7 +2710,7 @@ Fix mojibake in a text file, recoding from CP1252 to UTF-8 if necessary.
 If the file is already valid UTF-8, it will only fix mojibake.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L141)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L156)
 
 </details>
 
@@ -2726,7 +2726,7 @@ fix_text(current_text: 'str', path: 'str | os.PathLike[str]', raw_bytes: 'bytes'
 Fix mojibake in a string using ftfy.fix_encoding().
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L77)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L92)
 
 </details>
 
@@ -2756,9 +2756,14 @@ my_title_case(the_title: 'str') -> 'str'
 
 ```text
 Capitalize the first letter of each word, but if a word already has ANY uppercase letters, leave it as is. This way, words like "WW2" or "iZombie" won't be modified.
+
+Only the first letter changes, after any leading punctuation ("(hello)" -> "(Hello)"),
+and the same in each hyphenated part ("well-known" -> "Well-Known"). A part that
+starts with a digit is left alone ("2nd"), and so are letters after an
+apostrophe ("don't" -> "Don't").
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L24)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L27)
 
 </details>
 
@@ -2774,7 +2779,7 @@ normalize_for_search(text: 'str') -> 'str'
 Convert text to ASCII and lowercase for case- and diacritic-insensitive comparison. Also treat some characters such as ._- the same as spaces. Remove quotes (', ", ' and their unicode variants).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L199)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L214)
 
 </details>
 

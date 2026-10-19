@@ -133,6 +133,10 @@ All notable changes to `emmykit` are documented here. Format follows
   f-word exceptions with "-ves" anyway (chief → "chieves", roof →
   "rooves", cliff → "clifves"), because it checked the list against the
   word with its f removed. Those words now just add "s".
+- `my_title_case` capitalized letters after apostrophes and digits, as
+  `str.title()` does: "don't" became "Don'T" and "2nd" became "2Nd". It
+  now capitalizes only each word's first letter (and each hyphenated
+  part's, so "well-known" is still "Well-Known").
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

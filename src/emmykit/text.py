@@ -21,11 +21,26 @@ def my_capitalize(string_to_capitalize: str) -> str:
         return ""
     return string_to_capitalize[0].upper() + string_to_capitalize[1:]
 
+# Leading punctuation, then a letter (not a digit): the letter a title capitalizes.
+_FIRST_LETTER_RE: re.Pattern = re.compile(r"^(\W*)([^\W\d_])")
+
 def my_title_case(the_title: str) -> str:
-    """Capitalize the first letter of each word, but if a word already has ANY uppercase letters, leave it as is. This way, words like "WW2" or "iZombie" won't be modified."""
+    """
+    Capitalize the first letter of each word, but if a word already has ANY uppercase letters, leave it as is. This way, words like "WW2" or "iZombie" won't be modified.
+
+    Only the first letter changes, after any leading punctuation ("(hello)" -> "(Hello)"),
+    and the same in each hyphenated part ("well-known" -> "Well-Known"). A part that
+    starts with a digit is left alone ("2nd"), and so are letters after an
+    apostrophe ("don't" -> "Don't").
+    """
+    def capitalize(part: str) -> str:
+        """Upper-case the first letter of 'part' if it comes before any digit."""
+        return _FIRST_LETTER_RE.sub(lambda m: m.group(1) + m.group(2).upper(), part, count=1)
+
     words = the_title.split()
     capitalized_words = [word if any(letter.isupper() for letter in word)
-                         else word.title() for word in words]
+                         else "-".join(capitalize(part) for part in word.split("-"))
+                         for word in words]
     return " ".join(capitalized_words)
 
 def decode_utf8(raw_bytes: bytes, path_str: str = "input string") -> str | None:
