@@ -3229,7 +3229,7 @@ Raises:
     ValueError: If the specified path is not a file. The function which raises this exception is autopep8.fix_file().
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L518)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L516)
 
 </details>
 
@@ -3266,7 +3266,7 @@ Raises:
     PermissionError: If the file is not accessible due to permission issues.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L585)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L583)
 
 </details>
 
@@ -3313,7 +3313,7 @@ which Flake8 error‐codes autopep8 knows how to fix.
 Returns a set like {"E101","E111", ...}.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L490)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L488)
 
 </details>
 
@@ -3347,7 +3347,7 @@ Returns:
     False if the user chose to quit during any replacement prompts, True otherwise.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L732)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L730)
 
 </details>
 
@@ -3380,7 +3380,7 @@ Raises:
     NotADirectoryError: If the specified path is not a directory.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L665)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L663)
 
 </details>
 
@@ -3410,7 +3410,7 @@ Raises:
     FileNotFoundError: If the specified file does not exist.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L333)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L331)
 
 </details>
 
@@ -3433,7 +3433,7 @@ Returns:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L789)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L787)
 
 </details>
 

@@ -111,6 +111,9 @@ All notable changes to `emmykit` are documented here. Format follows
   `raise_on_empty` error) and "BLAH2File is empty" (the warning), debugging
   leftovers seen by every function that checks its input file. Both now
   read "File is empty: <path>".
+- `check_python_formatting` logged a note-to-self in capitals, "LOOK FOR
+  logging.debug STATEMENTS THAT USE F-STRINGS…", at WARNING level on every
+  call. It is gone.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

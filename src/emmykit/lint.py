@@ -275,8 +275,6 @@ def check_python_formatting(path: str | os.PathLike[str], diff_choice: int = 1) 
     if compile_code(src):
         logging.info("✅ %s compiled successfully.", os.fspath(path))
 
-    logging.warning("LOOK FOR logging.debug STATEMENTS THAT USE F-STRINGS OR THAT DON'T HAVE GUARDS!!")
-
     if BACKTICK in src:
         logging.warning("File %s contains the backtick character (%r). Use straight quotation marks (') instead.", os.fspath(path), BACKTICK)
         if not ask_and_replace(old_str=BACKTICK, new_str="'", path=path, label="backtick",

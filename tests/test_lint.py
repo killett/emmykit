@@ -41,3 +41,19 @@ def test_conforming_function_is_not_reported(
     assert check_python_formatting(path) is True
 
     assert _errors(caplog) == []
+
+
+CLEAN = '"""A module."""\n\n\ndef add(a: int, b: int) -> int:\n    """Add two numbers."""\n    return a + b\n'
+
+
+def test_check_python_formatting_logs_no_note_to_self(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A clean file produces no leftover developer reminder at WARNING level."""
+    path = tmp_path / "good.py"
+    path.write_text(CLEAN)
+    caplog.set_level(logging.INFO)
+
+    check_python_formatting(path)
+
+    assert not [r.getMessage() for r in caplog.records if "LOOK FOR" in r.getMessage()]
