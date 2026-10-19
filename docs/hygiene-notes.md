@@ -69,10 +69,9 @@ with the reason, so later passes don't argue about them again. Locations are
   `_encode_registered`.** One helper would have to pass the recursion marker
   through the tuple and set branches' post-processing, which reads worse than
   the explicit copies.
-- **`lint._gather_via_cli` / `_gather_via_app` building the bugbear arguments
-  twice**, plus a third form in `run_flake8`. `_gather_via_app` sits behind a
-  fallback that can't trigger, and a failing flake8 is silently read as no
-  issues; fix those together.
+- **The bugbear options built twice**: as command-line flags in
+  `lint._gather_via_cli` and as keyword arguments in `run_flake8`. They feed
+  two different flake8 interfaces, so one helper would need both shapes.
 - **`safe_paths`' suppressed-errno debug log, written four times.** A helper
   must keep `return_method_name()` pointing at the right frame, and `safe_paths`
   is a third covered by tests.

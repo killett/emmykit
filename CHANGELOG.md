@@ -122,6 +122,9 @@ All notable changes to `emmykit` are documented here. Format follows
   `('Empty file: %s', '/path')`, and a non-integer `diff_choice` made the
   logging call itself fail ("--- Logging error ---") instead of saying
   what was wrong. Both messages now name the file or value.
+- `interactive_flake8` treated a flake8 that couldn't run (for example
+  "No module named flake8") as a file with no issues. It now raises
+  `RuntimeError` with flake8's message.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

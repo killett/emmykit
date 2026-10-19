@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -104,3 +105,19 @@ def test_ask_and_autopep8_reports_a_bad_diff_choice(
 
     assert ask_and_autopep8(path, "E302", diff_choice="unified") is False  # type: ignore[arg-type]
     assert "Invalid diff_choice='unified'" in caplog.text
+
+
+def test_flake8_that_cannot_run_is_an_error_not_a_clean_bill(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """If the flake8 command fails, interactive_flake8 raises instead of finding nothing."""
+    pytest.importorskip("flake8")
+    path = tmp_path / "e302.py"
+    path.write_text("def a():\n    pass\ndef b():\n    pass\n")
+
+    def no_flake8(cmd: list[str], *args: object, **kwargs: object) -> subprocess.CompletedProcess[str]:
+        return subprocess.CompletedProcess(cmd, 1, "", "/usr/bin/python3: No module named flake8\n")
+
+    monkeypatch.setattr(subprocess, "run", no_flake8)
+    with pytest.raises(RuntimeError, match="No module named flake8"):
+        interactive_flake8(Options(), path)

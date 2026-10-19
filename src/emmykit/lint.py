@@ -387,9 +387,7 @@ def _gather_flake8_issues(options: Options, path: str | os.PathLike[str],
                           max_line_length: int = 100) -> dict[str, str]:
     """
     Returns a dict mapping each Flake8 error code to its first-seen description
-    in the file at 'path'.
-    Tries the 'flake8' CLI (fast), but if it's not on PATH, falls back
-    to an in-process Application/API solution.
+    in the file at 'path', from a `python -m flake8` subprocess.
 
     Args:
         options:         Options instance containing various settings. Contains:
@@ -403,12 +401,10 @@ def _gather_flake8_issues(options: Options, path: str | os.PathLike[str],
 
     Raises:
         FileNotFoundError: If the specified file does not exist.
+        RuntimeError:      If flake8 itself fails to run.
     """
     ignores = list(ignore_codes) if ignore_codes else []
-    try:
-        return _gather_via_cli(options, path, max_line_length, ignores)
-    except FileNotFoundError:
-        return _gather_via_app(options, path, max_line_length, ignores)
+    return _gather_via_cli(options, path, max_line_length, ignores)
 
 def _gather_via_cli(options: Options, path: str | os.PathLike[str],
                     max_line_length: int, ignore_codes: list[str]) -> dict[str, str]:
@@ -429,6 +425,11 @@ def _gather_via_cli(options: Options, path: str | os.PathLike[str],
         if selected & {"B9", "B950"}:
             args.insert(-1, "--extend-ignore=E501")  # E501 is redundant if B9xx rules are enabled
     proc = subprocess.run(args, capture_output=True, text=True)
+    # flake8 exits 1 when it finds violations. Any other failure, or exit 1
+    # with no report (e.g. "No module named flake8"), means it didn't run.
+    if proc.returncode not in (0, 1) or (proc.returncode == 1 and not proc.stdout.strip()):
+        reason = proc.stderr.strip() or f"exit status {proc.returncode}"
+        raise RuntimeError(f"flake8 failed on {os.fspath(path)}: {reason}")
     codes: dict[str, str] = {}
     for line in proc.stdout.splitlines():
         # e.g. "12:5: E302 expected 2 blank lines, found 1"
@@ -439,51 +440,6 @@ def _gather_via_cli(options: Options, path: str | os.PathLike[str],
         code, desc = rest.split(" ", 1)
         codes.setdefault(code, desc)
     return codes
-
-def _gather_via_app(options: Options, path: str | os.PathLike[str],
-                    max_line_length: int, ignore_codes: list[str]) -> dict[str, str]:
-    """Use the flake8 Application API to gather codes and descriptions."""
-    from flake8.main.application import Application
-    from flake8.formatting.base  import BaseFormatter
-    from flake8.violation        import Violation
-    path = ensure_file(path)
-
-    class CodeDictFormatter(BaseFormatter):
-        """Custom formatter that collects codes and their first descriptions."""
-
-        def __init__(self, options: dict[str, str]) -> None:
-            """Initialize the formatter with options."""
-            super().__init__(options)
-            self.codes: dict[str, str] = {}
-
-        def format(self, error: Violation) -> str:
-            """Format a single error, capturing its code and description."""
-            # capture the first description we see for each code
-            self.codes.setdefault(error.code, error.text)
-            # suppress any actual stdout
-            return ""
-
-    class CodeDictApp(Application):
-        """Custom Application subclass to use our CodeDictFormatter."""
-
-        def make_formatter(self) -> BaseFormatter:
-            """Create a custom formatter that collects codes and descriptions."""
-            # force our custom formatter
-            self.formatter = CodeDictFormatter(self.options)
-            return self.formatter
-
-    app = CodeDictApp()
-    # supply exactly the same CLI settings in-process
-    cli_args = [f"--max-line-length={max_line_length}", f"--ignore={','.join(ignore_codes)}", os.fspath(path)]
-    if options.bugbear_choice:
-        cli_args.insert(-1, f"--extend-select={options.bugbear_choice}")
-        selected = {c.strip() for c in options.bugbear_choice.split(",") if c.strip()}
-        if selected & {"B9", "B950"}:
-            cli_args.insert(-1, "--extend-ignore=E501")  # E501 is redundant if B9xx rules are enabled
-    # this will parse, run checks, and invoke our formatter behind the scenes
-    app.run(cli_args)
-    # the formatter collected everything into .codes
-    return app.formatter.codes
 
 def get_autopep8_fixable_codes() -> set[str]:
     """
