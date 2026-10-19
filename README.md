@@ -3509,7 +3509,7 @@ ensure_daemon_running() -> 'None'
 Check if the Docker daemon is running; if not, attempt to start it.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L20)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L21)
 
 </details>
 
@@ -3525,7 +3525,7 @@ ensure_docker_installed() -> 'None'
 Check if the Docker CLI is installed; if not, raise an error.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L13)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L14)
 
 </details>
 
@@ -3544,7 +3544,7 @@ or a build_cmd (and optionally a build_dir). If both dockerfile and build_cmd ar
 the function will raise an error.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L48)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L49)
 
 </details>
 
@@ -3573,7 +3573,7 @@ Raises:
     RuntimeError: If all fixes fail and the command still does not succeed.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L82)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/docker_utils.py#L84)
 
 </details>
 

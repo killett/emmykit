@@ -7,6 +7,7 @@ import sys
 from collections.abc import Callable, Iterable
 from pathlib import Path
 
+from emmykit.constants import DEFAULT_ENCODING
 from emmykit.io_subprocess import MyPopenResult, my_critical_error, my_popen
 
 
@@ -63,7 +64,8 @@ def ensure_image_built(image: str, *,
         if dockerfile is None:
             raise ValueError(f"Image {image} missing and no build_cmd/dockerfile provided")
         try:
-            first = open(dockerfile, "r").readline().strip()
+            with open(dockerfile, "r", encoding=DEFAULT_ENCODING) as f:
+                first = f.readline().strip()
         except OSError:
             my_critical_error(f"Cannot read {os.fspath(dockerfile)} to build {image}")
         if not first.startswith("#"):
