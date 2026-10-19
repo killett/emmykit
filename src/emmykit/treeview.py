@@ -23,8 +23,9 @@ def treeview_new_files(directory:      str | os.PathLike[str],
     Args:
         directory:      The directory to scan.
         last_file_path: The optional path to a chosen file. Only files newer than this will be printed.
-        last_mtime:     The modification time of the last_file_path. If None, all files will be
-                        considered.
+        last_mtime:     Only files modified after this time (seconds since the epoch) count as new.
+                        Ignored when last_file_path is given, whose modification time is used
+                        instead. If neither is given, all files are considered.
         maxlines:       The maximum number of lines to read from each file. 0 means don't read at all,
                         -1 means read all lines, otherwise read up to maxlines (default 0).
         use_colors:     Whether to use ANSI color codes in the output (default True).
@@ -56,8 +57,9 @@ def treeview_new_files(directory:      str | os.PathLike[str],
         return False
 
     if last_file_path is None:
-        last_mtime = 0
-        if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("%sNo last file path provided, considering all files.", prefix)
+        if last_mtime is None:
+            last_mtime = 0
+            if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("%sNo last file path or mtime provided, considering all files.", prefix)
     else:
         last_file_path = ensure_path(last_file_path)
         if not safe_exists(last_file_path):

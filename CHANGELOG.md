@@ -177,6 +177,10 @@ All notable changes to `emmykit` are documented here. Format follows
 - `check_if_command_exists` ran the `which` program, so it raised
   `FileNotFoundError` on systems without one. It now uses
   `shutil.which`.
+- `treeview_new_files` ignored `last_mtime`: without `last_file_path` it
+  always reset the cutoff to 0, so every file counted as new. The
+  caller's `last_mtime` is now used; `last_file_path`, when given, still
+  takes precedence.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

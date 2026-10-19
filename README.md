@@ -3463,8 +3463,9 @@ Recursively scan the directory, print the contents of files newer than last_file
 Args:
     directory:      The directory to scan.
     last_file_path: The optional path to a chosen file. Only files newer than this will be printed.
-    last_mtime:     The modification time of the last_file_path. If None, all files will be
-                    considered.
+    last_mtime:     Only files modified after this time (seconds since the epoch) count as new.
+                    Ignored when last_file_path is given, whose modification time is used
+                    instead. If neither is given, all files are considered.
     maxlines:       The maximum number of lines to read from each file. 0 means don't read at all,
                     -1 means read all lines, otherwise read up to maxlines (default 0).
     use_colors:     Whether to use ANSI color codes in the output (default True).
