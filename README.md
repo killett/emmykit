@@ -2003,7 +2003,7 @@ Returns:
     for NaT/NaN values.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L621)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L622)
 
 </details>
 
@@ -2053,7 +2053,7 @@ Example:
 
 **Public methods:** `format_ticks`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L732)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L733)
 
 </details>
 
@@ -2065,7 +2065,7 @@ Example:
 AnyDateTimeType: TypeAlias = 'str | float | int | np.datetime64 | pd.Timestamp | dt.datetime'
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L306)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L307)
 
 </details>
 
@@ -2089,14 +2089,14 @@ Usage: new_datetime_datetime_object = decimal_year_to_datetime(2002.291)
 
 <a id="extract_timestamp"></a><a id="user-content-extract_timestamp"></a>
 <details>
-<summary><code>extract_timestamp</code> — Extract timestamp string (in format YYYYMMDD-HHMMSS) from the_string, or None if not found.</summary>
+<summary><code>extract_timestamp</code> — Extract the timestamp (YYYYMMDD-HHMMSS) from a name ending in "YYYYMMDD-HHMMSS.pkl", or None if it doesn't.</summary>
 
 ```python
 extract_timestamp(the_string: 'str') -> 'str | None'
 ```
 
 ```text
-Extract timestamp string (in format YYYYMMDD-HHMMSS) from the_string, or None if not found.
+Extract the timestamp (YYYYMMDD-HHMMSS) from a name ending in "YYYYMMDD-HHMMSS.pkl", or None if it doesn't.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L123)
@@ -2222,7 +2222,7 @@ Raises:
     TypeError:   If the given_date is not a string, float, int, numpy.datetime64, pandas.Timestamp, or datetime.datetime object.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L345)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L346)
 
 </details>
 
@@ -2275,7 +2275,7 @@ Integer constants representing date-formatting precision levels.
 Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L571)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L572)
 
 </details>
 

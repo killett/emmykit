@@ -146,6 +146,15 @@ All notable changes to `emmykit` are documented here. Format follows
   The files are now opened first; on failure nothing changes.
 - `MaxLevelFilter` skipped `logging.Filter.__init__`, so its instances had
   no `name`.
+- `decimal_year_to_datetime` (and so `parse_datetime` with a number or a
+  numeric string) raised `OverflowError` instead of `ValueError` for
+  infinite or enormous years such as `"1e10"`, and couldn't convert any
+  time in the year 9999. Both now work as documented.
+- `extract_timestamp` accepted any character before "pkl"
+  (`"…123456xpkl"`), and its docstring now says it reads names ending in
+  `YYYYMMDD-HHMMSS.pkl`. `parse_timezone` rejected a full zone name with
+  surrounding spaces (`" America/New_York "`) although abbreviations
+  with spaces worked.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

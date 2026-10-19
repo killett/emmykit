@@ -118,10 +118,10 @@ def format_date_range(date1: dt.datetime, date2: dt.datetime | None = None) -> s
     else:
         return             f"{month1} {day1:2d}, {year1} - {month2} {day2:2d}, {year2}"
 
-_TIMESTAMP_PATTERN_RE: re.Pattern = re.compile(r"(\d{8}-\d{6}).pkl$")
+_TIMESTAMP_PATTERN_RE: re.Pattern = re.compile(r"(\d{8}-\d{6})\.pkl$")
 
 def extract_timestamp(the_string: str) -> str | None:
-    """Extract timestamp string (in format YYYYMMDD-HHMMSS) from the_string, or None if not found."""
+    """Extract the timestamp (YYYYMMDD-HHMMSS) from a name ending in "YYYYMMDD-HHMMSS.pkl", or None if it doesn't."""
     if (m := _TIMESTAMP_PATTERN_RE.search(the_string)):
         return m.group(1)
     return None
@@ -263,7 +263,7 @@ def parse_timezone(tz_arg: str | dt.tzinfo | None = None) -> dt.tzinfo | str:
 
         # Try to interpret the string as a ZoneInfo name
         try:
-            return ZoneInfo(tz_arg)
+            return ZoneInfo(tz_arg.strip())
         except ZoneInfoNotFoundError as e:
             raise ValueError(f"Unknown timezone {tz_arg!r}: {e}") from e
 
@@ -284,14 +284,15 @@ def decimal_year_to_datetime(dec: float, use_astropy: bool = False) -> dt.dateti
         t = Time(dec, format="jyear", scale="utc")
         return t.to_datetime().replace(tzinfo=dt.timezone.utc)
 
+    import calendar
     try:
         year = int(dec)
         rem = dec - year
-        start_dt = dt.datetime(year,     1, 1, tzinfo=dt.timezone.utc)
-        end_dt   = dt.datetime(year + 1, 1, 1, tzinfo=dt.timezone.utc)
-        year_secs = (end_dt - start_dt).total_seconds()
+        start_dt = dt.datetime(year, 1, 1, tzinfo=dt.timezone.utc)
+        # From the calendar, not from 1 January of year + 1, which doesn't exist for 9999.
+        year_secs = (366 if calendar.isleap(year) else 365) * 86_400
         return start_dt + dt.timedelta(seconds=rem * year_secs)
-    except ValueError as e:
+    except (ValueError, OverflowError) as e:  # OverflowError: inf, or a year too big for C
         raise ValueError(f"Failed to convert decimal year {dec} to datetime: {e}") from e
 
 def _parse_iso(given_date: str) -> dt.datetime:

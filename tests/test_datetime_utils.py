@@ -11,7 +11,12 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from emmykit.datetime_utils import extract_timestamp, parse_timezone
+from emmykit.datetime_utils import (
+    decimal_year_to_datetime,
+    extract_timestamp,
+    parse_datetime,
+    parse_timezone,
+)
 from tests._helpers import run_python
 
 UTC = dt.timezone.utc
@@ -83,3 +88,31 @@ def test_missing_matplotlib_raises_import_error_naming_the_extra() -> None:
     assert name == "ImportError"
     assert "emmykit[datetime]" in message
     assert cause == "ModuleNotFoundError"
+
+
+def test_decimal_year_works_in_year_9999() -> None:
+    """Halfway through 9999 (365 days) is noon on 2 July. Fails if 1 January 10000 is built."""
+    assert decimal_year_to_datetime(9999.5).isoformat() == "9999-07-02T12:00:00+00:00"
+
+
+@pytest.mark.parametrize("dec", [float("inf"), 1e10, float("nan")])
+def test_decimal_year_out_of_range_is_a_value_error(dec: float) -> None:
+    """Years datetime can't hold raise ValueError, never OverflowError."""
+    with pytest.raises(ValueError, match="Failed to convert decimal year"):
+        decimal_year_to_datetime(dec)
+
+
+def test_parse_datetime_of_a_huge_number_is_a_value_error() -> None:
+    """"1e10" is read as a decimal year, which is out of range: a ValueError, as documented."""
+    with pytest.raises(ValueError):
+        parse_datetime("1e10")
+
+
+def test_extract_timestamp_needs_a_literal_dot_before_pkl() -> None:
+    """Fails if the '.' in the pattern matches any character."""
+    assert extract_timestamp("run_20240101-123456xpkl") is None
+
+
+def test_parse_timezone_ignores_surrounding_spaces_in_a_zone_name() -> None:
+    """Abbreviations are already stripped; full zone names must be too."""
+    assert parse_timezone(" America/New_York ") == ZoneInfo("America/New_York")
