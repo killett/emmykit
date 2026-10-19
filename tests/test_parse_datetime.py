@@ -76,6 +76,38 @@ def test_count_of_units_since_an_epoch(given: float, format_str: str, expected: 
     assert parse_datetime(given, format_str=format_str).isoformat() == expected
 
 
+@pytest.mark.parametrize(
+    ("given", "timezone", "expected"),
+    [
+        ("Tue, 25 Jun 2025 14:00:00 EST", None, "2025-06-25T19:00:00+00:00"),
+        ("2025-06-25 14:00:00 UTC", NY, "2025-06-25T10:00:00-04:00"),
+        ("Tue, 25 Jun 2025 14:00:00 GMT", NY, "2025-06-25T10:00:00-04:00"),
+    ],
+)
+def test_named_zone_in_the_text_is_converted(given: str, timezone: str | None, expected: str) -> None:
+    """A zone name the parser understands makes the time aware, so it's converted.
+
+    Fails if only a trailing Z or numeric offset counts, and the parsed EST or
+    UTC is overwritten with the target zone instead.
+    """
+    assert parse_datetime(given, timezone=timezone).isoformat() == expected
+
+
+def test_trailing_year_is_not_mistaken_for_an_offset() -> None:
+    """ "-2002" at the end is a year, so the result is midnight UTC on any host.
+
+    Fails under one of the two host timezones if the date is treated as having
+    an offset and its naive value is then read in local time.
+    """
+    assert parse_datetime("18-Oct-2002").isoformat() == "2002-10-18T00:00:00+00:00"
+
+
+def test_forced_conversion_reads_a_naive_value_as_utc() -> None:
+    """should_convert=True on a bare wall time converts from UTC, not from local time."""
+    result = parse_datetime(dt.datetime(2002, 10, 18, 7), timezone=NY, should_convert=True)
+    assert result.isoformat() == "2002-10-18T03:00:00-04:00"
+
+
 def test_should_convert_false_attaches_instead_of_converting() -> None:
     """The override keeps the wall time and swaps in the target zone."""
     result = parse_datetime("2002-10-18T07:00:00Z", timezone=NY, should_convert=False)

@@ -314,78 +314,44 @@ def _parse_iso(given_date: str) -> dt.datetime:
     except ParserError as e:
         raise ValueError(f"Invalid ISO8601 date '{given_date}'") from e
 
-_JD_MJD_SIMPLE_RE: re.Pattern  = re.compile(r"\s*(JD|MJD)?\s*[+-]?\d+(\.\d+)?\s*", re.IGNORECASE)
-
 _JD_MJD_CAPTURE_RE: re.Pattern = re.compile(r"\s*(?P<prefix>JD|MJD)?\s*(?P<value>[+-]?\d+(?:\.\d+)?)\s*", re.IGNORECASE)
-
-_OFFSET_IN_STR_RE: re.Pattern  = re.compile(r"(Z|[+-]\d{2}:\d{2}|[+-]\d{4})$")
 
 _JD_UNIX_EPOCH: float = 2_440_587.5
 
 AnyDateTimeType: TypeAlias = "str | float | int | np.datetime64 | pd.Timestamp | dt.datetime"
 
-def _should_convert(given_date: AnyDateTimeType, format_str: str | None = None) -> bool:
-    """Determine if the given date should be converted to a timezone (i.e. if the wall clock should be shifted) or if the timezone should just be attached without shifting the clock."""
-    import datetime as dt
-
-    # 1) Numbers, JD/MJD, decimal years, special keywords
-    if isinstance(given_date, (int, float)) and not isinstance(given_date, bool):
-        if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Given date is a number: %s, so it will be converted by shifting the clock", given_date)
-        return True
-    if isinstance(given_date, str):
-        u = given_date.strip().upper()
-        if u in ("J2000", "UNIX", "NOW"):
-            if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Given date is a special keyword: %s, so it will be converted by shifting the clock", u)
-            return True
-        if format_str and format_str.upper() in ("JD", "MJD"):
-            if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Given date has a format_str: %s, so it will be converted by shifting the clock", format_str)
-            return True
-        if _JD_MJD_SIMPLE_RE.fullmatch(given_date):
-            if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Given date is a JD/MJD: %s, so it will be converted by shifting the clock", given_date)
-            return True
-        # explicit offset or Z
-        if _OFFSET_IN_STR_RE.search(given_date):
-            if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Given date has an explicit offset or Z: %s, so it will be converted by shifting the clock", given_date)
-            return True
-    # 2) Any datetime/timestamp already aware
-    if isinstance(given_date, dt.datetime) and given_date.tzinfo is not None:
-        if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Given date is an aware datetime: %s, so it will be converted by shifting the clock", given_date)
-        return True
-
-    # Otherwise treat it as local‐time → attach only
-    if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Given date is not a number, JD/MJD, or aware datetime: %s, so the timezone will be attached without shifting the clock", given_date)
-    return False
-
-def _finalize_datetime(parsed_dt: dt.datetime, original_input: AnyDateTimeType,
-                       format_str: str | None, tz_arg: str | dt.tzinfo | None,
+def _finalize_datetime(parsed_dt: dt.datetime, tz_arg: str | dt.tzinfo | None,
                        should_convert: bool | None = None) -> dt.datetime:
     """
-    Finalize the datetime object by either converting it to the target timezone or just attaching the timezone without shifting the clock. The boolean argument 'should_convert' can override the default behavior, which is determined by the function _should_convert().
+    Put the parsed datetime into the target timezone.
+
+    A datetime that carries its own zone or offset is converted, so the clock
+    shifts to show the same instant; a naive one has the target zone attached,
+    so the clock stays. 'should_convert' overrides that choice, and a naive
+    datetime that must be converted is read as UTC, the default zone.
 
     Args:
-        parsed_dt:      The datetime object that has been parsed from the original input.
-        original_input: The original input that was used to parse the datetime.
-        format_str:     The format string used to parse the datetime, if any.
-        tz_arg:         The timezone argument, which can be a string or a datetime.tzinfo object.
-        should_convert: A boolean indicating whether to convert the datetime to the specified timezone by shifting the clock (True) or just attaching the timezone without shifting (False). If None, the function will determine this based on the type of original_input and format_str.
+        parsed_dt:      The datetime parsed from the caller's input.
+        tz_arg:         The target timezone: a string, a datetime.tzinfo object, or None for UTC.
+        should_convert: True to convert, False to attach, None to decide by whether parsed_dt is aware.
 
     Returns:
-        A datetime.datetime object in the specified timezone.
-        If tz_arg is "Naive", the datetime will be returned without any timezone info.
-        If should_convert is True, the datetime will be converted to the specified timezone by shifting the clock.
-        If should_convert is False, the timezone will be attached to the datetime without shifting the clock.
-        If should_convert is None, the function will determine whether to convert or not based on the type of original_input and format_str.
+        A datetime.datetime object in the target timezone, or a naive one if tz_arg is "Naive".
 
     Raises:
         ValueError: If the tz_arg is not a valid timezone string or tzinfo object.
-        TypeError:  If the parsed_dt is not a datetime.datetime object.
     """
+    import datetime as dt
     if isinstance(tz_arg, str) and tz_arg.strip().upper() == "NAIVE":
         if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Naive timezone requested, returning datetime %s without any timezone info", parsed_dt)
         return parsed_dt.replace(tzinfo=None)
     target_tz = parse_timezone(tz_arg)
-    if should_convert is not False and (_should_convert(original_input, format_str) or should_convert is True):
+    is_aware  = parsed_dt.utcoffset() is not None
+    if should_convert if should_convert is not None else is_aware:
         if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Converting datetime %s to timezone %s by shifting the clock", parsed_dt, target_tz)
+        if not is_aware:
+            # Read a bare wall time as UTC, not as the host's local time.
+            parsed_dt = parsed_dt.replace(tzinfo=dt.timezone.utc)
         return parsed_dt.astimezone(target_tz)
     else:
         if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Attaching timezone %s to datetime %s without shifting the clock", target_tz, parsed_dt)
@@ -402,7 +368,7 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
      - "YYYY-MM-DD" or similar ISO8601 formats such as "YYYY-MM-DDTHH:MM:SS", "MM/DD/YYYY", etc.
      - A custom string following this pattern: "units (optional: since/after epoch)", where "units" can be anything that the function seconds_in_unit() accepts (e.g. "days", "weeks", "months", etc.). The optional epoch time can be a string, float, int, numpy.datetime64, pandas.Timestamp, or datetime.datetime object. Example: "days since 1990", "milliseconds after J2000", "sidereal days since 2000-01-01", etc. If the epoch is not specified, it defaults to the Unix epoch (1970-01-01T00:00:00Z)
 
-    If a boolean "should_convert" is provided, it will override the default behavior of whether to convert the datetime to the specified timezone by shifting the clock or just attaching the timezone without shifting. If None, the function will determine this based on the type of given_date and format_str.
+    If a boolean "should_convert" is provided, it will override the default behavior of whether to convert the datetime to the specified timezone by shifting the clock or just attaching the timezone without shifting. If None, a date that carries its own timezone or offset (an aware datetime, "...Z", "...+02:00", "... EST") is converted, and one without is given the target timezone; a naive date that must be converted is read as UTC.
 
     If a given_date starts with "JD" or "MJD", it will be treated as a Julian Date or Modified Julian Date, respectively.
 
@@ -434,8 +400,8 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
                         try to infer the format from the given_date.
         should_convert: A boolean indicating whether to convert the datetime to the specified
                         timezone by shifting the clock (True) or just attaching the timezone
-                        without shifting (False). If None, the function will determine this
-                        based on the type of given_date and format_str.
+                        without shifting (False). If None, dates that carry a timezone or
+                        offset are converted and dates without one are attached.
 
     Returns:
         datetime.datetime object in the specified timezone.
@@ -566,7 +532,7 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
 
     if parsed_dt is not None:
         # Finalize the datetime object by converting it to the target timezone or just attaching the timezone without shifting the clock
-        return _finalize_datetime(parsed_dt, given_date, format_str, parsed_tz, should_convert)
+        return _finalize_datetime(parsed_dt, parsed_tz, should_convert)
 
     # From here on, we know it's a str (we raised or otherwise handled non-str types above)
     assert isinstance(given_date, str)
@@ -611,7 +577,7 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
             errors.append("The pandas package is not installed, so pandas.Timestamp objects cannot be parsed.")
     else:
         # Finalize the datetime object by converting it to the target timezone or just attaching the timezone without shifting the clock
-        return _finalize_datetime(parsed_dt, given_string, format_str, parsed_tz, should_convert)
+        return _finalize_datetime(parsed_dt, parsed_tz, should_convert)
 
     raise ValueError(error_message + "\n".join(map(str, errors)) + "\nPlease check the input format and try again.")
 

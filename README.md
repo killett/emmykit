@@ -2001,7 +2001,7 @@ Returns:
     for NaT/NaN values.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L668)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L634)
 
 </details>
 
@@ -2051,7 +2051,7 @@ Example:
 
 **Public methods:** `format_ticks`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L779)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L745)
 
 </details>
 
@@ -2063,7 +2063,7 @@ Example:
 AnyDateTimeType: TypeAlias = 'str | float | int | np.datetime64 | pd.Timestamp | dt.datetime'
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L325)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L321)
 
 </details>
 
@@ -2174,7 +2174,7 @@ If "format_str" is provided, it will be used to parse the date string. These for
  - "YYYY-MM-DD" or similar ISO8601 formats such as "YYYY-MM-DDTHH:MM:SS", "MM/DD/YYYY", etc.
  - A custom string following this pattern: "units (optional: since/after epoch)", where "units" can be anything that the function seconds_in_unit() accepts (e.g. "days", "weeks", "months", etc.). The optional epoch time can be a string, float, int, numpy.datetime64, pandas.Timestamp, or datetime.datetime object. Example: "days since 1990", "milliseconds after J2000", "sidereal days since 2000-01-01", etc. If the epoch is not specified, it defaults to the Unix epoch (1970-01-01T00:00:00Z)
 
-If a boolean "should_convert" is provided, it will override the default behavior of whether to convert the datetime to the specified timezone by shifting the clock or just attaching the timezone without shifting. If None, the function will determine this based on the type of given_date and format_str.
+If a boolean "should_convert" is provided, it will override the default behavior of whether to convert the datetime to the specified timezone by shifting the clock or just attaching the timezone without shifting. If None, a date that carries its own timezone or offset (an aware datetime, "...Z", "...+02:00", "... EST") is converted, and one without is given the target timezone; a naive date that must be converted is read as UTC.
 
 If a given_date starts with "JD" or "MJD", it will be treated as a Julian Date or Modified Julian Date, respectively.
 
@@ -2206,8 +2206,8 @@ Args:
                     try to infer the format from the given_date.
     should_convert: A boolean indicating whether to convert the datetime to the specified
                     timezone by shifting the clock (True) or just attaching the timezone
-                    without shifting (False). If None, the function will determine this
-                    based on the type of given_date and format_str.
+                    without shifting (False). If None, dates that carry a timezone or
+                    offset are converted and dates without one are attached.
 
 Returns:
     datetime.datetime object in the specified timezone.
@@ -2220,7 +2220,7 @@ Raises:
     TypeError:   If the given_date is not a string, float, int, numpy.datetime64, pandas.Timestamp, or datetime.datetime object.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L394)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L360)
 
 </details>
 
@@ -2273,7 +2273,7 @@ Integer constants representing date-formatting precision levels.
 Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L618)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L584)
 
 </details>
 

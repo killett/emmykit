@@ -63,6 +63,17 @@ All notable changes to `emmykit` are documented here. Format follows
   in the locale's encoding and then more than a pipe's worth of output:
   the reader thread died on the decode error, the pipe filled, and the
   command blocked. Undecodable bytes now come through as U+FFFD (�).
+- `parse_datetime` decided between converting to the target timezone
+  and attaching it by looking at the input text, not at what was parsed.
+  A time with a named zone was given the target zone instead of being
+  converted: `"Tue, 25 Jun 2025 14:00:00 EST"` came back as 14:00 UTC
+  (correct: 19:00 UTC), and `"2025-06-25 14:00:00 UTC"` with New York
+  as 14:00 New York time. A trailing year such as `"18-Oct-2002"` was
+  mistaken for a UTC offset, and the result then depended on the
+  machine's local timezone. Now anything that parses with a zone or
+  offset is converted and anything without one is attached, and a naive
+  value that `should_convert=True` forces to convert is read as UTC
+  rather than as local time.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.
