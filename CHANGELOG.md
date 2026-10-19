@@ -81,6 +81,9 @@ All notable changes to `emmykit` are documented here. Format follows
   so `"2002"` is midnight on 1 January there and 2002.5 is noon on 2 July
   there; results in UTC, the default, are unchanged. An epoch written as
   a year (`"days since 2000"`) follows suit.
+- `parse_datetime` cut a `pandas.Timestamp` to midnight and dropped its
+  timezone, the docstring's own example included, because a Timestamp
+  is also a `datetime.date`. It now keeps its time and zone.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

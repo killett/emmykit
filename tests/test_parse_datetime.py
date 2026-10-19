@@ -154,6 +154,23 @@ def test_numpy_datetime64_is_read_as_utc(timezone: str | None, expected: str) ->
     assert parse_datetime(np.datetime64("2002-10-18T07:00"), timezone=timezone).isoformat() == expected
 
 
+@pytest.mark.parametrize(
+    ("tz", "timezone", "expected"),
+    [(None, None, "2002-10-18T07:00:00+00:00"), ("UTC", NY, "2002-10-18T03:00:00-04:00")],
+)
+def test_pandas_timestamp_keeps_its_time_and_zone(
+    tz: str | None, timezone: str | None, expected: str
+) -> None:
+    """The docstring's own example: a Timestamp keeps its time of day.
+
+    Fails if the Timestamp, a `datetime.date` subclass, is taken for a plain
+    date and cut to midnight with its zone dropped.
+    """
+    pd = pytest.importorskip("pandas")
+    stamp = pd.Timestamp("2002-10-18 07:00:00", tz=tz)
+    assert parse_datetime(stamp, timezone=timezone).isoformat() == expected
+
+
 def test_unparseable_string_raises_value_error() -> None:
     """A string no parser understands is a ValueError naming it."""
     with pytest.raises(ValueError, match="garbage!!"):

@@ -502,7 +502,9 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
 
     if parsed_dt is None and type(given_date) is dt.datetime:  # Don't use isinstance() here, because it will also match subclasses like Pandas Timestamp
         parsed_dt = given_date
-    elif isinstance(given_date, dt.date):  # Handle date objects (without time) as midnight
+    # Handle date objects (without time) as midnight. Exclude datetimes: pandas'
+    # Timestamp subclasses datetime (and so date) and is handled below.
+    elif isinstance(given_date, dt.date) and not isinstance(given_date, dt.datetime):
         parsed_dt = dt.datetime.combine(given_date, dt.time.min)
 
     if parsed_dt is None:
