@@ -1840,6 +1840,8 @@ round_out(x: 'float', round_digits: 'int' = 3, max_digits: 'int' = 15) -> 'float
 ```text
 Round a number away from zero (i.e. rounds up for x>0 and down for x<0) to
 the specified number of significant figures (defaults to 3).
+The number is rounded as written, so one that already has that many
+significant figures (1.11 to 3) comes back unchanged.
 If the number is smaller than 10^(-max_digits), it will be returned as is.
 The max_digits parameter defaults to 15, but can be changed to a different value if needed.
 

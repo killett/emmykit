@@ -42,6 +42,14 @@ All notable changes to `emmykit` are documented here. Format follows
   `analyze_computer_name_results(..., rawlog=True)`, which log nothing,
   now leave logging unconfigured too; with `rawlog=False` they behave as
   before.
+- `round_out` bumped some values that already had the requested number of
+  significant figures: `round_out(1.11, 3)` gave `1.12`, because the
+  float 1.11 is really 1.1100000000000001 (30 of the 900 three-figure
+  values in [1, 10) were affected). Results also carried binary tails
+  (`round_out(2.3, 2)` gave `2.3000000000000003`), and values below
+  `10**-max_digits` came back unconverted, e.g. `0` as an `int`. It now
+  rounds the number as written, always returns a plain `float`, and no
+  longer needs numpy.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

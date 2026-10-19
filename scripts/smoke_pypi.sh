@@ -77,7 +77,7 @@ if [[ -n "$EXTRAS" ]]; then
     "$VENV/bin/python" - <<'PY'
 import emmykit as ek
 print(f"  parse_datetime    : {ek.parse_datetime('2026-06-06T12:34:56Z')}")  # dateutil
-print(f"  round_out         : {ek.round_out(3.14159, 3)}")                   # numpy
+print(f"  round_out         : {ek.round_out(3.14159, 3)}")                   # stdlib
 print(f"  decimal_year      : {ek.decimal_year_to_datetime(2026.5)}")        # stdlib
 PY
 else

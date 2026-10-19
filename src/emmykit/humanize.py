@@ -674,6 +674,8 @@ def round_out(x: float, round_digits: int = 3, max_digits: int = 15) -> float:
     """
     Round a number away from zero (i.e. rounds up for x>0 and down for x<0) to
     the specified number of significant figures (defaults to 3).
+    The number is rounded as written, so one that already has that many
+    significant figures (1.11 to 3) comes back unchanged.
     If the number is smaller than 10^(-max_digits), it will be returned as is.
     The max_digits parameter defaults to 15, but can be changed to a different value if needed.
 
@@ -685,13 +687,10 @@ def round_out(x: float, round_digits: int = 3, max_digits: int = 15) -> float:
     Returns:
         float: The rounded number, or the original number if it is smaller than 10^(-max_digits).
     """
-    import numpy as np
-    if np.abs(x) < 10**(-max_digits): return x
+    from decimal import ROUND_UP, Decimal
+    if abs(x) < 10**(-max_digits): return float(x)
     these_digits = sci_exp(x) - round_digits + 1
-    thisfactor = 10**these_digits
-    x = x/thisfactor
-    if x > 0: x = np.ceil(x)
-    else:     x = np.floor(x)
-    # float(), not the np.float64 that np.ceil/np.floor produce: the
-    # annotation promises a float, and numpy 2 reprs its scalars differently.
-    return float(x*(thisfactor*1.0))
+    # Decimal arithmetic on the shortest repr: the binary value of 1.11 is
+    # 1.1100000000000001, and rounding that up would give 1.12.
+    scaled = Decimal(repr(float(x))).scaleb(-these_digits)
+    return float(scaled.to_integral_value(rounding=ROUND_UP).scaleb(these_digits))
