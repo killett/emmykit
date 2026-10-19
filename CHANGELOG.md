@@ -50,6 +50,12 @@ All notable changes to `emmykit` are documented here. Format follows
   `10**-max_digits` came back unconverted, e.g. `0` as an `int`. It now
   rounds the number as written, always returns a plain `float`, and no
   longer needs numpy.
+- `kill_process` crashed after every successful kill: `pgrep` exits with
+  status 1 when nothing matches, and the re-check raised
+  `CalledProcessError` instead of printing "process successfully killed".
+  When no process matched in the first place it raised `ValueError`
+  instead of printing "No … process found." and returning. Both now
+  behave as written; a real `pgrep` failure still raises `ValueError`.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

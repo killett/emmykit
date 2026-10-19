@@ -3619,7 +3619,7 @@ Raises:
     ValueError: If the IPINFO_API_TOKEN environment variable is not set.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L163)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L178)
 
 </details>
 
@@ -3651,7 +3651,7 @@ is_process_running(process_name: 'str') -> 'bool'
 Check if a process with the given name is running.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L108)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L123)
 
 </details>
 
@@ -3667,7 +3667,7 @@ kill_process(pname: 'str') -> 'None'
 Kill a process by its name, then check if it is still running and retry if needed. Make sure the process name is unique to avoid killing unintended processes.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L72)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L93)
 
 </details>
 
@@ -3684,7 +3684,7 @@ Open the file manager with the specified directories.
 Note: Most file managers don't support multiple tabs via command line, so open separate windows.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L135)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L150)
 
 </details>
 
@@ -3717,7 +3717,7 @@ start_only_one_instance(process_name: 'str') -> 'None'
 Start a process, but only if it's not already running.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L122)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L137)
 
 </details>
 

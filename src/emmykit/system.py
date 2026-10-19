@@ -69,19 +69,34 @@ def get_effective_free_memory() -> float:
         raise NotImplementedError(f"The function {return_method_name()} is only implemented for Linux, not for {sys.platform}")
     return effective_free_memory
 
+def _pgrep(pname: str) -> list[str]:
+    """
+    Return the PIDs of processes whose command line matches 'pname'.
+
+    Args:
+        pname: The pattern passed to `pgrep -f`.
+
+    Returns:
+        The matching PIDs as strings; empty when nothing matches.
+
+    Raises:
+        ValueError: If pgrep itself fails (exit status 2 or 3).
+    """
+    import subprocess
+    try:
+        return subprocess.check_output(["pgrep", "-f", pname]).decode(DEFAULT_ENCODING).splitlines()
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 1:  # pgrep's "no process matched"
+            return []
+        raise ValueError(f"Failed to find process with name {pname}. Make sure the process name is correct and unique: {e}") from e
+
 def kill_process(pname: str) -> None:
     """Kill a process by its name, then check if it is still running and retry if needed. Make sure the process name is unique to avoid killing unintended processes."""
     import time
     import signal
-    import subprocess
     while True:
         # Find the process IDs of the given process name
-        process_ids = []
-        try:
-            process_list = subprocess.check_output(["pgrep", "-f", pname]).decode(DEFAULT_ENCODING)
-            process_ids  = process_list.splitlines()
-        except subprocess.CalledProcessError as e:
-            raise ValueError(f"Failed to find process with name {pname}. Make sure the process name is correct and unique: {e}") from e
+        process_ids = _pgrep(pname)
 
         if process_ids:
             for pid in process_ids:
@@ -97,7 +112,7 @@ def kill_process(pname: str) -> None:
 
         # Check if the process is still running
         time.sleep(2)  # Wait for 2 seconds before checking again
-        process_ids = subprocess.check_output(["pgrep", "-f", pname]).decode(DEFAULT_ENCODING).splitlines()
+        process_ids = _pgrep(pname)
 
         if not process_ids:
             print(f"{pname} process successfully killed.")
