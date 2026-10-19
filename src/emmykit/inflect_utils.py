@@ -154,9 +154,9 @@ def my_plural(n: int, word: str) -> str:
 
         # Words ending with 'f' / 'fe' -> 'ves' (with some common exceptions)
         f_exceptions = {"roof", "chief", "chef", "belief", "cliff", "proof", "reef", "gulf", "brief"}
-        if lw.endswith("fe") and lw[:-2] not in f_exceptions:
+        if lw.endswith("fe") and lw not in f_exceptions:
             return w[:-2] + "ves"
-        if lw.endswith("f") and lw[:-1] not in f_exceptions:
+        if lw.endswith("f") and lw not in f_exceptions:
             return w[:-1] + "ves"
 
         # Words ending with 'o' sometimes take 'es' (common subset)

@@ -129,6 +129,10 @@ All notable changes to `emmykit` are documented here. Format follows
   that were only added in red, the colour for deleted lines, ignoring
   `added_color`. They are now drawn in `added_color`, yellow by default,
   and the docstrings give the defaults correctly.
+- `my_plural` without the `inflection` extra pluralised its own list of
+  f-word exceptions with "-ves" anyway (chief → "chieves", roof →
+  "rooves", cliff → "clifves"), because it checked the list against the
+  word with its f removed. Those words now just add "s".
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.
