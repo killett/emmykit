@@ -3950,12 +3950,9 @@ Returns:
     None: the combined HTML is saved to the specified output file path.
 
 Raises:
-    Exception:         If there is an error reading any of the HTML files or writing the output file.
     FileNotFoundError: If any of the input files do not exist.
-    ValueError:        If the output file path is not valid.
     ImportError:       If BeautifulSoup is not installed.
-    RuntimeError:      If the output file cannot be written.
-    OSError:           If there is an error during file operations.
+    OSError:           If the output file or its folder cannot be written.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/html_files.py#L102)

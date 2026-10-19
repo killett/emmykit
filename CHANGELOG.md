@@ -225,6 +225,11 @@ All notable changes to `emmykit` are documented here. Format follows
   CP1252 page kept its `windows-1252` declaration over UTF-8 bytes. It
   now finds any `<title …>` and writes the file back in the encoding it
   was read in.
+- `combine_html_files` wrote the text "None" for a file without `<head>`
+  or `<body>`, nested each file's whole `<body>` element inside the new
+  one, and logged "Saved combined HTML" even after the write had failed.
+  It now uses each body's contents (or a bare fragment whole), skips a
+  missing head, and lets a failed write raise `OSError`, as documented.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

@@ -113,12 +113,9 @@ def combine_html_files(file_paths:  list[str | os.PathLike[str]],
         None: the combined HTML is saved to the specified output file path.
 
     Raises:
-        Exception:         If there is an error reading any of the HTML files or writing the output file.
         FileNotFoundError: If any of the input files do not exist.
-        ValueError:        If the output file path is not valid.
         ImportError:       If BeautifulSoup is not installed.
-        RuntimeError:      If the output file cannot be written.
-        OSError:           If there is an error during file operations.
+        OSError:           If the output file or its folder cannot be written.
     """
     from bs4 import BeautifulSoup
     fallback_logging_config()
@@ -133,22 +130,24 @@ def combine_html_files(file_paths:  list[str | os.PathLike[str]],
             continue
         try:
             soup = BeautifulSoup(file_contents, "html.parser")
-            # Extract <head> from the first Chapter1.html
+            # Keep the <head> of the first file only; a file may have none.
             if not first_file_processed:
-                head_content = str(soup.head)
+                head_content = str(soup.head) if soup.head is not None else ""
                 first_file_processed = True
-            # Extract <body> content
-            body_content = soup.body
-            combined_body += str(body_content)
+            # The body's contents, not the <body> element itself, which would
+            # nest inside the new one. A fragment without <body> is used whole.
+            if soup.body is not None:
+                combined_body += soup.body.decode_contents()
+            else:
+                if soup.head is not None:
+                    soup.head.decompose()
+                combined_body += soup.decode_contents()
         except Exception:  # Catch any unexpected errors from BeautifulSoup without crashing.
             logging.exception(f"File {os.fspath(file_path)} encountered an error.")
     # Create the new HTML structure
     combined_html = f"<!DOCTYPE html>\n<html>\n{head_content}\n<body>\n{combined_body}\n</body>\n</html>"
-    # Save to the output file path
-    try:
-        output_file_path = ensure_path(output_file_path)
-        output_file_path.parent.mkdir(parents=True, exist_ok=True)
-        output_file_path.write_text(combined_html, encoding=DEFAULT_ENCODING)
-    except Exception:  # Catch any unexpected errors from writing the file without crashing.
-        logging.exception("Error saving combined HTML to %s.", os.fspath(output_file_path))
+    # Save to the output file path; a failure reaches the caller.
+    output_file_path = ensure_path(output_file_path)
+    output_file_path.parent.mkdir(parents=True, exist_ok=True)
+    output_file_path.write_text(combined_html, encoding=DEFAULT_ENCODING)
     logging.info("Saved combined HTML to '%s'.", os.fspath(output_file_path))

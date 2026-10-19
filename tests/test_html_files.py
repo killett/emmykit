@@ -6,7 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from emmykit.html_files import remove_prefix_from_filename, remove_prefix_from_html_title
+from emmykit.html_files import (
+    combine_html_files,
+    remove_prefix_from_filename,
+    remove_prefix_from_html_title,
+)
 
 
 def test_prefix_and_separators_are_removed_from_the_name(tmp_path: Path) -> None:
@@ -61,3 +65,40 @@ def test_cp1252_page_is_written_back_in_cp1252(tmp_path: Path) -> None:
 
     assert remove_prefix_from_html_title(path, "Ch 1: ") is True
     assert path.read_bytes() == b'<meta charset="windows-1252"><title>Caf\xe9</title>'
+
+
+def test_combined_page_has_one_head_one_body_and_every_fragment(tmp_path: Path) -> None:
+    """The first file's <head>, then each file's body content, inside one <body>.
+
+    Fails if a missing <head> or <body> is written as the text "None", or if
+    each file's whole <body> element is nested inside the new one.
+    """
+    pytest.importorskip("bs4")
+    page = tmp_path / "1.html"
+    page.write_text("<html><head><title>T</title></head><body><p>one</p></body></html>")
+    fragment = tmp_path / "2.html"
+    fragment.write_text("<p>two</p>")
+    out = tmp_path / "out.html"
+
+    combine_html_files([page, fragment], out)
+
+    html = out.read_text()
+    assert "None" not in html
+    assert html.count("<head>") == 1 and "<title>T</title>" in html
+    assert html.count("<body>") == 1
+    assert html.index("<p>one</p>") < html.index("<p>two</p>")
+
+
+def test_combined_page_that_cannot_be_written_raises(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A failed write is an OSError, as documented, not a logged "Saved" message."""
+    pytest.importorskip("bs4")
+    page = tmp_path / "1.html"
+    page.write_text("<html><head></head><body><p>one</p></body></html>")
+    blocker = tmp_path / "not-a-folder"
+    blocker.write_text("")
+
+    with pytest.raises(OSError):
+        combine_html_files([page], blocker / "out.html")
+    assert "Saved combined HTML" not in caplog.text
