@@ -365,7 +365,7 @@ def if_filepath_then_read(input_string_or_filepath: str | os.PathLike[str],
                             f"({input_string_or_filepath!r}) but 'force_string' is True.")
         file_path = ensure_path(input_string_or_filepath)
 
-        # Raise if it doesn't exist (your new requirement)
+        # A PathLike always means a file, so a missing one is an error.
         if not safe_exists(file_path):
             raise FileNotFoundError(os.fspath(file_path))
 

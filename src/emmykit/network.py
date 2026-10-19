@@ -354,7 +354,7 @@ def _effective_workers(requested: int, num_tasks: int, io_bound: bool = True) ->
     Choose a sensible max_workers value.
 
     Args:
-        requested: Desired worker count from CLI.
+        requested: Desired worker count (is_internet_available's 'workers').
         num_tasks: Number of concurrent tasks you will submit.
         io_bound:  Whether the workload is primarily I/O bound.
 
@@ -380,7 +380,7 @@ def _run_tcp_checks_with_pool(tcp_targets: list[tuple[str, int]],
     Args:
         tcp_targets:       (host, port) pairs to probe.
         timeout:           Per-connection timeout in seconds.
-        requested_workers: CLI-requested max worker count.
+        requested_workers: Desired max worker count (is_internet_available's 'workers').
 
     Returns:
         True if any TCP connection succeeded, else False.

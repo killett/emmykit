@@ -122,7 +122,7 @@ def configure_logging(basename: str, log_level: int | str = logging.INFO,
 
     memory_handler = MemoryHandler(level=logging.ERROR)  # Only capture ERROR level logs
 
-    # Define the formatter based on the no_prefix parameter
+    # Define the formatter based on the rawlog parameter
     if rawlog:
         log_format = logging.Formatter("%(message)s")
     else:

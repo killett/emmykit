@@ -704,7 +704,7 @@ class LLMs:
         # Build pool and context with the resolved cfg
         eff, ctx, reasons_map = self._selection_pool(cfg)
 
-        # Choose strategy (same logic you already have)
+        # Choose strategy
         if isinstance(cfg.selection_strategy, SelectionStrategy):
             strategy_name = cfg.selection_strategy.value
         else:
