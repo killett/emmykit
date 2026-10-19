@@ -3768,7 +3768,7 @@ extract_and_concatenate_segments(input_file: 'str | os.PathLike[str]', timestamp
 Extracts segments from a video file and concatenates them into a new file.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L478)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L479)
 
 </details>
 

@@ -361,19 +361,20 @@ def get_video_duration_seconds(path: str | os.PathLike[str],
     # ------------------------------------
     if shutil.which("ffprobe"):
         # Ask for JSON to simplify parsing. format.duration is typically present and precise.
-        # -v error: suppress logs; -hide_banner: quiet banner; -show_format: include container info.
+        # -v error: suppress logs; -hide_banner: quiet banner; -show_format: include container info;
+        # -show_streams: include per-stream info, for the fallback below.
         cmd_ffprobe: list[str] = ["ffprobe",
                                   "-v", "error",
                                   "-hide_banner",
                                   "-print_format", "json",
                                   "-show_format",
+                                  "-show_streams",
                                   os.fspath(p)]
         rc, out, err = _run(cmd_ffprobe)
         if rc == 0 and out.strip():
             try:
                 data = json.loads(out)
                 # Preferred: container-level duration
-                dur_str: str | None = None
                 if isinstance(data.get("format"), dict):
                     dur_val = data["format"].get("duration")
                     if isinstance(dur_val, (int, float)):

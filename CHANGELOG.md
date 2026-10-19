@@ -234,6 +234,9 @@ All notable changes to `emmykit` are documented here. Format follows
   `FFMPEG_PATH`, `IMAGEIO_FFMPEG_EXE`) named a file that no longer
   exists. It now warns and goes on to `PATH` and the other places, and
   its docstring gives the order it actually searches in.
+- `get_video_duration_seconds` never used its per-stream fallback when a
+  file's container had no duration, because `ffprobe` was run without
+  `-show_streams` and so reported no streams.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.
