@@ -4070,14 +4070,14 @@ Information about a candidate Large Language Model (LLM).
 
 <a id="selectioncontext"></a><a id="user-content-selectioncontext"></a>
 <details>
-<summary><code>SelectionContext</code> — Context passed to strategy functions.</summary>
+<summary><code>SelectionContext</code> — Context passed to strategy functions; extras["config"] is the LLMConfig being selected for.</summary>
 
 ```python
 SelectionContext(tokens_in: 'int', tokens_out: 'int', min_context_tokens: 'int', require_local: 'bool' = False, require_cleared: 'bool' = False, extras: 'dict[str, Any]' = <factory>) -> None
 ```
 
 ```text
-Context passed to strategy functions.
+Context passed to strategy functions; extras["config"] is the LLMConfig being selected for.
 ```
 
 **Fields:** `tokens_in`, `tokens_out`, `min_context_tokens`, `require_local`, `require_cleared`, `extras`.

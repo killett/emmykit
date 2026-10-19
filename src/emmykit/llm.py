@@ -127,7 +127,7 @@ class ModelInfo:
 
 @dataclass
 class SelectionContext:
-    """Context passed to strategy functions."""
+    """Context passed to strategy functions; extras["config"] is the LLMConfig being selected for."""
     tokens_in:          int
     tokens_out:         int
     min_context_tokens: int
@@ -736,10 +736,12 @@ class LLMs:
         self._after_selection(winner.name, winner.provider)
 
     def refresh_selection(self) -> None:
-        """Re-run selection using the current LLMConfig."""
-        if self._config is None:
+        """Re-run selection from the config last passed to apply_config()."""
+        if self._base_config is None:
             raise RuntimeError("refresh_selection() called before apply_config().")
-        self.apply_config(self._config)
+        # The caller's config, not the resolved one: resolving may have forced
+        # only_local_models=True while offline, which must not stick.
+        self.apply_config(self._base_config)
 
     def get_config(self) -> LLMConfig:
         """Return a copy of the current config (or default if none applied yet)."""
@@ -807,7 +809,7 @@ class LLMs:
 
         def multi_objective(cands: Sequence[ModelInfo], ctx: SelectionContext) -> ModelInfo:
             """Using multiple preferences and weights, choose the best-fit model."""
-            cfg = self._config or LLMConfig()
+            cfg = ctx.extras.get("config") or self._config or LLMConfig()
 
             # Group stats for normalization
             costs     = [m.estimate_cost(cfg.assumed_prompt_tokens,
@@ -893,6 +895,9 @@ class LLMs:
             min_context_tokens=cfg.min_context_tokens,
             require_local=cfg.only_local_models,
             require_cleared=cfg.only_cleared_models,
+            # The config being selected for, which may be a temporary one built
+            # by alternative_model rather than the applied config.
+            extras={"config": cfg},
         )
         eff, reasons_map = self._filter_candidates(raw_candidates, ctx)
         if cfg.max_estimated_cost is not None:

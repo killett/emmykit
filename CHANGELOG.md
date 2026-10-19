@@ -185,6 +185,14 @@ All notable changes to `emmykit` are documented here. Format follows
   empty module. It now returns None, as for any variable the module
   doesn't define. Its docstring no longer promises an `AttributeError`
   that was never raised.
+- `LLMs.alternative_model(strategy="multi_objective", ...)` scored with the
+  applied config's weights and assumed token counts, ignoring the
+  overrides passed to it. Strategies now receive the config they are
+  selecting for in `SelectionContext.extras["config"]`.
+- `LLMs.refresh_selection()` re-applied the resolved config, so if the
+  first selection happened offline (which forces `only_local_models`)
+  remote models stayed excluded after reconnecting. It now re-applies the
+  config last passed to `apply_config`.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

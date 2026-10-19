@@ -153,3 +153,43 @@ def test_oversized_request_waits_only_for_an_empty_window(
     assert clock == [10, pytest.approx(50.0)]
     assert _rows(throttled) == 2
     assert "exceeds the per-minute token cap" in caplog.text
+
+
+# --- selection with overrides and after reconnecting --------------------------
+
+def test_alternative_model_scores_with_its_own_overrides() -> None:
+    """multi_objective under overrides picks what apply_config with those settings picks.
+
+    Fails if the strategy reads its weights from the applied config, ignoring
+    the overrides it was asked to use.
+    """
+    overrides = {"weight_price": 0.0, "weight_code_skill": 10.0}
+    models = LLMs()
+    models.apply_config(LLMConfig(**CONFIG))
+    reference = LLMs()
+    reference.apply_config(LLMConfig(**CONFIG, **overrides))
+    assert reference.model != models.model, "the overrides must change the choice for this test"
+
+    assert models.alternative_model(strategy="multi_objective", **overrides).name == reference.model
+
+
+def test_refresh_after_reconnecting_no_longer_forces_local_models(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Being offline once doesn't pin only_local_models=True for good.
+
+    Fails if refresh_selection re-applies the resolved config, in which the
+    offline check had already switched only_local_models on.
+    """
+    models = LLMs()
+    ollama_tags = {"models": [{"name": "qwen2.5-coder:1.5b-base"}]}
+    monkeypatch.setattr(models, "_http_get_json",
+                        lambda url, timeout=2.0: ollama_tags if url.endswith("/api/tags") else None)
+    online = [False]
+    monkeypatch.setattr(llm, "is_internet_available", lambda *args, **kwargs: online[0])
+
+    models.apply_config(LLMConfig(availability_probe=False))
+    assert models.get_config().only_local_models is True  # forced while offline
+
+    online[0] = True
+    models.refresh_selection()
+
+    assert models.get_config().only_local_models is False
