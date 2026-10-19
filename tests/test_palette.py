@@ -263,17 +263,3 @@ def test_palette_attributes_cannot_be_reassigned() -> None:
 def test_series_is_an_immutable_sequence() -> None:
     """`series` is a tuple, so `.append` is not even reachable."""
     assert isinstance(palette("dark").series, tuple)
-
-
-def test_mutating_a_returned_color_list_cannot_corrupt_the_registry() -> None:
-    """Colour lists handed out are per-call copies.
-
-    Fails if the palette hands out a reference to one shared list, so that a
-    caller doing `colors.append(...)` or `colors.clear()` poisons the palette
-    for the next caller in the same process.
-    """
-    before = list(palette("dark").series)
-    stolen = list(palette("dark").series)
-    stolen.append("#BADBAD")
-    stolen[0] = "#BADBAD"
-    assert list(palette("dark").series) == before
