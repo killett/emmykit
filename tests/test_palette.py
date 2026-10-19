@@ -14,19 +14,12 @@ import pytest
 
 from emmykit.palette import (
     MIN_CONTRAST_RATIO,
-    Palette,
     _shift_to_contrast,
     contrast_ratio,
     palette,
     palette_names,
 )
-
-HEX_RE = re.compile(r"^#[0-9A-F]{6}$")
-
-
-def _all_colors(pal: Palette) -> list[str]:
-    """Return every colour a palette carries: series colours plus roles."""
-    return [*pal.series, pal.background, pal.foreground, pal.grid]
+from tests._helpers import HEX_RE, all_palette_colors
 
 
 # --------------------------------------------------------------------------
@@ -139,7 +132,7 @@ def test_every_color_is_an_explicit_uppercase_hex_string(name: str) -> None:
     `lightpurple` is in neither the CSS4 nor the base colour table, so any
     named colour is a `to_rgb` crash waiting for the caller who reaches it.
     """
-    offenders = [c for c in _all_colors(palette(name)) if not HEX_RE.match(c)]
+    offenders = [c for c in all_palette_colors(palette(name)) if not HEX_RE.match(c)]
     assert not offenders, f"{name} palette holds non-hex colours: {offenders}"
 
 

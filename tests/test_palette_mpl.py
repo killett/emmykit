@@ -15,6 +15,7 @@ from matplotlib import colors as mcolors  # noqa: E402
 from matplotlib import pyplot as plt  # noqa: E402
 
 from emmykit.palette import Palette, palette, palette_names  # noqa: E402
+from tests._helpers import all_palette_colors  # noqa: E402
 
 # Exactly the rcParams the palette promises to set.
 EXPECTED_KEYS = {
@@ -37,11 +38,6 @@ def pal(request: pytest.FixtureRequest) -> Palette:
     return palette(request.param)
 
 
-def _all_colors(pal: Palette) -> list[str]:
-    """Return every colour a palette carries: series colours plus roles."""
-    return [*pal.series, pal.background, pal.foreground, pal.grid]
-
-
 def test_every_color_resolves_through_matplotlib(pal: Palette) -> None:
     """`to_rgb` must accept every colour in every registered palette.
 
@@ -51,7 +47,7 @@ def test_every_color_resolves_through_matplotlib(pal: Palette) -> None:
     fifth series colour.
     """
     unresolvable = []
-    for color in _all_colors(pal):
+    for color in all_palette_colors(pal):
         try:
             mcolors.to_rgb(color)
         except ValueError as exc:

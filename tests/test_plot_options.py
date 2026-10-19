@@ -6,14 +6,11 @@ views onto a `Palette` rather than hand-maintained lists.
 
 from __future__ import annotations
 
-import re
-
 import pytest
 
 from emmykit.options import PlotOptions
 from emmykit.palette import MIN_CONTRAST_RATIO, contrast_ratio, palette
-
-HEX_RE = re.compile(r"^#[0-9A-F]{6}$")
+from tests._helpers import HEX_RE
 
 
 def test_default_is_the_light_palette() -> None:
