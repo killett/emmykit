@@ -392,8 +392,7 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
     Returns:
         datetime.datetime object in the specified timezone.
         Note that datetime.datetime objects cannot represent dates before 1 January 1, 0001 or after 31 December 9999.
-        So dates outside this range will raise a ValueError. Future versions of this code may support a wider range of dates (like 44 BC, 44 BCE, etc.) using libraries like 'astropy.time': https://chatgpt.com/share/685c5157-5cac-8006-b68c-4a0731927a50
-        However, this will require the function to return an 'astropy.time.Time' object instead of a 'datetime.datetime' object.
+        So dates outside this range will raise a ValueError.
 
     Raises:
         ValueError:  If the given_date cannot be parsed into a datetime object, or if the timezone is invalid.

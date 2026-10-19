@@ -139,6 +139,8 @@ StrategyFn: TypeAlias = Callable[[Sequence[ModelInfo], SelectionContext], ModelI
 
 class LLMs:
     """
+    Choose an LLM by cost, skill and availability, and send it prompts through LiteLLM.
+
     - Routes via LiteLLM
     - Builds ModelInfo list, filters by availability/context
     - Applies registered/built-in selection strategy

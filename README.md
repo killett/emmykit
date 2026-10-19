@@ -2003,7 +2003,7 @@ Returns:
     for NaT/NaN values.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L622)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L621)
 
 </details>
 
@@ -2053,7 +2053,7 @@ Example:
 
 **Public methods:** `format_ticks`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L733)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L732)
 
 </details>
 
@@ -2214,8 +2214,7 @@ Args:
 Returns:
     datetime.datetime object in the specified timezone.
     Note that datetime.datetime objects cannot represent dates before 1 January 1, 0001 or after 31 December 9999.
-    So dates outside this range will raise a ValueError. Future versions of this code may support a wider range of dates (like 44 BC, 44 BCE, etc.) using libraries like 'astropy.time': https://chatgpt.com/share/685c5157-5cac-8006-b68c-4a0731927a50
-    However, this will require the function to return an 'astropy.time.Time' object instead of a 'datetime.datetime' object.
+    So dates outside this range will raise a ValueError.
 
 Raises:
     ValueError:  If the given_date cannot be parsed into a datetime object, or if the timezone is invalid.
@@ -2275,7 +2274,7 @@ Integer constants representing date-formatting precision levels.
 Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L572)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L571)
 
 </details>
 
@@ -4033,13 +4032,15 @@ Configuration for LLM selection and usage. Data only.
 
 <a id="llms"></a><a id="user-content-llms"></a>
 <details>
-<summary><code>LLMs</code> — - Routes via LiteLLM</summary>
+<summary><code>LLMs</code> — Choose an LLM by cost, skill and availability, and send it prompts through LiteLLM.</summary>
 
 ```python
 LLMs() -> 'None'
 ```
 
 ```text
+Choose an LLM by cost, skill and availability, and send it prompts through LiteLLM.
+
 - Routes via LiteLLM
 - Builds ModelInfo list, filters by availability/context
 - Applies registered/built-in selection strategy
