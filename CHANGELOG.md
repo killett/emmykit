@@ -220,6 +220,11 @@ All notable changes to `emmykit` are documented here. Format follows
   nothing but the prefix and separators (`"PFX"`, `"PFX__"`). It now
   leaves such a file alone and returns False. Its docstring now says True
   means the file was renamed.
+- `remove_prefix_from_html_title` missed titles whose tag has attributes
+  (`<title lang="en">`), and it rewrote every file as UTF-8, so a
+  CP1252 page kept its `windows-1252` declaration over UTF-8 bytes. It
+  now finds any `<title …>` and writes the file back in the encoding it
+  was read in.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

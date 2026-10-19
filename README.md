@@ -3958,7 +3958,7 @@ Raises:
     OSError:           If there is an error during file operations.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/html_files.py#L91)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/html_files.py#L102)
 
 </details>
 
@@ -4002,6 +4002,9 @@ remove_prefix_from_html_title(filepath: 'str | os.PathLike[str]', prefix: 'str')
 
 ```text
 If the given filepath is an HTML file and its title starts with the given prefix, remove the prefix from the title and save the file, then return True. Otherwise, return False.
+
+The file is written back in the encoding it was read in (UTF-8, else CP1252), so
+it stays consistent with any charset it declares.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/html_files.py#L62)

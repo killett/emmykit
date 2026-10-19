@@ -60,7 +60,13 @@ def remove_prefix_from_filename(filepath: str | os.PathLike[str], prefix: str) -
         return False
 
 def remove_prefix_from_html_title(filepath: str | os.PathLike[str], prefix: str) -> bool:
-    """If the given filepath is an HTML file and its title starts with the given prefix, remove the prefix from the title and save the file, then return True. Otherwise, return False."""
+    """
+    If the given filepath is an HTML file and its title starts with the given prefix, remove the prefix from the title and save the file, then return True. Otherwise, return False.
+
+    The file is written back in the encoding it was read in (UTF-8, else CP1252), so
+    it stays consistent with any charset it declares.
+    """
+    import re
     fallback_logging_config()
     filepath = ensure_path(filepath)
     if not safe_is_file(filepath):
@@ -69,20 +75,25 @@ def remove_prefix_from_html_title(filepath: str | os.PathLike[str], prefix: str)
     if filepath.suffix.casefold() not in HTML_EXTENSIONS_SET:
         logging.warning("File '%s' is not an HTML or HTM file.", os.fspath(filepath))
         return False
-    html = my_fopen(filepath)
-    if not html:
+    raw = filepath.read_bytes()
+    if not raw:
         logging.warning("File '%s' is empty or could not be read.", os.fspath(filepath))
         return False
-    title_start = html.find("<title>") + len("<title>")
-    title_end   = html.find("</title>", title_start)
-    if title_start == -1 or title_end == -1:
+    # latin-1 last: it decodes any bytes, so the file always round-trips.
+    for encoding in ("utf-8", "cp1252", "latin-1"):
+        try:
+            html = raw.decode(encoding)
+            break
+        except UnicodeDecodeError:
+            continue
+    m = re.search(r"<title\b[^>]*>(.*?)</title>", html, flags=re.IGNORECASE | re.DOTALL)
+    if m is None:
         logging.warning("Could not find the title in the HTML file '%s'.", os.fspath(filepath))
         return False
-    title = html[title_start:title_end]
+    title = m.group(1)
     if title.startswith(prefix):
-        new_title = title.replace(prefix, "", 1)  # Replace only the first occurrence
-        new_html  = html[:title_start] + new_title + html[title_end:]
-        filepath.write_text(new_html, encoding=DEFAULT_ENCODING)
+        new_html = html[:m.start(1)] + title[len(prefix):] + html[m.end(1):]
+        filepath.write_bytes(new_html.encode(encoding))
         logging.info("Removed prefix '%s' from the title in '%s'.", prefix, os.fspath(filepath))
         return True
     else:
