@@ -406,10 +406,7 @@ def _run_tcp_checks_with_pool(tcp_targets: list[tuple[str, int]],
                 for fut in as_completed(futures):
                     try:
                         if fut.result():
-                            try:  # Optional: stop launching/awaiting more work asap
-                                pool.shutdown(cancel_futures=True)
-                            except TypeError as e:  # Python < 3.9 doesn't support cancel_futures
-                                if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("ThreadPool: shutdown(cancel_futures=True) not supported: %s", e)
+                            pool.shutdown(cancel_futures=True)  # Optional: stop launching/awaiting more work asap
                             return True
                     except Exception as exc:
                         if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("TCP: unexpected exception: %s", exc)

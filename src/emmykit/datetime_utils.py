@@ -262,10 +262,7 @@ def parse_timezone(tz_arg: str | dt.tzinfo | None = None) -> dt.tzinfo | str:
             return dt.timezone(offset)
 
         # Otherwise, fall back to ZoneInfo
-        try:
-            from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
-        except ImportError:  # for Python < 3.9, fall back to backports.zoneinfo
-            from backports.zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+        from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
         # Try to interpret the string as a timezone abbreviation
         if up in _TZ_ABBREV_TO_ZONE:

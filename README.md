@@ -923,8 +923,7 @@ Return the caller's qualified method/function name.
 
 - For instance methods: ClassName.method
 - For classmethods:     ClassName.method
-- For staticmethods:    ClassName.method on Python >= 3.11 (via co_qualname),
-                        otherwise just 'method' (class is not recoverable without heuristics)
+- For staticmethods:    ClassName.method (via co_qualname)
 - For functions:        function
 
 Args:
@@ -2001,7 +2000,7 @@ Returns:
     for NaT/NaN values.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L638)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L635)
 
 </details>
 
@@ -2051,7 +2050,7 @@ Example:
 
 **Public methods:** `format_ticks`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L749)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L746)
 
 </details>
 
@@ -2063,7 +2062,7 @@ Example:
 AnyDateTimeType: TypeAlias = 'str | float | int | np.datetime64 | pd.Timestamp | dt.datetime'
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L321)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L318)
 
 </details>
 
@@ -2081,7 +2080,7 @@ If use_astropy is True, astropy.time is used for sub-second and leap-second–aw
 Usage: new_datetime_datetime_object = decimal_year_to_datetime(2002.291)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L283)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L280)
 
 </details>
 
@@ -2220,7 +2219,7 @@ Raises:
     TypeError:   If the given_date is not a string, float, int, numpy.datetime64, pandas.Timestamp, or datetime.datetime object.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L360)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L357)
 
 </details>
 
@@ -2273,7 +2272,7 @@ Integer constants representing date-formatting precision levels.
 Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L588)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L585)
 
 </details>
 
@@ -3000,7 +2999,7 @@ Raises:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/network.py#L509)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/network.py#L506)
 
 </details>
 

@@ -160,8 +160,7 @@ def return_method_name(levels_up: int = 1) -> str:
 
     - For instance methods: ClassName.method
     - For classmethods:     ClassName.method
-    - For staticmethods:    ClassName.method on Python >= 3.11 (via co_qualname),
-                            otherwise just 'method' (class is not recoverable without heuristics)
+    - For staticmethods:    ClassName.method (via co_qualname)
     - For functions:        function
 
     Args:
@@ -216,34 +215,9 @@ def return_method_name(levels_up: int = 1) -> str:
             logging.warning("return_method_name(): inspect fallback failed", exc_info=e2)
             fr = None
     if fr is not None:
-        # Python 3.11+: co_qualname gives 'Class.method' (or 'outer.<locals>.inner')
-        qual = getattr(fr.f_code, "co_qualname", None)
-        if isinstance(qual, str) and qual:
-            # Remove all occurrences of '.<locals>.' from the qualified name.
-            name = qual.replace(".<locals>.", ".")
-        else:
-            func     = fr.f_code.co_name
-            self_obj = fr.f_locals.get("self")
-            cls_obj  = fr.f_locals.get("cls")
-            if self_obj is not None:
-                name = f"{type(self_obj).__qualname__}.{func}"
-            elif isinstance(cls_obj, type):
-                name = f"{cls_obj.__qualname__}.{func}"
-            else:
-                argc = getattr(fr.f_code, "co_posonlyargcount", 0) + fr.f_code.co_argcount
-                if argc:
-                    for a in fr.f_code.co_varnames[:argc]:
-                        obj = fr.f_locals.get(a)
-                        if obj is not None:
-                            t = obj if isinstance(obj, type) else type(obj)
-                            attr = getattr(t, func, None)
-                            if attr is not None:
-                                name = f"{getattr(t, '__qualname__', t.__name__)}.{func}"
-                                break
-                    else:
-                        name = func
-                else:
-                    name = func
+        # co_qualname gives 'Class.method' (or 'outer.<locals>.inner'); drop
+        # every '.<locals>.' from it.
+        name = fr.f_code.co_qualname.replace(".<locals>.", ".")
     else:
         logging.warning("return_method_name(): no frame available.")
     if fr is not None:
