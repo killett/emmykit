@@ -69,3 +69,14 @@ path = "src/emmykit/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/emmykit"]
+
+# Without these, pytest falls back to the outer workspace's settings, whose
+# paths don't point at this package. "-ra" lists every skipped test, so a
+# missing optional dependency can't silently skip its regression tests.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source_pkgs = ["emmykit"]
