@@ -24,6 +24,8 @@ from typing import Any, Final
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC_DIR = ROOT / "src" / "emmykit"
+# Maps each module name to the top-level names defined in it, public and
+# private, so the README can file every public name under its module.
 LAYOUT_PATH = ROOT / "tools" / "_layout.json"
 README_PATH = ROOT / "README.md"
 
