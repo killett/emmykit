@@ -2769,7 +2769,7 @@ normalize_for_search(text: 'str') -> 'str'
 Convert text to ASCII and lowercase for case- and diacritic-insensitive comparison. Also treat some characters such as ._- the same as spaces. Remove quotes (', ", ' and their unicode variants).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L199)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L200)
 
 </details>
 

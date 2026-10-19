@@ -159,8 +159,8 @@ def fix_mojibake(filepath: str | os.PathLike[str], make_backup: bool = True,
         logging.error(f"Failed to read {os.fspath(filepath)}.", exc_info=True)
         return
 
-    original_text =      decode_utf8(raw_bytes, os.fspath(filepath)) \
-                    or decode_cp1252(raw_bytes, os.fspath(filepath))
+    utf8_text     = decode_utf8(raw_bytes, os.fspath(filepath))
+    original_text = utf8_text or decode_cp1252(raw_bytes, os.fspath(filepath))
     if original_text is None:
         return
 
@@ -177,8 +177,9 @@ def fix_mojibake(filepath: str | os.PathLike[str], make_backup: bool = True,
     if filepath.suffix.casefold() in HTML_EXTENSIONS_SET:
         current_text = ensure_utf8_meta(current_text)
 
-    # If we have fixed the text, write it back
-    if current_text != original_text:
+    # Write back if the text changed, or if the file wasn't UTF-8 to begin with
+    # (a CP1252 file needs recoding even when its text is already right).
+    if current_text != original_text or utf8_text is None:
         if dry_run:
             logging.info("Dry run: would write changes to %s", os.fspath(filepath))
         else:
