@@ -37,6 +37,7 @@ class MaxLevelFilter(logging.Filter):
 
     def __init__(self, max_level: int) -> None:
         """Initialize the MaxLevelFilter with the specified maximum logging level."""
+        super().__init__()
         self.max_level = max_level
 
     def filter(self, record: logging.LogRecord) -> bool:
@@ -99,17 +100,21 @@ def configure_logging(basename: str, log_level: int | str = logging.INFO,
     log_info   = logdir / (log_base + ".out")
     log_errors = logdir / (log_base + ".err")
 
-    root_logger.handlers = []  # Reset any existing handlers
-
-    # File handlers for logging to files
+    # File handlers for logging to files. Open both before touching the root
+    # logger, so a failure leaves the existing configuration in place.
+    debug_info_handler: logging.FileHandler | None = None
     try:
         debug_info_handler    = logging.FileHandler(log_info)
         debug_info_handler.setLevel(logging.DEBUG)
         warning_error_handler = logging.FileHandler(log_errors)
         warning_error_handler.setLevel(logging.WARNING)
     except OSError as e:
+        if debug_info_handler is not None:
+            debug_info_handler.close()
         print(f"Failed to create log files: {e}", flush=True)
         return None
+
+    root_logger.handlers = []  # Reset any existing handlers
 
     # Stream handler for stdout (WARNING and lower)
     console_handler_stdout = FlushingStreamHandler(stream=sys.stdout)

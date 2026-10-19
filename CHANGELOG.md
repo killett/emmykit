@@ -140,6 +140,12 @@ All notable changes to `emmykit` are documented here. Format follows
 - `prompt_then_choose(default="")` showed "(default )" but refused
   Enter. Any default other than `None`, including an empty string, is now
   returned when Enter is pressed.
+- `configure_logging` removed the root logger's handlers before opening
+  its log files, so when a file couldn't be created the program was left
+  with no logging at all, and a first file that did open was never closed.
+  The files are now opened first; on failure nothing changes.
+- `MaxLevelFilter` skipped `logging.Filter.__init__`, so its instances had
+  no `name`.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

@@ -815,7 +815,7 @@ Raises:
     None (file creation errors are caught and logged to stdout).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L63)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L64)
 
 </details>
 
@@ -836,7 +836,7 @@ Args:
     rawlog : If True, use a simple log format without timestamps or levels.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L46)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L47)
 
 </details>
 
@@ -906,7 +906,7 @@ print_all_errors(memory_handler: 'MemoryHandler', rawlog: 'bool' = False) -> 'No
 Print all the captured error messages.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L147)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L152)
 
 </details>
 
@@ -938,7 +938,7 @@ Raises:
           if sys._getframe or inspect fails.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L157)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L162)
 
 </details>
 
