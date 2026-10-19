@@ -30,6 +30,11 @@ All notable changes to `emmykit` are documented here. Format follows
   always did, see `my_atomic_write` above) only the `.bak` file remained.
   The backup is now a copy, and the original stays in place until the
   fixed text replaces it.
+- `LLMs` model selection raised `NameError: name 'replace' is not
+  defined` on every call to `apply_config`, `refresh_selection`,
+  `alternative_model` and (once a config was applied) `get_config`, and
+  so on every failover inside `send_prompt`. The 0.3.0 split had dropped
+  `replace` from `llm.py`'s `dataclasses` import.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

@@ -7,7 +7,7 @@ import os
 import re
 import time
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
 from pathlib import Path
 from typing import Any, Literal, Type, TypeAlias, overload
