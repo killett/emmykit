@@ -210,6 +210,12 @@ All notable changes to `emmykit` are documented here. Format follows
   plain string: a list of segments (Anthropic-style replies) or None
   (for example a tool call). It now always returns a string, joining the
   text segments and giving "" when there is no text.
+- `to_jsonable(namespace, roundtrip=False)` returned the namespace's own
+  attribute dict unconverted, so a `Path` or `datetime` inside it broke
+  `json.dumps` and changes to the result changed the namespace. It is now
+  converted like a dict. With `roundtrip=True`, an encoder error inside a
+  namespace was swallowed and the namespace stored as a string; it now
+  propagates, as it does inside a dict.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

@@ -313,16 +313,12 @@ def _to_jsonable(obj: Any, *, roundtrip: bool, _seen: set[int]) -> Any:
             "qualname" : getattr(cls, "__qualname__", cls.__name__),
             "name"     : obj.name,
         } if roundtrip else (obj.value if isinstance(obj.value, (str, int, float, bool, type(None))) else obj.name)
-    # argparse.Namespace
-    try:
-        import argparse
-        if isinstance(obj, argparse.Namespace):
-            return {"__type__" : "namespace",
-                    "value"    : _to_jsonable(vars(obj), roundtrip=roundtrip, _seen=_seen)} if roundtrip else vars(obj)
-    except Exception as e:
-        if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug(
-            "Failed to unwrap argparse.Namespace: %s", e
-        )
+    # argparse.Namespace: its attributes are converted like a dict's items, and
+    # their errors reach the caller in the same way.
+    import argparse
+    if isinstance(obj, argparse.Namespace):
+        value = _to_jsonable(vars(obj), roundtrip=roundtrip, _seen=_seen)
+        return {"__type__": "namespace", "value": value} if roundtrip else value
     # datetime / date / time
     try:
         import datetime as dt

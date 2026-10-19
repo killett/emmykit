@@ -2311,7 +2311,7 @@ Reconstruct objects encoded with to_jsonable(..., roundtrip=True).
 If input was produced with roundtrip=False, this mostly passes values through.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L372)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L368)
 
 </details>
 
@@ -2338,7 +2338,7 @@ Raises:
     ValueError: If the JSON file is invalid or cannot be parsed.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L534)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L530)
 
 </details>
 
@@ -2426,7 +2426,7 @@ Raises:
     ValueError: If the options object is invalid.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L502)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L498)
 
 </details>
 
