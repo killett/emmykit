@@ -486,8 +486,8 @@ def ask_and_autopep8(path: str | os.PathLike[str], code: str,
         description:   A description of the issue being fixed (default "").
         diff_choice:   How many context lines to show in the diff (0 = old-style diff, 1 = unified diff with 0 context lines, 2+ = unified diff with 'diff_choice - 1' context lines) (default 1).
         changed_color: Color to use for unchanged characters in the changed lines in the diff (default ANSI_CYAN).
-        deleted_color: Color to use for the deleted characters in orig lines (default ANSI_YELLOW).
-        added_color:   Color to use for the added characters in changed lines (default ANSI_GREEN).
+        deleted_color: Color for deleted characters and deleted lines (default ANSI_RED).
+        added_color:   Color for added characters and added lines (default ANSI_YELLOW).
 
     Returns:
         True if the user wants to continue, False if they want to quit.
@@ -555,9 +555,9 @@ def ask_and_replace(old_str: str, new_str: str,
         skip_compile:  If True, do not try to compile the changed text before writing (default False).
         diff_choice:   How many context lines to show in the diff (0 = old-style diff, 1 = unified diff with 0 context lines, 2+ = unified diff with 'diff_choice - 1' context lines) (default 1).
         changed_color: Color to use for unchanged characters in the changed lines in the diff (default ANSI_CYAN).
-        deleted_color: Color to use for the deleted characters in orig lines (default ANSI_YELLOW).
-        added_color:   Color to use for the added characters in changed lines (default ANSI_GREEN).
-        the_fix:       A string describing the fix being applied (e.g. "autopep8", "manual edit") (default "").
+        deleted_color: Color for deleted characters and deleted lines (default ANSI_RED).
+        added_color:   Color for added characters and added lines (default ANSI_YELLOW).
+        verbose:       If True, log when the file is empty or has no occurrences (default True).
         description:   A longer description of the issue being fixed (default "").
 
     Returns:

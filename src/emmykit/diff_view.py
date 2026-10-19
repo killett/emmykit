@@ -98,8 +98,8 @@ def my_diff(orig_text:     str, changed_text: str,
         diff_choice:    How many context lines to show in the diff ( 0 = old-style diff, 1 = unified diff with 0 context lines,
                                                                     2+ = unified diff with 'diff_choice - 1' context lines).
         changed_color:  Color to use for unchanged characters in the changed lines in the diff (default ANSI_CYAN).
-        deleted_color:  Color to use for the deleted characters in orig lines (default ANSI_YELLOW).
-        added_color:    Color to use for the added characters in changed lines (default ANSI_RED).
+        deleted_color:  Color for deleted characters and deleted lines (default ANSI_RED).
+        added_color:    Color for added characters and added lines (default ANSI_YELLOW).
 
     Returns:
         None: Prints the diff to the console.
@@ -167,7 +167,7 @@ def my_diff(orig_text:     str, changed_text: str,
                     continue
                 # Unpaired insert (pure addition in this hunk).
                 vis = _vis_trailing_ws(text)
-                logging.info(f"{changed_color}> {nln:>{the_digits}}:{ANSI_RESET} {ANSI_RED}{vis}{ANSI_RESET}")
+                logging.info(f"{changed_color}> {nln:>{the_digits}}:{ANSI_RESET} {added_color}{vis}{ANSI_RESET}")
         hunk_entries.clear()
 
     orig_lineno: int | None = None
@@ -302,8 +302,8 @@ def diff_and_confirm(orig_text: str, changed_text: str,
         skip_compile:  If True, do not try to compile the changed text before writing (default False).
         diff_choice:   How many context lines to show in the diff (0 = old-style diff, 1 = unified diff with 0 context lines, 2+ = unified diff with 'diff_choice - 1' context lines) (default 1).
         changed_color: Color to use for unchanged characters in the changed lines in the diff (default ANSI_CYAN).
-        deleted_color: Color to use for the deleted characters in orig lines (default ANSI_YELLOW).
-        added_color:   Color to use for the added characters in changed lines (default ANSI_GREEN).
+        deleted_color: Color for deleted characters and deleted lines (default ANSI_RED).
+        added_color:   Color for added characters and added lines (default ANSI_YELLOW).
         the_fix:       A string describing the fix being applied (e.g. "autopep8", "manual edit") (default "").
         description:   A longer description of the issue being fixed (default "").
 

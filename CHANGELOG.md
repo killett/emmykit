@@ -125,6 +125,10 @@ All notable changes to `emmykit` are documented here. Format follows
 - `interactive_flake8` treated a flake8 that couldn't run (for example
   "No module named flake8") as a file with no issues. It now raises
   `RuntimeError` with flake8's message.
+- `my_diff` (and so `diff_and_confirm` and the lint helpers) drew lines
+  that were only added in red, the colour for deleted lines, ignoring
+  `added_color`. They are now drawn in `added_color`, yellow by default,
+  and the docstrings give the defaults correctly.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.
