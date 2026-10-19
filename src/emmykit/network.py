@@ -19,6 +19,10 @@ from typing import Any
 
 _EXECUTOR: ThreadPoolExecutor | None = None
 
+# Most bytes an HTTP probe reads from a response body: enough to recognise a
+# captive portal's page without hanging on a large one.
+_HTTP_BODY_CAP = 2048
+
 def _get_executor() -> ThreadPoolExecutor:
     """Create or return a shared thread pool; never blocks on shutdown."""
     global _EXECUTOR
@@ -220,12 +224,12 @@ def _http_probe(url: str, method: str, timeout: float,
             # For HEAD we don't generally read a body; for GET, read up to a ceiling.
             if method.upper() == "GET":
                 # Cap read size to avoid hanging on big captive pages.
-                data = resp.read(2048)
+                data = resp.read(_HTTP_BODY_CAP)
             if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("HTTP: %s %s -> %d, final_url=%s", method, url, status, final_url)
             return True, int(status), data, final_url
     except urllib.error.HTTPError as exc:
         try:
-            body = exc.read(2048) if hasattr(exc, "read") else None
+            body = exc.read(_HTTP_BODY_CAP) if hasattr(exc, "read") else None
         except Exception as e:
             if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("HTTP: failed to read body from HTTPError: %s", e)
             body = None

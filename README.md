@@ -2999,7 +2999,7 @@ Raises:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/network.py#L506)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/network.py#L510)
 
 </details>
 
