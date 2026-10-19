@@ -1060,7 +1060,8 @@ class LLMs:
         if not use_backoff:
             comp_with_retries = getattr(litellm_mod, "completion_with_retries", None)
             if callable(comp_with_retries):
-                return comp_with_retries(max_retries=2, **kwargs)
+                # num_retries counts attempts; completion_with_retries ignores max_retries.
+                return comp_with_retries(num_retries=3, **kwargs)
             return litellm_mod.completion(**kwargs)
 
         try:
@@ -1095,7 +1096,7 @@ class LLMs:
             """Inner function to apply Tenacity retry logic."""
             comp_with_retries = getattr(litellm_mod, "completion_with_retries", None)
             if callable(comp_with_retries):
-                return comp_with_retries(max_retries=1, **kwargs)   # keep LiteLLM retries small under Tenacity
+                return comp_with_retries(num_retries=2, **kwargs)   # one retry; Tenacity handles rate limits
             return litellm_mod.completion(**kwargs)
 
         return _do()
@@ -1118,7 +1119,7 @@ class LLMs:
 
         Raises:
             RuntimeError: If the model is unknown or if the request fails.
-            ValueError:   If the prompt is empty.
+            ValueError:   If the prompt is empty, or if it fills the model's whole context window.
         """
         if prompt is None:
             raise ValueError("prompt must not be None")
@@ -1141,20 +1142,23 @@ class LLMs:
             tokens_out=out_tok,
         )
 
-        # ---- Preflight: context-window warning (best-effort; never blocks the call) ----
+        # ---- Preflight: fit max_tokens into the context window ----
+        # Counting is best-effort: if it fails, the call goes ahead unclamped.
+        context_window: int | None = None
+        input_tokens:   int | None = None
         try:
             _, _, context_window = self._get_model_pricing_and_context(model)
             if context_window:
                 input_tokens = self._count_chat_tokens(messages, model)
-                if input_tokens + max_tokens > context_window:
-                    orig       = max_tokens
-                    max_tokens = max(0, context_window - input_tokens)
-                    if max_tokens == 0:
-                        raise ValueError(f"Prompt+system ({input_tokens} toks) fully occupies the {context_window} token window for {model}.")
-                    logging.warning("Clamped max_tokens from %d to %d to fit context for %s",
-                                    orig, max_tokens, model)
         except Exception as e:
             logging.warning("send_prompt: context window check failed for %s: %s", model, e)
+        if context_window and input_tokens is not None and input_tokens + max_tokens > context_window:
+            orig       = max_tokens
+            max_tokens = max(0, context_window - input_tokens)
+            if max_tokens == 0:  # outside the try above, so it reaches the caller
+                raise ValueError(f"Prompt+system ({input_tokens} toks) fully occupies the {context_window} token window for {model}.")
+            logging.warning("Clamped max_tokens from %d to %d to fit context for %s",
+                            orig, max_tokens, model)
 
         # ---- Invoke LiteLLM (prefer retries when available) ----
         kwargs = dict(model=model,
@@ -1365,12 +1369,10 @@ class LLMs:
             return bool(cached[0])
 
         ok = False
-        # Ensure litellm is importable once
         try:
-            self._ensure_litellm()
-            litellm = self._litellm_mod  # type: ignore
-            if litellm is None:
-                raise RuntimeError("LiteLLM not available")
+            # Not _ensure_litellm(), which exits the process: without litellm the
+            # model is simply unavailable (see the except below).
+            import litellm  # type: ignore
             # 1) Zero-cost-ish metadata path
             get_info = getattr(litellm, "get_model_info", None)
             if callable(get_info):
@@ -1402,7 +1404,7 @@ class LLMs:
                     # Call with minimal retries; failures should be fast.
                     comp_with_retries = getattr(litellm, "completion_with_retries", None)
                     if callable(comp_with_retries):
-                        comp_with_retries(max_retries=0, **kwargs)
+                        comp_with_retries(num_retries=1, **kwargs)  # one attempt: it is billed
                     else:
                         litellm.completion(**kwargs)
                     ok = True
@@ -1622,7 +1624,11 @@ class LLMs:
         if not cfg.rate_throttle:
             return
 
-        self._init_rate_db(cfg.rate_db_path)
+        try:
+            self._init_rate_db(cfg.rate_db_path)
+        except Exception as e:  # fail-open, as for the other throttle-store problems below
+            logging.warning("Rate throttling skipped: can't use the rate log at %s: %s", cfg.rate_db_path, e)
+            return
 
         import time
         import sqlite3

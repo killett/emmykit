@@ -193,6 +193,19 @@ All notable changes to `emmykit` are documented here. Format follows
   first selection happened offline (which forces `only_local_models`)
   remote models stayed excluded after reconnecting. It now re-applies the
   config last passed to `apply_config`.
+- `LLMs.send_prompt` sent a prompt that filled the model's whole context
+  window with `max_tokens=0`, because the `ValueError` meant for that
+  case was raised inside a `try` that swallowed it. It now raises.
+- `LLMs.send_prompt` raised when its rate log (`rate_db_path`) couldn't
+  be created, despite failing open on every other rate-log problem. It
+  now logs a warning and sends without throttling.
+- Without litellm installed, the model availability check called
+  `sys.exit(1)`. It now reports the model as unavailable.
+- litellm's `completion_with_retries` ignores `max_retries` and makes
+  `num_retries` attempts, 3 by default, so the paid 1-token availability
+  probe could be billed three times and every send under Tenacity made
+  three attempts per try. The calls now pass `num_retries`: one attempt
+  for the probe, two under Tenacity, three otherwise (unchanged).
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import socket
 import sqlite3
+import sys
 import time
 from pathlib import Path
 
@@ -193,3 +194,97 @@ def test_refresh_after_reconnecting_no_longer_forces_local_models(monkeypatch: p
     models.refresh_selection()
 
     assert models.get_config().only_local_models is False
+
+
+# --- send_prompt preflight, rate-store failures, litellm absence, retries ------
+
+class _Sent(BaseException):
+    """Raised by a fake completion call; a BaseException, so no handler swallows it."""
+
+
+def test_prompt_filling_the_context_window_is_a_value_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A prompt that leaves no room for a reply raises before anything is sent.
+
+    Fails if the error is swallowed and the request goes out with max_tokens=0.
+    """
+    models = LLMs()
+    models.apply_config(LLMConfig(**CONFIG, rate_throttle=False))
+    monkeypatch.setattr(models, "_get_model_pricing_and_context", lambda model: (0.0, 0.0, 100))
+    monkeypatch.setattr(models, "_count_chat_tokens", lambda messages, model: 150)
+
+    def send(*args: object, **kwargs: object) -> object:
+        raise _Sent(kwargs.get("max_tokens"))
+
+    monkeypatch.setattr(models, "_call_with_backoff", send)
+    with pytest.raises(ValueError, match="fully occupies"):
+        models.send_prompt("hello", "be brief", model=models.model, temperature=0.0)
+
+
+def test_unusable_rate_store_skips_throttling_instead_of_failing(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A rate database that can't be created turns throttling off for the call, with a warning."""
+    blocker = tmp_path / "not-a-folder"
+    blocker.write_text("")
+    models = LLMs()
+    models.apply_config(LLMConfig(**CONFIG, rate_db_path=blocker / "rate.db"))
+
+    models._throttle_if_needed("OpenAI", models.model, 10, 10)
+
+    assert "throttling" in caplog.text
+
+
+def test_missing_litellm_makes_a_model_unavailable_not_the_process_exit(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The availability probe reports False without litellm; it must not call sys.exit."""
+    models = LLMs()
+    models.apply_config(LLMConfig(**CONFIG))
+    models._config = LLMConfig(**CONFIG | {"availability_probe": True})
+    monkeypatch.setattr(models, "_litellm_ready", False)
+    monkeypatch.setitem(sys.modules, "litellm", None)
+
+    assert models._probe_provider_available("OpenAI", "gpt-4.1-nano") is False
+
+
+def test_paid_availability_probe_makes_one_attempt(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The 1-token probe is billed, so it is tried exactly once.
+
+    Fails if it passes max_retries=0, which completion_with_retries ignores in
+    favour of num_retries (default 3 attempts).
+    """
+    litellm = pytest.importorskip("litellm")
+    attempts: list[str] = []
+
+    def completion(*args: object, **kwargs: object) -> object:
+        attempts.append(str(kwargs.get("model")))
+        raise RuntimeError("auth failed")
+
+    monkeypatch.setattr(litellm.main, "completion", completion)
+    monkeypatch.setattr(litellm, "get_model_info", lambda model: (_ for _ in ()).throw(RuntimeError("no info")))
+    models = LLMs()
+    models.apply_config(LLMConfig(**CONFIG))
+    models._config = LLMConfig(**CONFIG | {"availability_probe": True, "availability_probe_allow_costly": True})
+
+    assert models._probe_provider_available("OpenAI", "gpt-4.1-nano") is False
+    assert attempts == ["gpt-4.1-nano"]
+
+
+def test_send_under_tenacity_retries_a_non_rate_limit_error_once(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Under Tenacity, LiteLLM's own retry layer makes two attempts (one retry), not three."""
+    litellm = pytest.importorskip("litellm")
+    attempts: list[int] = []
+
+    def completion(*args: object, **kwargs: object) -> object:
+        attempts.append(1)
+        raise RuntimeError("server error")
+
+    monkeypatch.setattr(litellm.main, "completion", completion)
+    models = LLMs()
+    models.apply_config(LLMConfig(**CONFIG, rate_db_path=tmp_path / "rate.db"))
+
+    with pytest.raises(RuntimeError, match="server error"):
+        models._call_with_backoff(litellm, model=models.model, messages=[])
+    assert len(attempts) == 2
