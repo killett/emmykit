@@ -1,6 +1,7 @@
 """Sanity tests for tools/generate_readme.py."""
 from __future__ import annotations
 
+import json
 import re
 import sys
 from collections.abc import Callable
@@ -173,3 +174,10 @@ def test_every_toc_link_lands_on_the_entry_it_names(renderer: str) -> None:
     ]
     assert ("constants", "m-constants") in links  # the parse found the contents
     assert misses == []
+
+
+def test_intro_counts_the_public_surface() -> None:
+    """The intro's name count matches the curated public surface instead of drifting."""
+    baseline = Path(__file__).parent / "_baseline_signatures.json"
+    count = len(json.loads(baseline.read_text()))
+    assert f"Personal Python utility kit: {count} importable" in build_readme()

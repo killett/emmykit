@@ -17,6 +17,27 @@ All notable changes to `emmykit` are documented here. Format follows
   names had the anchor `palette`. The function's anchor is now
   `palette-1`; all other anchors are unchanged.
 
+### Removed (breaking)
+
+- `CheckResult`, `InflectEngine` and `FormatChecker` from the top-level
+  namespace. All three were helpers for a single public function and
+  became public only because the 0.3.0 split exported every name in
+  `univ_defs.py` without a leading underscore. `CheckResult` holds the
+  probe results that `is_internet_available` reduces to a `bool`; nothing
+  public returns or accepts one. `InflectEngine` is the type hint for the
+  `inflect` engine behind `my_plural`. `FormatChecker` is the AST visitor
+  behind `check_python_formatting`. They are now `_CheckResult`,
+  `_InflectEngine` and `_FormatChecker` in their modules, and none of the
+  three public functions changes.
+
+### Changed
+
+- Public surface: 193 → 190 names.
+- `tests/_baseline_signatures.json` updated to match.
+- The README's opening line now gives the size of the public surface as
+  `tools/generate_readme.py` counts it, so it can no longer drift. It had
+  said 181.
+
 ## [0.6.3] - 2026-10-17
 
 ### Fixed

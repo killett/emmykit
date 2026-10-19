@@ -613,7 +613,7 @@ def _render_toc(groups: list[tuple[int, str, list[SymbolInfo], list[tuple["Conde
 
 HEADER = """# emmykit
 
-Personal Python utility kit: 181 importable functions, classes, and constants across 32 submodules
+Personal Python utility kit: {public_count} importable functions, classes, and constants across 32 submodules
 in 9 dependency layers (README highlights the user-facing surface — internal punctuation, frozenset
 aliases, probe-target lists, and translation tables are referenced by section rather than enumerated).
 Base install is stdlib-only; heavier helpers
@@ -777,7 +777,9 @@ def build_readme() -> str:
         for l, m, s, c in groups
     )
 
-    return HEADER + toc + "\n## API reference\n\n" + body + "\n" + FOOTER
+    # replace(), not format(): the header's code examples are full of braces.
+    header = HEADER.replace("{public_count}", str(len(public)))
+    return header + toc + "\n## API reference\n\n" + body + "\n" + FOOTER
 
 
 def main(argv: list[str]) -> int:

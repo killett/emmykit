@@ -63,10 +63,6 @@
   "COMPUTER_NAME": {
     "kind": "str"
   },
-  "CheckResult": {
-    "kind": "type",
-    "signature": "(tcp_ok: 'bool', dns_ok: 'bool', http_ok: 'bool', captive_detected: 'bool') -> None"
-  },
   "DEFAULT_ENCODING": {
     "kind": "str"
   },
@@ -82,10 +78,6 @@
   "FlushingStreamHandler": {
     "kind": "type",
     "signature": "(stream=None)"
-  },
-  "FormatChecker": {
-    "kind": "type",
-    "signature": "(source: 'str', doc_style: 'str' = 'None') -> 'None'"
   },
   "GRAMS": {
     "kind": "Unit"
@@ -125,10 +117,6 @@
   },
   "IS_NASA_COMPUTER": {
     "kind": "bool"
-  },
-  "InflectEngine": {
-    "kind": "_ProtocolMeta",
-    "signature": "(*args, **kwargs)"
   },
   "JOULES": {
     "kind": "Unit"

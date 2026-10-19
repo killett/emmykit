@@ -25,10 +25,10 @@ from emmykit.introspection import compile_code
 
 
 def _make_format_checker() -> Type[Any]:
-    """Factory function to create the FormatChecker class with the necessary imports."""
+    """Factory function to create the _FormatChecker class with the necessary imports."""
     import ast
 
-    class FormatChecker(ast.NodeVisitor):
+    class _FormatChecker(ast.NodeVisitor):
         """
         Walks a module AST and collects formatting violations:
         - missing type hints on params / return
@@ -38,7 +38,7 @@ def _make_format_checker() -> Type[Any]:
         _DocNode = ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
 
         def __init__(self, source: str, doc_style: str = "None") -> None:
-            """Initialize the FormatChecker with the source code string."""
+            """Initialize the _FormatChecker with the source code string."""
             self.source = source
             self.doc_style = doc_style  # "None", "NumPy", "Google", "reStructuredText"
             self.errors: list[tuple[str, str, str, int]] = []
@@ -245,9 +245,9 @@ def _make_format_checker() -> Type[Any]:
                 self.errors.append((node.__class__.__name__.casefold(), who,
                                     f"{doctype} docstring missing parameter(s): " + ", ".join(missing), node.lineno))
 
-    return FormatChecker
+    return _FormatChecker
 
-FormatChecker = _make_format_checker()
+_FormatChecker = _make_format_checker()
 
 def check_python_formatting(path: str | os.PathLike[str], diff_choice: int = 1) -> bool:
     """
@@ -319,7 +319,7 @@ def check_python_formatting(path: str | os.PathLike[str], diff_choice: int = 1) 
         logging.exception("❌ %s contains a syntax error.", os.fspath(path))
         return False
 
-    checker = FormatChecker(src)
+    checker = _FormatChecker(src)
     checker.visit(tree)
 
     if not checker.errors:

@@ -422,14 +422,14 @@ def _run_tcp_checks_with_pool(tcp_targets: list[tuple[str, int]],
     return False
 
 @dataclass
-class CheckResult:
+class _CheckResult:
     """Aggregate results from the multi-strategy connectivity check."""
     tcp_ok:           bool
     dns_ok:           bool
     http_ok:          bool
     captive_detected: bool
 
-def _check_once(timeout: float, workers: int, include_ipv6: bool, ignore_proxies: bool) -> CheckResult:
+def _check_once(timeout: float, workers: int, include_ipv6: bool, ignore_proxies: bool) -> _CheckResult:
     """
     Perform one pass of the connectivity checks with a total timeout budget.
 
@@ -440,7 +440,7 @@ def _check_once(timeout: float, workers: int, include_ipv6: bool, ignore_proxies
         ignore_proxies: If True, bypass env proxies for HTTP probes.
 
     Returns:
-        CheckResult with booleans for TCP, DNS, HTTP, and captive portal detection.
+        _CheckResult with booleans for TCP, DNS, HTTP, and captive portal detection.
 
     Raises:
         None.
@@ -499,7 +499,7 @@ def _check_once(timeout: float, workers: int, include_ipv6: bool, ignore_proxies
                 )
                 break
 
-    return CheckResult(
+    return _CheckResult(
         tcp_ok=tcp_ok,
         dns_ok=dns_ok,
         http_ok=http_ok,

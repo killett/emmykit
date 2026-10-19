@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Literal, Protocol
 
-class InflectEngine(Protocol):
+class _InflectEngine(Protocol):
     """Protocol for the 'inflect' library's engine interface."""
 
     def plural_noun(self, word: str, count: int | None = ...) -> str | Literal[False]:
@@ -16,9 +16,9 @@ class InflectEngine(Protocol):
         """Return the plural form of 'word'."""
         ...
 
-_INFLECT_ENGINE: InflectEngine | None = None
+_INFLECT_ENGINE: _InflectEngine | None = None
 
-def _get_inflect_engine() -> InflectEngine:
+def _get_inflect_engine() -> _InflectEngine:
     """
     Get or create a singleton inflect engine instance. This function exists to
     appease type checkers like mypy and to avoid global import-time dependencies.

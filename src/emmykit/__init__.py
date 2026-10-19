@@ -75,7 +75,7 @@ from emmykit.text_constants import (
 )
 from emmykit.numeric_helpers import is_float, seconds_in_unit
 from emmykit.paths_ensure import ensure_path
-from emmykit.inflect_utils import InflectEngine, my_plural
+from emmykit.inflect_utils import my_plural
 from emmykit.logging_utils import (
     FlushingStreamHandler,
     MaxLevelFilter,
@@ -186,7 +186,7 @@ from emmykit.hosts import (
     get_hostname_subprocess_hostname,
     get_hostname_subprocess_scutil,
 )
-from emmykit.network import CheckResult, is_internet_available
+from emmykit.network import is_internet_available
 from emmykit.python_env import (
     check_python_version,
     find_preferred_python_version,
@@ -201,7 +201,6 @@ from emmykit.files import (
 
 # === Layer 6 ===
 from emmykit.lint import (
-    FormatChecker,
     ask_and_autopep8,
     ask_and_replace,
     check_python_formatting,
@@ -278,13 +277,11 @@ __all__ = [
     "BYTES",
     "CHARACTERS_TO_SPACE",
     "COMPUTER_NAME",
-    "CheckResult",
     "DEFAULT_ENCODING",
     "DEFAULT_EXCLUDE_DIRS",
     "DNS_TEST_NAMES",
     "EM_DASH",
     "FlushingStreamHandler",
-    "FormatChecker",
     "GRAMS",
     "HERTZ",
     "HORIZONTAL_ELLIPSIS",
@@ -298,7 +295,6 @@ __all__ = [
     "IPV4_TARGETS",
     "IPV6_TARGETS",
     "IS_NASA_COMPUTER",
-    "InflectEngine",
     "JOULES",
     "LDQUOTE",
     "LLMConfig",

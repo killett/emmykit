@@ -1,6 +1,6 @@
 # emmykit
 
-Personal Python utility kit: 181 importable functions, classes, and constants across 32 submodules
+Personal Python utility kit: 190 importable functions, classes, and constants across 32 submodules
 in 9 dependency layers (README highlights the user-facing surface — internal punctuation, frozenset
 aliases, probe-target lists, and translation tables are referenced by section rather than enumerated).
 Base install is stdlib-only; heavier helpers
@@ -130,7 +130,6 @@ the converters internally.
   - [`Options`](#options)
   - [`PlotOptions`](#plotoptions)
 - [`inflect_utils` — Grammar + pluralization helpers](#m-inflect_utils)
-  - [`InflectEngine`](#inflectengine)
   - [`my_plural`](#my_plural)
 - [`logging_utils` — Logging configuration and custom handlers](#m-logging_utils)
   - [`configure_logging`](#configure_logging)
@@ -231,7 +230,6 @@ the converters internally.
   - [`IS_NASA_COMPUTER`](#is_nasa_computer)
   - [`NASA computer-name prefixes`](#c-hosts-nasa-computer-name-prefixes)
 - [`network` — Internet-connectivity probes](#m-network)
-  - [`CheckResult`](#checkresult)
   - [`is_internet_available`](#is_internet_available)
 - [`python_env` — Python interpreter discovery](#m-python_env)
   - [`check_python_version`](#check_python_version)
@@ -246,7 +244,6 @@ the converters internally.
   - [`ask_and_autopep8`](#ask_and_autopep8)
   - [`ask_and_replace`](#ask_and_replace)
   - [`check_python_formatting`](#check_python_formatting)
-  - [`FormatChecker`](#formatchecker)
   - [`get_autopep8_fixable_codes`](#get_autopep8_fixable_codes)
   - [`interactive_flake8`](#interactive_flake8)
   - [`multireplace`](#multireplace)
@@ -749,24 +746,6 @@ marker/linestyle cycles stay here — they are not colour.
 _Layer 1._  `from emmykit.inflect_utils import …`
 
 Lazy wrapper over the `inflect` package with a stdlib-only fallback table for common nouns when the extra isn't installed.
-
-<a id="inflectengine"></a><a id="user-content-inflectengine"></a>
-<details>
-<summary><code>InflectEngine</code> — Protocol for the 'inflect' library's engine interface.</summary>
-
-```python
-InflectEngine(*args, **kwargs)
-```
-
-```text
-Protocol for the 'inflect' library's engine interface.
-```
-
-**Public methods:** `plural`, `plural_noun`.
-
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/inflect_utils.py#L8)
-
-</details>
 
 <a id="my_plural"></a><a id="user-content-my_plural"></a>
 <details>
@@ -2972,24 +2951,6 @@ _Layer 5._  `from emmykit.network import …`
 
 Probe targets live in `emmykit.net_targets` (`IPV4_TARGETS` / `IPV6_TARGETS` / `HTTP_PROBES` / `DNS_TEST_NAMES`) and feed `is_internet_available`.
 
-<a id="checkresult"></a><a id="user-content-checkresult"></a>
-<details>
-<summary><code>CheckResult</code> — Aggregate results from the multi-strategy connectivity check.</summary>
-
-```python
-CheckResult(tcp_ok: 'bool', dns_ok: 'bool', http_ok: 'bool', captive_detected: 'bool') -> None
-```
-
-```text
-Aggregate results from the multi-strategy connectivity check.
-```
-
-**Fields:** `tcp_ok`, `dns_ok`, `http_ok`, `captive_detected`.
-
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/network.py#L425)
-
-</details>
-
 <a id="is_internet_available"></a><a id="user-content-is_internet_available"></a>
 <details>
 <summary><code>is_internet_available</code> — Determine if the internet is available using multiple methods.</summary>
@@ -3323,26 +3284,6 @@ Raises:
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L252)
-
-</details>
-
-<a id="formatchecker"></a><a id="user-content-formatchecker"></a>
-<details>
-<summary><code>FormatChecker</code> — Walks a module AST and collects formatting violations:</summary>
-
-```python
-FormatChecker(source: 'str', doc_style: 'str' = 'None') -> 'None'
-```
-
-```text
-Walks a module AST and collects formatting violations:
-- missing type hints on params / return
-- missing docstring or incorrect docstring quote style
-```
-
-**Public methods:** `generic_visit`, `visit`, `visit_AsyncFunctionDef`, `visit_ClassDef`, `visit_Constant`, `visit_FunctionDef`.
-
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L250)
 
 </details>
 

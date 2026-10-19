@@ -31,9 +31,9 @@
 - **Import-time side effects:** zero. No top-level executable statements outside `def`/`class`/constants/imports.
 - **Lazy module-level state:**
   - `_EXECUTOR: ThreadPoolExecutor | None = None` — populated by `_get_executor()` on first call.
-  - `_INFLECT_ENGINE: InflectEngine | None = None` — populated by `_get_inflect_engine()` on first call.
+  - `_INFLECT_ENGINE: _InflectEngine | None = None` — populated by `_get_inflect_engine()` on first call.
   Both are `None` at import time → `import emmykit` is side-effect-free.
-- **AST-detected cycles:** one SCC of size 2 → `_make_format_checker ↔ FormatChecker`. **Benign forward reference**: `FormatChecker = _make_format_checker()` is a module-level assignment that runs after `_make_format_checker` is fully defined; the inner reference to `FormatChecker` lives inside a method body resolved lazily at call time. Both stay co-located in `lint.py`. No cross-module break required.
+- **AST-detected cycles:** one SCC of size 2 → `_make_format_checker ↔ _FormatChecker`. **Benign forward reference**: `_FormatChecker = _make_format_checker()` is a module-level assignment that runs after `_make_format_checker` is fully defined; the inner reference to `_FormatChecker` lives inside a method body resolved lazily at call time. Both stay co-located in `lint.py`. No cross-module break required.
 - **Self-loops:** none.
 - **Top hubs (most-referenced):**
 
@@ -48,7 +48,7 @@
   | 13   | annvar | `DEFAULT_ENCODING`        |
   | 13   | func   | `safe_exists`             |
 
-- **97 leaves** (no internal deps): all ANSI/unicode/extension/embedded-script constants, `Options`, `PlotOptions`, `CheckResult`, `FlushingStreamHandler`, `InflectEngine`, plus standalone funcs (`detect_country`, `my_capitalize`, `my_title_case`, `check_if_command_exists`, `prompt_then_confirm`, `format_date_range`).
+- **97 leaves** (no internal deps): all ANSI/unicode/extension/embedded-script constants, `Options`, `PlotOptions`, `_CheckResult`, `FlushingStreamHandler`, `_InflectEngine`, plus standalone funcs (`detect_country`, `my_capitalize`, `my_title_case`, `check_if_command_exists`, `prompt_then_confirm`, `format_date_range`).
 
 ---
 
@@ -79,7 +79,7 @@ emmykit/src/emmykit/
 │   │                             # QUOTES_TO_DELETE, TRANSLATION_TABLE
 │   ├── numeric_helpers.py        # is_float, seconds_in_unit, _UNIT_SECONDS
 │   ├── paths_ensure.py           # ensure_path, _IS_PY_3_13
-│   ├── inflect_utils.py          # InflectEngine, _INFLECT_ENGINE, _get_inflect_engine, my_plural
+│   ├── inflect_utils.py          # _InflectEngine, _INFLECT_ENGINE, _get_inflect_engine, my_plural
 │   └── logging_utils.py          # FlushingStreamHandler, MaxLevelFilter, MemoryHandler,
 │                                 # fallback_logging_config, configure_logging,
 │                                 # print_all_errors, return_method_name
@@ -124,7 +124,7 @@ emmykit/src/emmykit/
 │   │                             # get_computer_name, analyze_computer_name_results,
 │   │                             # COMPUTER_NAME, NASA_COMPUTER_NAME_PREFIXES,
 │   │                             # NASA_CASEFOLDED_COMPUTER_NAME_PREFIXES, IS_NASA_COMPUTER
-│   ├── network.py                # CheckResult, _check_once, is_internet_available,
+│   ├── network.py                # _CheckResult, _check_once, is_internet_available,
 │   │                             # _dns_resolve, _any_dns_name_resolves,
 │   │                             # _http_probe, _http_probe_with_cap,
 │   │                             # _http_meets_expectations, _looks_like_captive,
@@ -137,7 +137,7 @@ emmykit/src/emmykit/
 │                                 # filename_format, calculate_checksum
 │
 ├── L6 — code-quality tools ─────────────────────────────────────────
-│   └── lint.py                   # _make_format_checker, FormatChecker  ← benign cycle stays here
+│   └── lint.py                   # _make_format_checker, _FormatChecker  ← benign cycle stays here
 │                                 # check_python_formatting, run_flake8, _gather_flake8_issues,
 │                                 # _gather_via_cli, _gather_via_app, get_autopep8_fixable_codes,
 │                                 # ask_and_autopep8, ask_and_replace, _validate_glob_pattern,
@@ -208,7 +208,7 @@ emmykit/src/emmykit/
 
 | Original conflict                                          | Resolution                                                                                                 |
 | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `_make_format_checker ↔ FormatChecker`                     | Benign forward-ref; both stay in `lint.py`. No restructuring.                                              |
+| `_make_format_checker ↔ _FormatChecker`                    | Benign forward-ref; both stay in `lint.py`. No restructuring.                                              |
 | `return_method_name → fallback_logging_config`             | Co-located in `logging_utils` (L1).                                                                         |
 | `configure_logging → ensure_path`                          | `ensure_path` lives in `paths_ensure` (L1, loaded first); `logging_utils` (L1) imports it.                  |
 | `parse_datetime → is_float`, `seconds_in_unit`             | Both moved into `numeric_helpers` (L1) below `datetime_utils` (L4).                                        |
@@ -296,7 +296,7 @@ These are recorded so `writing-plans` can ask them or pin them:
 
 | Risk                                                                  | Mitigation                                                                                                                                                            |
 | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AST-detected `_make_format_checker ↔ FormatChecker` cycle is real      | Verified by reading the source: the inner reference is inside a lazy method body. If runtime import surfaces a `NameError`, move `FormatChecker = …` to bottom of `lint.py`. |
+| AST-detected `_make_format_checker ↔ _FormatChecker` cycle is real     | Verified by reading the source: the inner reference is inside a lazy method body. If runtime import surfaces a `NameError`, move `_FormatChecker = …` to bottom of `lint.py`. |
 | A "pure" helper turns out to read the env / call `time.time()`         | Smoke-test inputs picked from a deterministic subset; `time.time()`-using helpers omitted. Document the exclusion in the test.                                        |
 | The 9 922-LOC file actually contains a buried module-level call we missed | AST analysis returned `module-level non-import statements: 0`. If a buried call appears during the move, halt and re-run the AST sweep.                                |
 | Embedded `/workspace/emmykit/.git` worktree config issue              | Pre-flight step explicitly fixes it before any commit attempt.                                                                                                        |
