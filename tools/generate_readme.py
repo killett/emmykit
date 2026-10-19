@@ -381,7 +381,7 @@ def _synthesize_const_summary(name: str, obj: Any, annotation: str | None) -> st
         return f"{annotation or 'str'} = {obj!r}"
     if isinstance(obj, str):
         return f"{annotation or 'str'} ({len(obj)} chars)"
-    if isinstance(obj, (int, float, bool)) and not isinstance(obj, bool) is False:
+    if isinstance(obj, (int, float, bool)):
         return f"{annotation or type(obj).__name__} = {obj!r}"
     if annotation:
         if isinstance(obj, (list, tuple, set, frozenset)):

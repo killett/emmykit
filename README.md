@@ -587,7 +587,7 @@ Example:
 
 <a id="min_contrast_ratio"></a><a id="user-content-min_contrast_ratio"></a>
 <details>
-<summary><code>MIN_CONTRAST_RATIO</code> — Final[float]</summary>
+<summary><code>MIN_CONTRAST_RATIO</code> — Final[float] = 4.5</summary>
 
 ```python
 MIN_CONTRAST_RATIO: Final[float] = 4.5
@@ -686,7 +686,7 @@ Single source of truth for `emmykit.__version__` (read by hatchling at build-tim
 
 <a id="py_version"></a><a id="user-content-py_version"></a>
 <details>
-<summary><code>PY_VERSION</code> — Final[float]</summary>
+<summary><code>PY_VERSION</code> — Final[float] = 3.12</summary>
 
 ```python
 PY_VERSION: Final[float] = 3.12

@@ -244,3 +244,16 @@ def test_readme_matches_generator() -> None:
     generated = _mask_host_values(build_readme()).splitlines()
     diff = list(difflib.unified_diff(readme, generated, "README.md", "generated", lineterm="", n=1))
     assert diff == [], "README.md is stale; run tools/generate_readme.py:\n" + "\n".join(diff[:40])
+
+
+@pytest.mark.parametrize(
+    ("obj", "annotation", "summary"),
+    [(4.5, "Final[float]", "Final[float] = 4.5"), (3, None, "int = 3"), (True, "bool", "bool = True")],
+)
+def test_numeric_constants_show_their_value(obj: object, annotation: str | None, summary: str) -> None:
+    """Numbers and bools are summarized with their value.
+
+    Fails for the int and float cases if the check is written
+    `not isinstance(obj, bool) is False`, which is True only for bools.
+    """
+    assert generate_readme._synthesize_const_summary("X", obj, annotation) == summary
