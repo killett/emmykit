@@ -49,6 +49,7 @@ def test_empty_docstring_emits_no_fence() -> None:
 # ---- render policy tests ---- #
 
 
+import tools.generate_readme as generate_readme  # noqa: E402
 from tools.generate_readme import (  # noqa: E402
     CondenseGroup,
     GITHUB_BASE,
@@ -182,6 +183,47 @@ def test_intro_counts_the_public_surface() -> None:
     baseline = Path(__file__).parent / "_baseline_signatures.json"
     count = len(json.loads(baseline.read_text()))
     assert f"Personal Python utility kit: {count} importable" in build_readme()
+
+
+def _patch_layout(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, edit: Callable[[dict[str, list[str]]], None]
+) -> None:
+    """Point the generator at a copy of ``_layout.json`` changed by ``edit``."""
+    layout = json.loads(generate_readme.LAYOUT_PATH.read_text())
+    edit(layout)
+    path = tmp_path / "_layout.json"
+    path.write_text(json.dumps(layout))
+    monkeypatch.setattr(generate_readme, "LAYOUT_PATH", path)
+
+
+def test_public_name_missing_from_layout_is_an_error(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A public name with no module in ``_layout.json`` stops the build instead of vanishing."""
+    _patch_layout(monkeypatch, tmp_path, lambda layout: layout["inflect_utils"].remove("my_plural"))
+    with pytest.raises(ValueError, match="my_plural"):
+        build_readme()
+
+
+def test_public_name_mapped_to_the_wrong_module_is_an_error(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A name filed under a module that doesn't define it stops the build instead of vanishing."""
+    def move(layout: dict[str, list[str]]) -> None:
+        layout["inflect_utils"].remove("my_plural")
+        layout["text"].append("my_plural")
+
+    _patch_layout(monkeypatch, tmp_path, move)
+    with pytest.raises(ValueError, match="my_plural"):
+        build_readme()
+
+
+def test_module_missing_from_layer_order_is_an_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A module left out of LAYER_ORDER stops the build instead of losing all its names."""
+    kept = [(layer, m) for layer, m in generate_readme.LAYER_ORDER if m != "inflect_utils"]
+    monkeypatch.setattr(generate_readme, "LAYER_ORDER", kept)
+    with pytest.raises(ValueError, match="inflect_utils"):
+        build_readme()
 
 
 # Constants whose rendered value depends on the machine that generates the README.

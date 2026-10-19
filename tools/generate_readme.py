@@ -419,8 +419,10 @@ def _gather(module: str, names: list[str], emmykit: Any) -> list[SymbolInfo]:
         obj = getattr(emmykit, name)
         node = name_to_node.get(name)
         if node is None:
-            # Should never happen — layout drift.
-            continue
+            raise ValueError(
+                f"{name} is not defined at the top level of {module}.py; "
+                f"fix its entry in {LAYOUT_PATH.name}"
+            )
 
         if inspect.isfunction(obj):
             sig = str(inspect.signature(obj))
@@ -727,12 +729,15 @@ def build_readme() -> str:
 
     layout = json.loads(LAYOUT_PATH.read_text())
     sym_to_mod = {s: m for m, syms in layout.items() for s in syms}
+    unplaced = [name for name in public if name not in sym_to_mod]
+    if unplaced:
+        raise ValueError(f"public names missing from {LAYOUT_PATH.name}: {unplaced}")
     by_mod: dict[str, list[str]] = {}
     for name in public:
-        mod = sym_to_mod.get(name)
-        if mod is None:
-            continue
-        by_mod.setdefault(mod, []).append(name)
+        by_mod.setdefault(sym_to_mod[name], []).append(name)
+    unordered = sorted(set(by_mod) - {module for _, module in LAYER_ORDER})
+    if unordered:
+        raise ValueError(f"modules with public names missing from LAYER_ORDER: {unordered}")
 
     # Pre-compute notes flowing INTO each module from dropped sections.
     notes_into: dict[str, list[str]] = {}
@@ -757,8 +762,6 @@ def build_readme() -> str:
             if not present:
                 continue
             first_info = _gather(module, [present[0]], emmykit)
-            if not first_info:
-                continue
             condense_blocks.append((g, first_info[0].source_line, present))
         # Module render: optional section_note + any inflowing drop-section notes.
         extra_notes: list[str] = []
