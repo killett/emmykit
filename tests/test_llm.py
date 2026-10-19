@@ -6,6 +6,7 @@ socket connection fails, so a test that reached the network would notice.
 
 from __future__ import annotations
 
+import re
 import socket
 import sqlite3
 import sys
@@ -248,6 +249,43 @@ def test_missing_litellm_makes_a_model_unavailable_not_the_process_exit(
     monkeypatch.setitem(sys.modules, "litellm", None)
 
     assert models._probe_provider_available("OpenAI", "gpt-4.1-nano") is False
+
+
+def test_send_prompt_without_litellm_raises_import_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    """send_prompt with litellm missing is an ImportError saying so, not sys.exit."""
+    models = LLMs()
+    models.apply_config(LLMConfig(**CONFIG, rate_throttle=False))
+    monkeypatch.setattr(models, "_litellm_ready", False)
+    monkeypatch.setitem(sys.modules, "litellm", None)
+
+    with pytest.raises(ImportError, match=r"^LiteLLM is enabled but not installed\. 'pip install litellm' Error: "):
+        models.send_prompt("hello", "be brief", model=models.model, temperature=0.0)
+
+
+class _Down(Exception):
+    """A provider error from the fake completion call."""
+
+
+def test_send_prompt_raises_when_every_failover_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Once the failover runs out of models, send_prompt raises RuntimeError chained to the last error."""
+    models = LLMs()
+    models.apply_config(LLMConfig(**CONFIG, rate_throttle=False))
+    monkeypatch.setattr(models, "_litellm_ready", True)
+    tried: list[str] = []
+
+    def down(litellm: object, **kwargs: object) -> object:
+        tried.append(str(kwargs["model"]))
+        raise _Down(f"{kwargs['model']} is down")
+
+    monkeypatch.setattr(models, "_call_with_backoff", down)
+    first = models.model
+
+    with pytest.raises(RuntimeError, match=rf"^LiteLLM request failed for model '{re.escape(first)}' and iterative failover also failed\. ") as excinfo:
+        models.send_prompt("hello", "be brief", model=first, temperature=0.0)
+
+    assert tried[0] == first and len(tried) > 1
+    assert isinstance(excinfo.value.__cause__, _Down)
+    assert str(excinfo.value.__cause__) == f"{tried[-1]} is down"
 
 
 def test_paid_availability_probe_makes_one_attempt(monkeypatch: pytest.MonkeyPatch) -> None:

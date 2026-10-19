@@ -11,7 +11,6 @@ from typing import Any, Literal, TypeAlias, overload
 
 from emmykit.constants import DEFAULT_ENCODING
 from emmykit.hosts import IS_NASA_COMPUTER
-from emmykit.io_subprocess import my_critical_error
 from emmykit.network import is_internet_available
 
 class SelectionStrategy(str, Enum):
@@ -1120,7 +1119,8 @@ class LLMs:
             The text response from the model.
 
         Raises:
-            RuntimeError: If the model is unknown or if the request fails.
+            ImportError:  If litellm is not installed.
+            RuntimeError: If the model is unknown, or if the request and every failover attempt fail.
             ValueError:   If the prompt is empty, or if it fills the model's whole context window.
         """
         if prompt is None:
@@ -1222,10 +1222,10 @@ class LLMs:
                     except Exception as e6:
                         logging.warning("Could not update temporary banlists: %s", e6)
             # If we reach here, all failovers failed
-            my_critical_error(
+            raise RuntimeError(
                 f"LiteLLM request failed for model '{model}' and iterative failover also failed. "
                 f"original_error={e}; last_error={last_exc}"
-            )
+            ) from last_exc
         return self._extract_text_from_openai_like(resp)
 
     # ====================================================
@@ -1372,7 +1372,7 @@ class LLMs:
 
         ok = False
         try:
-            # Not _ensure_litellm(), which exits the process: without litellm the
+            # Not _ensure_litellm(), which raises ImportError: without litellm the
             # model is simply unavailable (see the except below).
             import litellm  # type: ignore
             # 1) Zero-cost-ish metadata path
@@ -1524,7 +1524,12 @@ class LLMs:
         )
 
     def _ensure_litellm(self) -> None:
-        """Ensure LiteLLM is imported and ready to use."""
+        """
+        Ensure LiteLLM is imported and ready to use.
+
+        Raises:
+            ImportError: If litellm is not installed.
+        """
         if self._litellm_ready:
             return
         try:
@@ -1532,7 +1537,7 @@ class LLMs:
             self._litellm_mod   = litellm
             self._litellm_ready = True
         except ImportError as e:
-            my_critical_error(f"LiteLLM is enabled but not installed. 'pip install litellm' Error: {e}")
+            raise ImportError(f"LiteLLM is enabled but not installed. 'pip install litellm' Error: {e}") from e
 
     def _should_ban_provider_for(self, exc: Exception) -> bool:
         """

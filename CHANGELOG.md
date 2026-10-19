@@ -272,6 +272,9 @@ All notable changes to `emmykit` are documented here. Format follows
     `ensure_image_built` raise `RuntimeError` instead of calling
     `sys.exit(1)`, and `run_with_docker_fixes` passes it on. When the
     Dockerfile can't be read, the `OSError` is the cause.
+  - `LLMs.send_prompt` raises `ImportError` when litellm isn't installed,
+    and `RuntimeError` when the request and every failover attempt fail,
+    with the last attempt's error as the cause.
 
 ## [0.6.3] - 2026-10-17
 

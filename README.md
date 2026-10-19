@@ -4040,7 +4040,7 @@ Configuration for LLM selection and usage. Data only.
 
 **Fields:** `only_cleared_models`, `only_local_models`, `allow_local_models`, `ollama_base_url`, `vllm_base_url`, `rate_throttle`, `rate_headroom`, `rate_retry_max_attempts`, `rate_retry_max_wait`, `rate_db_path`, `availability_probe`, `availability_probe_ttl_sec`, `availability_probe_timeout`, `availability_probe_allow_costly`, `selection_strategy`, `min_context_tokens`, `assumed_prompt_tokens`, `assumed_output_tokens`, `candidate_models`, `default_temperature`, `max_tokens`, `model_scores`, `prefer_code`, `prefer_low_TTFT`, `prefer_local`, `max_estimated_cost`, `speed_floor`, `model_filter`, `provider_filter`, `weight_price`, `weight_code_skill`, `weight_general_skill`, `weight_TTFT`, `weight_speed`, `weight_nonlocal_penalty`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L28)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L27)
 
 </details>
 
@@ -4063,7 +4063,7 @@ Choose an LLM by cost, skill and availability, and send it prompts through LiteL
 
 **Public methods:** `alternative_model`, `apply_config`, `describe_selection`, `get_config`, `list_candidates`, `refresh_selection`, `register_strategy`, `send_prompt`, `tokenize`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L140)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L139)
 
 </details>
 
@@ -4080,7 +4080,7 @@ Information about a candidate Large Language Model (LLM).
 
 **Public methods:** `estimate_cost`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L99)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L98)
 
 </details>
 
@@ -4098,7 +4098,7 @@ Context passed to strategy functions; extras["config"] is the LLMConfig being se
 
 **Fields:** `tokens_in`, `tokens_out`, `min_context_tokens`, `require_local`, `require_cleared`, `extras`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L129)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L128)
 
 </details>
 
@@ -4116,7 +4116,7 @@ Enumeration of selection strategies for model selection.
 
 **Public methods:** `capitalize`, `casefold`, `center`, `count`, `encode`, `endswith`, `expandtabs`, `find`, `format`, `format_map`, `index`, `isalnum`, `isalpha`, `isascii`, `isdecimal`, `isdigit`, `isidentifier`, `islower`, `isnumeric`, `isprintable`, `isspace`, `istitle`, `isupper`, `join`, `ljust`, `lower`, `lstrip`, `maketrans`, `partition`, `removeprefix`, `removesuffix`, `replace`, `rfind`, `rindex`, `rjust`, `rpartition`, `rsplit`, `rstrip`, `split`, `splitlines`, `startswith`, `strip`, `swapcase`, `title`, `translate`, `upper`, `zfill`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L17)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L16)
 
 </details>
 
@@ -4128,7 +4128,7 @@ Enumeration of selection strategies for model selection.
 StrategyFn: TypeAlias = collections.abc.Callable[[collections.abc.Sequence[emmykit.llm.ModelInfo], emmykit.llm.SelectionContext], emmykit.llm.ModelInfo]
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L138)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L137)
 
 </details>
 
