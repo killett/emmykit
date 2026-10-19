@@ -14,7 +14,6 @@ from emmykit.file_io import my_atomic_write
 from emmykit.safe_paths import ensure_file, safe_is_file
 from emmykit.diff_view import my_diff
 
-from typing import Type
 
 def my_capitalize(string_to_capitalize: str) -> str:
     """Capitalize ONLY the first letter of a string and DON'T modify the rest of it."""

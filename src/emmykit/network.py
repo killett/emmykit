@@ -15,7 +15,7 @@ from emmykit.net_targets import DNS_TEST_NAMES, HTTP_PROBES, IPV4_TARGETS, IPV6_
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Final
+from typing import Any
 
 _EXECUTOR: ThreadPoolExecutor | None = None
 

@@ -2,15 +2,12 @@
 from __future__ import annotations
 
 import logging
-import math
 import os
-import re
-import time
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field, replace
 from enum import Enum
 from pathlib import Path
-from typing import Any, Literal, Type, TypeAlias, overload
+from typing import Any, Literal, TypeAlias, overload
 
 from emmykit.constants import DEFAULT_ENCODING
 from emmykit.hosts import IS_NASA_COMPUTER
@@ -1728,8 +1725,7 @@ class LLMs:
 
             if need_sleep > 0.0:
                 cur.execute("COMMIT")   # release lock while sleeping
-                import time as _t
-                _t.sleep(max(0.0, need_sleep))
+                time.sleep(max(0.0, need_sleep))
                 # re-check once after sleep
                 self._throttle_if_needed(provider, model, tokens_in, tokens_out)
                 return

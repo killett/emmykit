@@ -1854,7 +1854,7 @@ Returns:
     float: The rounded number, or the original number if it is smaller than 10^(-max_digits).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L673)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L672)
 
 </details>
 
@@ -2637,7 +2637,7 @@ contains_mojibake(text: 'str') -> 'bool'
 Use ftfy.badness.is_bad() to detect any likely mojibake in the text.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L64)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L63)
 
 </details>
 
@@ -2654,7 +2654,7 @@ Attempt to decode CP1252 bytes and return as a string.
 If it fails, return None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L49)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L48)
 
 </details>
 
@@ -2671,7 +2671,7 @@ If the file at 'path' is valid UTF-8 without lone C1 controls,
 return the decoded string. Otherwise, return None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L32)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L31)
 
 </details>
 
@@ -2691,7 +2691,7 @@ as an http-equiv Content-Type declaration—normalize it to
 after the opening <head> tag.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L104)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L103)
 
 </details>
 
@@ -2708,7 +2708,7 @@ Fix mojibake in a text file, recoding from CP1252 to UTF-8 if necessary.
 If the file is already valid UTF-8, it will only fix mojibake.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L142)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L141)
 
 </details>
 
@@ -2724,7 +2724,7 @@ fix_text(current_text: 'str', path: 'str | os.PathLike[str]', raw_bytes: 'bytes'
 Fix mojibake in a string using ftfy.fix_encoding().
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L78)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L77)
 
 </details>
 
@@ -2740,7 +2740,7 @@ my_capitalize(string_to_capitalize: 'str') -> 'str'
 Capitalize ONLY the first letter of a string and DON'T modify the rest of it.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L19)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L18)
 
 </details>
 
@@ -2756,7 +2756,7 @@ my_title_case(the_title: 'str') -> 'str'
 Capitalize the first letter of each word, but if a word already has ANY uppercase letters, leave it as is. This way, words like "WW2" or "iZombie" won't be modified.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L25)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L24)
 
 </details>
 
@@ -2772,7 +2772,7 @@ normalize_for_search(text: 'str') -> 'str'
 Convert text to ASCII and lowercase for case- and diacritic-insensitive comparison. Also treat some characters such as ._- the same as spaces. Remove quotes (', ", ' and their unicode variants).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L200)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/text.py#L199)
 
 </details>
 
@@ -3226,7 +3226,7 @@ Raises:
     ValueError: If the specified path is not a file. The function which raises this exception is autopep8.fix_file().
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L520)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L519)
 
 </details>
 
@@ -3263,7 +3263,7 @@ Raises:
     PermissionError: If the file is not accessible due to permission issues.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L587)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L586)
 
 </details>
 
@@ -3292,7 +3292,7 @@ Raises:
     FileNotFoundError: If the specified file does not exist.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L252)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L251)
 
 </details>
 
@@ -3310,7 +3310,7 @@ which Flake8 error‐codes autopep8 knows how to fix.
 Returns a set like {"E101","E111", ...}.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L492)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L491)
 
 </details>
 
@@ -3344,7 +3344,7 @@ Returns:
     False if the user chose to quit during any replacement prompts, True otherwise.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L734)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L733)
 
 </details>
 
@@ -3377,7 +3377,7 @@ Raises:
     NotADirectoryError: If the specified path is not a directory.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L667)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L666)
 
 </details>
 
@@ -3407,7 +3407,7 @@ Raises:
     FileNotFoundError: If the specified file does not exist.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L335)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L334)
 
 </details>
 
@@ -3430,7 +3430,7 @@ Returns:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L791)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L790)
 
 </details>
 
@@ -3756,7 +3756,7 @@ extract_and_concatenate_segments(input_file: 'str | os.PathLike[str]', timestamp
 Extracts segments from a video file and concatenates them into a new file.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L478)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L477)
 
 </details>
 
@@ -3815,7 +3815,7 @@ Raises:
     ValueError:        If a probe returns an invalid or non-positive duration.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L319)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L318)
 
 </details>
 
@@ -3831,7 +3831,7 @@ open_dir_in_VLC(the_dir: 'str | os.PathLike[str]', sort_choice: 'str' = 'sort_by
 Create a playlist of the files in the specified directory, then play that playlist in VLC. By default, don't search the directory recursively and sort the files by name. Optional arguments allow recursive loading or sorting by modification time. If no_start is True, don't start playback in VLC.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L249)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L248)
 
 </details>
 
@@ -3858,7 +3858,7 @@ Raises:
     FileNotFoundError: If the specified path does not exist.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L296)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L295)
 
 </details>
 
@@ -3874,7 +3874,7 @@ open_playlist_in_VLC(playlist: 'str | os.PathLike[str]', no_start: 'bool' = Fals
 Open a playlist in VLC. If no_start is True, don't start playback in VLC.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L241)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L240)
 
 </details>
 
@@ -4014,7 +4014,7 @@ Configuration for LLM selection and usage. Data only.
 
 **Fields:** `only_cleared_models`, `only_local_models`, `allow_local_models`, `ollama_base_url`, `vllm_base_url`, `rate_throttle`, `rate_headroom`, `rate_retry_max_attempts`, `rate_retry_max_wait`, `rate_db_path`, `availability_probe`, `availability_probe_ttl_sec`, `availability_probe_timeout`, `availability_probe_allow_costly`, `selection_strategy`, `min_context_tokens`, `assumed_prompt_tokens`, `assumed_output_tokens`, `candidate_models`, `default_temperature`, `max_tokens`, `model_scores`, `prefer_code`, `prefer_low_TTFT`, `prefer_local`, `max_estimated_cost`, `speed_floor`, `model_filter`, `provider_filter`, `weight_price`, `weight_code_skill`, `weight_general_skill`, `weight_TTFT`, `weight_speed`, `weight_nonlocal_penalty`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L31)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L28)
 
 </details>
 
@@ -4035,7 +4035,7 @@ LLMs() -> 'None'
 
 **Public methods:** `alternative_model`, `apply_config`, `describe_selection`, `get_config`, `list_candidates`, `refresh_selection`, `register_strategy`, `send_prompt`, `tokenize`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L143)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L140)
 
 </details>
 
@@ -4052,7 +4052,7 @@ Information about a candidate Large Language Model (LLM).
 
 **Public methods:** `estimate_cost`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L102)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L99)
 
 </details>
 
@@ -4070,7 +4070,7 @@ Context passed to strategy functions.
 
 **Fields:** `tokens_in`, `tokens_out`, `min_context_tokens`, `require_local`, `require_cleared`, `extras`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L132)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L129)
 
 </details>
 
@@ -4088,7 +4088,7 @@ Enumeration of selection strategies for model selection.
 
 **Public methods:** `capitalize`, `casefold`, `center`, `count`, `encode`, `endswith`, `expandtabs`, `find`, `format`, `format_map`, `index`, `isalnum`, `isalpha`, `isascii`, `isdecimal`, `isdigit`, `isidentifier`, `islower`, `isnumeric`, `isprintable`, `isspace`, `istitle`, `isupper`, `join`, `ljust`, `lower`, `lstrip`, `maketrans`, `partition`, `removeprefix`, `removesuffix`, `replace`, `rfind`, `rindex`, `rjust`, `rpartition`, `rsplit`, `rstrip`, `split`, `splitlines`, `startswith`, `strip`, `swapcase`, `title`, `translate`, `upper`, `zfill`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L20)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L17)
 
 </details>
 
@@ -4100,7 +4100,7 @@ Enumeration of selection strategies for model selection.
 StrategyFn: TypeAlias = collections.abc.Callable[[collections.abc.Sequence[emmykit.llm.ModelInfo], emmykit.llm.SelectionContext], emmykit.llm.ModelInfo]
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L141)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/llm.py#L138)
 
 </details>
 

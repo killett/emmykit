@@ -18,7 +18,6 @@ from emmykit.humanize import (
     METERS,
     SECONDS,
     WATTS,
-    Unit,
     choose_prefix,
     human_quantity,
 )

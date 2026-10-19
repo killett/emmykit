@@ -51,12 +51,8 @@ def test_empty_docstring_emits_no_fence() -> None:
 
 import tools.generate_readme as generate_readme  # noqa: E402
 from tools.generate_readme import (  # noqa: E402
-    CondenseGroup,
     GITHUB_BASE,
-    ModuleRenderRule,
-    RENDER_RULES,
     SECTION_DROP_NOTES,
-    _render_condense_group,
     build_readme,
 )
 

@@ -18,7 +18,6 @@ import json
 import pprint
 import re
 import sys
-import textwrap
 import tokenize
 from pathlib import Path
 from typing import Any, Final

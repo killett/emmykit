@@ -132,7 +132,6 @@ def set_system_volume(percent: int, tolerance: int = 1,
         RuntimeError: If the volume could not be set or verified.
     """
     import subprocess
-    import logging
     fallback_logging_config()
     if not sys.platform.startswith("linux"):
         raise RuntimeError("This set_system_volume() function is only intended to run on Linux systems.")

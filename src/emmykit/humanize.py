@@ -660,7 +660,6 @@ def sci_exp(x: float | int, max_digits: int = 15) -> int:
     """Return floor(log10(|x|)), clamped to -max_digits for very small |x|.
     For x == 0, returns -max_digits.
     """
-    import math
     if not isinstance(x, (int, float)) or isinstance(x, bool):
         raise TypeError("x must be an int or float (not bool)")
     if not math.isfinite(x):

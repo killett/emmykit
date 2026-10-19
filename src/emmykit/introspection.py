@@ -8,7 +8,7 @@ import re
 import sys
 
 from collections.abc import Callable
-from typing import Any, TextIO, Type
+from typing import Any, TextIO
 
 from emmykit.constants import DEFAULT_ENCODING
 from emmykit.logging_utils import fallback_logging_config, return_method_name
