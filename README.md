@@ -2515,7 +2515,7 @@ Raises:
     ValueError: If the specified path is not a file. The function which raises this exception is my_fopen().
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/diff_view.py#L300)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/diff_view.py#L284)
 
 </details>
 
@@ -2577,7 +2577,7 @@ Raises:
     PermissionError:   If the file is not accessible due to permission issues.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/diff_view.py#L255)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/diff_view.py#L239)
 
 </details>
 
@@ -3061,7 +3061,7 @@ calculate_checksum(file_path: 'str | os.PathLike[str]') -> 'str'
 Calculate the SHA256 checksum of a file.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L321)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L319)
 
 </details>
 
@@ -3136,7 +3136,7 @@ Raises:
     None: If the input text is None, it will return an empty string.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L214)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L212)
 
 </details>
 
@@ -3164,7 +3164,7 @@ Raises:
     OSError:           If the filesystem information cannot be retrieved.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L178)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L176)
 
 </details>
 
@@ -3183,7 +3183,7 @@ Ensure that 'thepath' exists and contains exactly 'thescript'.
 - Otherwise, nothing happens.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L292)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L290)
 
 </details>
 
@@ -3225,7 +3225,7 @@ Raises:
     ValueError: If the specified path is not a file. The function which raises this exception is autopep8.fix_file().
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L519)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L518)
 
 </details>
 
@@ -3262,7 +3262,7 @@ Raises:
     PermissionError: If the file is not accessible due to permission issues.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L586)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L585)
 
 </details>
 
@@ -3291,7 +3291,7 @@ Raises:
     FileNotFoundError: If the specified file does not exist.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L251)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L250)
 
 </details>
 
@@ -3309,7 +3309,7 @@ which Flake8 error‐codes autopep8 knows how to fix.
 Returns a set like {"E101","E111", ...}.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L491)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L490)
 
 </details>
 
@@ -3343,7 +3343,7 @@ Returns:
     False if the user chose to quit during any replacement prompts, True otherwise.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L733)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L732)
 
 </details>
 
@@ -3376,7 +3376,7 @@ Raises:
     NotADirectoryError: If the specified path is not a directory.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L666)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L665)
 
 </details>
 
@@ -3406,7 +3406,7 @@ Raises:
     FileNotFoundError: If the specified file does not exist.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L334)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L333)
 
 </details>
 
@@ -3429,7 +3429,7 @@ Returns:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L790)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L789)
 
 </details>
 
@@ -3755,7 +3755,7 @@ extract_and_concatenate_segments(input_file: 'str | os.PathLike[str]', timestamp
 Extracts segments from a video file and concatenates them into a new file.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L477)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L475)
 
 </details>
 
@@ -3814,7 +3814,7 @@ Raises:
     ValueError:        If a probe returns an invalid or non-positive duration.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L318)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L316)
 
 </details>
 
@@ -3830,7 +3830,7 @@ open_dir_in_VLC(the_dir: 'str | os.PathLike[str]', sort_choice: 'str' = 'sort_by
 Create a playlist of the files in the specified directory, then play that playlist in VLC. By default, don't search the directory recursively and sort the files by name. Optional arguments allow recursive loading or sorting by modification time. If no_start is True, don't start playback in VLC.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L248)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L246)
 
 </details>
 
@@ -3857,7 +3857,7 @@ Raises:
     FileNotFoundError: If the specified path does not exist.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L295)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L293)
 
 </details>
 
@@ -3873,7 +3873,7 @@ open_playlist_in_VLC(playlist: 'str | os.PathLike[str]', no_start: 'bool' = Fals
 Open a playlist in VLC. If no_start is True, don't start playback in VLC.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L240)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L238)
 
 </details>
 

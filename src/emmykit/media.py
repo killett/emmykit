@@ -173,8 +173,6 @@ def set_system_volume(percent: int, tolerance: int = 1,
                 if abs(actual - percent) > tolerance:
                     raise RuntimeError(f"[pulsectl] Expected {percent}%, but got {actual}%")
                 state = "muted" if sink_after.mute else "unmuted"
-                if mute_arg is not None and sink_after.mute != mute_arg:
-                    raise RuntimeError(f"Mute verify failed: got {state}")
                 logging.info("[pulsectl] Volume set to %d%%, %s", actual, state)
                 return  # Successfully set volume and verified
         except ImportError:

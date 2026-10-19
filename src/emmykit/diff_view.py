@@ -116,7 +116,6 @@ def my_diff(orig_text:     str, changed_text: str,
     orig_lines    =    orig_text.splitlines(keepends=True)
     changed_lines = changed_text.splitlines(keepends=True)
     the_digits    = max(len(str(len(orig_lines))), len(str(len(changed_lines))))
-    last_removed  = None  # there is no last removed line initially
     # shared buffer for the current hunk's deletes/inserts
     hunk_entries: list[tuple[str, str, int | None, int | None]] = []
     # each entry is (tag, text, orig_lineno, new_lineno)
@@ -124,7 +123,6 @@ def my_diff(orig_text:     str, changed_text: str,
 
     def process_hunk() -> None:
         """Pair up deletes and inserts in the current hunk and print them with highlights."""
-        nonlocal hunk_entries
         if not hunk_entries:
             return
         # Partition current hunk entries.
@@ -172,14 +170,6 @@ def my_diff(orig_text:     str, changed_text: str,
                 logging.info(f"{changed_color}> {nln:>{the_digits}}:{ANSI_RESET} {ANSI_RED}{vis}{ANSI_RESET}")
         hunk_entries.clear()
 
-    def flush_removed(orig_lineno: int) -> None:
-        """Flush the last removed line if it exists."""
-        nonlocal last_removed
-        if last_removed is not None:
-            highlighted_old = f"{deleted_color}{last_removed}{ANSI_RESET}"
-            logging.info(f"< {orig_lineno:>{the_digits}}: {highlighted_old}")
-            last_removed = None
-
     orig_lineno: int | None = None
     new_lineno:  int | None = None
     if diff_choice == 0:  # old style diff (difflib.Differ)
@@ -191,7 +181,6 @@ def my_diff(orig_text:     str, changed_text: str,
             if tag == "  ":    # context line
                 # end of any previous mini‑hunk
                 process_hunk()
-                flush_removed(orig_lineno)
                 orig_lineno += 1
                 new_lineno  += 1
             elif tag == "- ":  # original line
@@ -205,7 +194,6 @@ def my_diff(orig_text:     str, changed_text: str,
             # skip '? ' lines entirely
         # flush any trailing buffered pairs/inserts
         process_hunk()
-        flush_removed(orig_lineno)
     elif diff_choice >= 1:  # unified or context diff
         if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Using unified diff for %s with %d original and %d fixed lines.", os.fspath(orig_path), len(orig_lines), len(changed_lines))
         ctx  = max(diff_choice - 1, 0)
@@ -231,8 +219,6 @@ def my_diff(orig_text:     str, changed_text: str,
             tag, body = line[0], line[1:].rstrip("\n")
             if tag == " ":  # context line: flush and emit
                 process_hunk()
-                if orig_lineno is not None:
-                    flush_removed(orig_lineno)
                 assert orig_lineno is not None and new_lineno is not None, "Line numbers should be set in a hunk (orig_lineno, new_lineno)"
                 logging.info(f"  {orig_lineno:>{the_digits}}: {_vis_trailing_ws(body)}")
                 orig_lineno += 1
@@ -247,8 +233,6 @@ def my_diff(orig_text:     str, changed_text: str,
                 new_lineno += 1
         # final flush
         process_hunk()
-        if orig_lineno is not None:
-            flush_removed(orig_lineno)
     else:
         logging.error("Unsupported diff_choice = %d. Must be a non-negative integer.", diff_choice)
 

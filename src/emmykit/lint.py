@@ -58,7 +58,7 @@ def _make_format_checker() -> Type[Any]:
             self._check_docstring(node, f'class "{node.name}"')
             init = self._find_init(node)
             if init:
-                self._check_function(init, in_method=True, container=f'class "{node.name}"')
+                self._check_function(init, container=f'class "{node.name}"')
             self.generic_visit(node)
 
         def _find_init(self, node: ast.ClassDef) -> ast.FunctionDef | None:
@@ -69,9 +69,8 @@ def _make_format_checker() -> Type[Any]:
             return None
 
         def _check_function(self, node: ast.FunctionDef | ast.AsyncFunctionDef, *,
-                            in_method: bool = False, container: str | None = None) -> None:
+                            container: str | None = None) -> None:
             """Check a function or method node for formatting violations.
-            If 'in_method' is True, it indicates that this is a method (e.g. inside a class).
             If 'container' is provided, it indicates the context (e.g. class name)."""
             if id(node) in self._seen_funcs:  # ←─ skip if we've already run this exact node
                 return

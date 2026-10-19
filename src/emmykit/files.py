@@ -91,8 +91,6 @@ def download_file(url: str, dest: str | os.PathLike[str], retries: int = 5,
                 elif dest_size is None:
                     logging.warning("File size is unknown (permissions?): %s", os.fspath(dest))
                     sys.exit(1)
-                else:
-                    logging.error(f"File {os.fspath(dest)} exists but has a VERY CONFUSING size mismatch (have {dest_size}, need {expected}).")
             except OSError as e:
                 if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Could not remove stale partial file %s: %s", os.fspath(temp), e)
         free_bytes = query_free_space(dest)
