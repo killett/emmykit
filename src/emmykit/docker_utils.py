@@ -95,7 +95,7 @@ def run_with_docker_fixes(base_args: list[str], *,
         extra_fixes:  An optional iterable of additional fix functions to try if the command fails.
 
     Returns:
-        The result of the successful command, or None if all fixes fail.
+        The result of the successful command.
 
     Raises:
         RuntimeError: If all fixes fail and the command still does not succeed.

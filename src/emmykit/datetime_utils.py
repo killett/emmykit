@@ -27,7 +27,8 @@ def human_timespan(timespan: int | float) -> str:
         If the timespan is zero, returns "0 seconds".
 
     Raises:
-        None.
+        ValueError:    If timespan is not a number, or is NaN.
+        OverflowError: If timespan is infinite.
     """
     # Work in integer milliseconds to avoid float modulo issues
     total_ms = int(round(abs(float(timespan)) * 1000))
@@ -391,7 +392,7 @@ def parse_datetime(given_date: AnyDateTimeType, timezone: str | dt.tzinfo | None
 
     Returns:
         datetime.datetime object in the specified timezone.
-        Note that datetime.datetime objects cannot represent dates before 1 January 1, 0001 or after 31 December 9999.
+        Note that datetime.datetime objects cannot represent dates before 1 January 0001 or after 31 December 9999.
         So dates outside this range will raise a ValueError.
 
     Raises:

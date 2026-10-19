@@ -507,11 +507,10 @@ def save_options_to_json(options: Options) -> None:
             - timestamp:     Current timestamp (used in the JSON filename).
 
     Returns:
-        None - writes the options to a JSON file.
+        None - writes the options to a JSON file, and sets options.options_json_filepath to its path.
 
     Raises:
-        IOError:    If there is an error writing to the file.
-        ValueError: If the options object is invalid.
+        OSError: If there is an error writing to the file.
     """
     import json
     options.options_json_filepath = options.script_dir / f".{options.python_script.name}-{options.my_name}-last-used-on-{options.timestamp}.json"
@@ -536,11 +535,12 @@ def load_options_from_json(options: Options, json_file: str | os.PathLike[str]) 
         json_file:  Path to the JSON file to load.
 
     Returns:
-        Options object loaded from the JSON file, or None if the file does not exist or cannot be read.
+        Options object loaded from the JSON file.
 
     Raises:
-        IOError:    If there is an error reading the file.
-        ValueError: If the JSON file is invalid or cannot be parsed.
+        FileNotFoundError: If the file does not exist.
+        OSError:           If there is an error reading the file.
+        ValueError:        If the JSON file is invalid or cannot be parsed.
     """
     import json
     import copy

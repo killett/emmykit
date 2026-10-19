@@ -50,8 +50,8 @@ def fallback_logging_config(log_level: int | str = logging.INFO, rawlog: bool = 
     Run this at the start of functions which might be run without first configuring logging.
 
     Args:
-        level  : The logging level to set. Defaults to logging.INFO.
-        rawlog : If True, use a simple log format without timestamps or levels.
+        log_level: The logging level to set. Defaults to logging.INFO.
+        rawlog:    If True, use a simple log format without timestamps or levels.
     """
     if not logging.getLogger().handlers:
         if not rawlog:  # Use a full logging format with timestamps and levels.
@@ -76,7 +76,8 @@ def configure_logging(basename: str, log_level: int | str = logging.INFO,
         MemoryHandler instance capturing ERROR logs, or None if log files couldn't be created.
 
     Raises:
-        None (file creation errors are caught and logged to stdout).
+        OSError: If the log folder cannot be created. (If a log file can't be opened, a
+                 message is printed and None is returned instead.)
     """
     import datetime as dt
 

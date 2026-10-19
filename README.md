@@ -812,7 +812,8 @@ Returns:
     MemoryHandler instance capturing ERROR logs, or None if log files couldn't be created.
 
 Raises:
-    None (file creation errors are caught and logged to stdout).
+    OSError: If the log folder cannot be created. (If a log file can't be opened, a
+             message is printed and None is returned instead.)
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L64)
@@ -832,8 +833,8 @@ Configure the root logger with a basic configuration if no handlers are set.
 Run this at the start of functions which might be run without first configuring logging.
 
 Args:
-    level  : The logging level to set. Defaults to logging.INFO.
-    rawlog : If True, use a simple log format without timestamps or levels.
+    log_level: The logging level to set. Defaults to logging.INFO.
+    rawlog:    If True, use a simple log format without timestamps or levels.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L47)
@@ -906,7 +907,7 @@ print_all_errors(memory_handler: 'MemoryHandler', rawlog: 'bool' = False) -> 'No
 Print all the captured error messages.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L152)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L153)
 
 </details>
 
@@ -938,7 +939,7 @@ Raises:
           if sys._getframe or inspect fails.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L162)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/logging_utils.py#L163)
 
 </details>
 
@@ -1068,7 +1069,7 @@ Returns:
     The ctime of the file in seconds or nanoseconds, or None if an error occurred.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L296)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L297)
 
 </details>
 
@@ -1089,7 +1090,8 @@ Args:
 
 Returns:
     True if the path appears to exist (respecting follow_symlinks), False if it doesn't.
-    For certain access/loop issues, returns True to avoid misclassifying as 'missing'.
+    If permission is denied, or the check fails with an errno in IGNORE_THESE_ERRORS,
+    returns True to avoid misclassifying the path as missing. A symlink loop counts as missing.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L122)
@@ -1120,7 +1122,7 @@ Raises:
     some OSError variations. But not all.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L194)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L195)
 
 </details>
 
@@ -1148,7 +1150,7 @@ Raises:
     some OSError variations. But not all.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L162)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L163)
 
 </details>
 
@@ -1173,7 +1175,7 @@ Returns:
     The mtime of the file in seconds or nanoseconds, or None if an error occurred.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L276)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L277)
 
 </details>
 
@@ -1197,7 +1199,7 @@ Returns:
     The size of the file in bytes or None if an error occurred.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L260)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L261)
 
 </details>
 
@@ -1225,7 +1227,7 @@ Raises:
     some OSError variations. But not all.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L226)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/safe_paths.py#L227)
 
 </details>
 
@@ -1724,7 +1726,7 @@ Returns:
     or "quettabytes" (10^30 bytes) for SI.
 
 Raises:
-    None.
+    ValueError: If a negative precision (a total width) leaves too little room for the value.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L610)
@@ -2003,7 +2005,7 @@ Returns:
     for NaT/NaN values.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L621)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L622)
 
 </details>
 
@@ -2053,7 +2055,7 @@ Example:
 
 **Public methods:** `format_ticks`.
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L732)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L733)
 
 </details>
 
@@ -2065,7 +2067,7 @@ Example:
 AnyDateTimeType: TypeAlias = 'str | float | int | np.datetime64 | pd.Timestamp | dt.datetime'
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L307)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L308)
 
 </details>
 
@@ -2083,7 +2085,7 @@ If use_astropy is True, astropy.time is used for sub-second and leap-second–aw
 Usage: new_datetime_datetime_object = decimal_year_to_datetime(2002.291)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L272)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L273)
 
 </details>
 
@@ -2099,7 +2101,7 @@ extract_timestamp(the_string: 'str') -> 'str | None'
 Extract the timestamp (YYYYMMDD-HHMMSS) from a name ending in "YYYYMMDD-HHMMSS.pkl", or None if it doesn't.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L123)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L124)
 
 </details>
 
@@ -2128,7 +2130,7 @@ Raises:
     ValueError: If either date1 or date2 is not a datetime.datetime object.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L65)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L66)
 
 </details>
 
@@ -2153,7 +2155,8 @@ Returns:
     If the timespan is zero, returns "0 seconds".
 
 Raises:
-    None.
+    ValueError:    If timespan is not a number, or is NaN.
+    OverflowError: If timespan is infinite.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L16)
@@ -2213,7 +2216,7 @@ Args:
 
 Returns:
     datetime.datetime object in the specified timezone.
-    Note that datetime.datetime objects cannot represent dates before 1 January 1, 0001 or after 31 December 9999.
+    Note that datetime.datetime objects cannot represent dates before 1 January 0001 or after 31 December 9999.
     So dates outside this range will raise a ValueError.
 
 Raises:
@@ -2221,7 +2224,7 @@ Raises:
     TypeError:   If the given_date is not a string, float, int, numpy.datetime64, pandas.Timestamp, or datetime.datetime object.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L346)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L347)
 
 </details>
 
@@ -2256,7 +2259,7 @@ Raises:
     ValueError if the string cannot be converted to a valid timezone.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L181)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L182)
 
 </details>
 
@@ -2274,7 +2277,7 @@ Integer constants representing date-formatting precision levels.
 Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L571)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/datetime_utils.py#L572)
 
 </details>
 
@@ -2330,14 +2333,15 @@ Args:
     json_file:  Path to the JSON file to load.
 
 Returns:
-    Options object loaded from the JSON file, or None if the file does not exist or cannot be read.
+    Options object loaded from the JSON file.
 
 Raises:
-    IOError:    If there is an error reading the file.
-    ValueError: If the JSON file is invalid or cannot be parsed.
+    FileNotFoundError: If the file does not exist.
+    OSError:           If there is an error reading the file.
+    ValueError:        If the JSON file is invalid or cannot be parsed.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L530)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L529)
 
 </details>
 
@@ -2418,11 +2422,10 @@ Args:
         - timestamp:     Current timestamp (used in the JSON filename).
 
 Returns:
-    None - writes the options to a JSON file.
+    None - writes the options to a JSON file, and sets options.options_json_filepath to its path.
 
 Raises:
-    IOError:    If there is an error writing to the file.
-    ValueError: If the options object is invalid.
+    OSError: If there is an error writing to the file.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/json_io.py#L498)
@@ -2517,7 +2520,7 @@ Raises:
     ValueError: If the specified path is not a file. The function which raises this exception is my_fopen().
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/diff_view.py#L284)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/diff_view.py#L282)
 
 </details>
 
@@ -2574,9 +2577,7 @@ Returns:
     True if the path is a Python script, False otherwise.
 
 Raises:
-    IsADirectoryError: If the path is a directory.
-    FileNotFoundError: If the file is not found.
-    PermissionError:   If the file is not accessible due to permission issues.
+    None: a missing path, a directory or an unreadable file gives False.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/diff_view.py#L239)
@@ -3284,7 +3285,7 @@ check_python_formatting(path: 'str | os.PathLike[str]', diff_choice: 'int' = 1) 
 
 ```text
 Reads a .py file at 'path' via my_fopen, makes sure it compiles, parses it with AST,
-prints any custom formatting violations to stdout,
+logs any custom formatting violations at ERROR level,
 and asks the user to fix any backticks or curly quotes in the file. If the user quits, it returns False.
 
 Args:
@@ -3566,7 +3567,7 @@ Args:
     extra_fixes:  An optional iterable of additional fix functions to try if the command fails.
 
 Returns:
-    The result of the successful command, or None if all fixes fail.
+    The result of the successful command.
 
 Raises:
     RuntimeError: If all fixes fail and the command still does not succeed.
@@ -3630,7 +3631,7 @@ Raises:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L178)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L179)
 
 </details>
 
@@ -3646,7 +3647,7 @@ get_effective_free_memory() -> 'float'
 Return the "effective" free memory in bytes: free memory plus buffers plus cache.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L50)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L51)
 
 </details>
 
@@ -3662,7 +3663,7 @@ is_process_running(process_name: 'str') -> 'bool'
 Check if a process with the given name is running.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L123)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L124)
 
 </details>
 
@@ -3678,7 +3679,7 @@ kill_process(pname: 'str') -> 'None'
 Kill a process by its name, then check if it is still running and retry if needed. Make sure the process name is unique to avoid killing unintended processes.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L93)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L94)
 
 </details>
 
@@ -3695,7 +3696,7 @@ Open the file manager with the specified directories.
 Note: Most file managers don't support multiple tabs via command line, so open separate windows.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L150)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L151)
 
 </details>
 
@@ -3709,7 +3710,8 @@ open_terminal_and_run_command(the_command: 'str', close_after: 'bool' = False, m
 
 ```text
 Open a GNOME terminal, source ~/.bashrc (via bash -i), run the_command,
-and optionally close or keep the window open. Optionally, maximize it.
+and optionally close or keep the window open. maximize_window is currently
+ignored: maximizing removed the window's title bar on Ubuntu.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L27)
@@ -3728,7 +3730,7 @@ start_only_one_instance(process_name: 'str') -> 'None'
 Start a process, but only if it's not already running.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L137)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/system.py#L138)
 
 </details>
 

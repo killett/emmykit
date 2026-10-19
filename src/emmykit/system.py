@@ -27,7 +27,8 @@ def check_if_command_exists(command: str) -> bool:
 def open_terminal_and_run_command(the_command: str, close_after: bool = False,
                                   maximize_window: bool = False) -> None:
     """Open a GNOME terminal, source ~/.bashrc (via bash -i), run the_command,
-    and optionally close or keep the window open. Optionally, maximize it."""
+    and optionally close or keep the window open. maximize_window is currently
+    ignored: maximizing removed the window's title bar on Ubuntu."""
     import subprocess
     fallback_logging_config()
     logging.info("Opening terminal and running '%s'...", the_command)

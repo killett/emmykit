@@ -130,7 +130,8 @@ def safe_exists(path: str | os.PathLike[str],
 
     Returns:
         True if the path appears to exist (respecting follow_symlinks), False if it doesn't.
-        For certain access/loop issues, returns True to avoid misclassifying as 'missing'.
+        If permission is denied, or the check fails with an errno in IGNORE_THESE_ERRORS,
+        returns True to avoid misclassifying the path as missing. A symlink loop counts as missing.
     """
     p = path if isinstance(path, Path) else ensure_path(path)
 

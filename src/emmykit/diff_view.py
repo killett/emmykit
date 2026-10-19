@@ -249,9 +249,7 @@ def is_python_script(path: str | os.PathLike[str]) -> bool:
         True if the path is a Python script, False otherwise.
 
     Raises:
-        IsADirectoryError: If the path is a directory.
-        FileNotFoundError: If the file is not found.
-        PermissionError:   If the file is not accessible due to permission issues.
+        None: a missing path, a directory or an unreadable file gives False.
     """
     path = ensure_path(path)
     if not safe_is_file(path):

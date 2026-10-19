@@ -633,7 +633,7 @@ def human_bytesize(num: float | int | None, *, suffix: str = "B", si: bool = Fal
         or "quettabytes" (10^30 bytes) for SI.
 
     Raises:
-        None.
+        ValueError: If a negative precision (a total width) leaves too little room for the value.
     """
     if num is None:
         return "None"

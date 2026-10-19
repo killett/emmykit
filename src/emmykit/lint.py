@@ -250,7 +250,7 @@ _FormatChecker = _make_format_checker()
 def check_python_formatting(path: str | os.PathLike[str], diff_choice: int = 1) -> bool:
     """
     Reads a .py file at 'path' via my_fopen, makes sure it compiles, parses it with AST,
-    prints any custom formatting violations to stdout,
+    logs any custom formatting violations at ERROR level,
     and asks the user to fix any backticks or curly quotes in the file. If the user quits, it returns False.
 
     Args:
