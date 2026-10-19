@@ -1878,23 +1878,38 @@ class LLMs:
     @staticmethod
     def _extract_text_from_openai_like(resp: Any) -> str:
         """Normalize content extraction across dict/object forms."""
+        def as_text(content: Any) -> str:
+            """Return message content as text: lists of text segments joined, None as ""."""
+            if content is None:
+                return ""
+            if isinstance(content, list):  # Anthropic / segment-style content
+                parts = []
+                for seg in content:
+                    if isinstance(seg, dict):
+                        if isinstance(seg.get("text"), str):
+                            parts.append(seg["text"])
+                        elif seg.get("type") == "output_text" and isinstance(seg.get("content"), str):
+                            parts.append(seg["content"])
+                return "".join(parts)
+            return content if isinstance(content, str) else str(content)
+
         # pydantic-like / attribute
         try:
-            return resp.choices[0].message.content  # type: ignore[attr-defined]
+            return as_text(resp.choices[0].message.content)  # type: ignore[attr-defined]
         except Exception as e:
             if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug(
                 "_extract_text_from_openai_like: pydantic-like extraction failed for %s: %s", resp, e
             )
         # dict-like
         try:
-            return resp["choices"][0]["message"]["content"]  # type: ignore[index]
+            return as_text(resp["choices"][0]["message"]["content"])  # type: ignore[index]
         except Exception as e:
             if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug(
                 "_extract_text_from_openai_like: dict-like extraction failed for %s: %s", resp, e
             )
         # object-like with dict message
         try:
-            return resp.choices[0].message["content"]  # type: ignore[index]
+            return as_text(resp.choices[0].message["content"])  # type: ignore[index]
         except Exception as e:
             if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug(
                 "_extract_text_from_openai_like: object-like extraction failed for %s: %s", resp, e
@@ -1911,23 +1926,6 @@ class LLMs:
         except Exception as e:
             if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug(
                 "_extract_text_from_openai_like: completion-style extraction failed for %s: %s", resp, e
-            )
-        # Anthropic / segment-style lists
-        try:
-            segs = resp["choices"][0]["message"]["content"]
-            if isinstance(segs, list):
-                parts = []
-                for s in segs:
-                    if isinstance(s, dict):
-                        if "text" in s and isinstance(s["text"], str):
-                            parts.append(s["text"])
-                        elif s.get("type") == "output_text" and isinstance(s.get("content"), str):
-                            parts.append(s["content"])
-                if parts:
-                    return "".join(parts)
-        except Exception as e:
-            if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug(
-                "_extract_text_from_openai_like: segment-style extraction failed for %s: %s", resp, e
             )
         # delta fragments (best-effort)
         try:

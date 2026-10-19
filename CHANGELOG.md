@@ -206,6 +206,10 @@ All notable changes to `emmykit` are documented here. Format follows
   probe could be billed three times and every send under Tenacity made
   three attempts per try. The calls now pass `num_retries`: one attempt
   for the probe, two under Tenacity, three otherwise (unchanged).
+- `LLMs.send_prompt` returned the reply's raw content when it wasn't a
+  plain string: a list of segments (Anthropic-style replies) or None
+  (for example a tool call). It now always returns a string, joining the
+  text segments and giving "" when there is no text.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

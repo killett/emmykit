@@ -10,6 +10,7 @@ import socket
 import sqlite3
 import sys
 import time
+import types
 from pathlib import Path
 
 import pytest
@@ -288,3 +289,30 @@ def test_send_under_tenacity_retries_a_non_rate_limit_error_once(
     with pytest.raises(RuntimeError, match="server error"):
         models._call_with_backoff(litellm, model=models.model, messages=[])
     assert len(attempts) == 2
+
+
+# --- reply text extraction ----------------------------------------------------
+
+def _chat(content: object) -> dict[str, object]:
+    """A dict-shaped chat completion whose first choice holds `content`."""
+    return {"choices": [{"message": {"content": content}}]}
+
+
+@pytest.mark.parametrize(
+    ("resp", "text"),
+    [
+        (_chat("hello"), "hello"),
+        (_chat([{"type": "text", "text": "hel"}, {"type": "output_text", "content": "lo"}]), "hello"),
+        (_chat(None), ""),
+        (types.SimpleNamespace(choices=[types.SimpleNamespace(
+            message=types.SimpleNamespace(content=None))]), ""),
+        ({"choices": [{"text": "completion"}]}, "completion"),
+    ],
+    ids=["string", "segments", "none-dict", "none-object", "completion-style"],
+)
+def test_reply_text_is_always_a_string(resp: object, text: str) -> None:
+    """Segment lists are joined and a missing text is "", so send_prompt returns str.
+
+    Fails if the content is returned as found, a list or None.
+    """
+    assert LLMs._extract_text_from_openai_like(resp) == text
