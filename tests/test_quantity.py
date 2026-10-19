@@ -289,6 +289,16 @@ def test_width_constrained_mode_raises_when_the_unit_fills_the_width() -> None:
         human_quantity(0.02, METERS, mode="full_si", precision=-3)
 
 
+@pytest.mark.parametrize("system", ["si", "iec"])
+def test_too_narrow_width_names_the_system_argument(system: str) -> None:
+    """The message names human_quantity's own `system` argument.
+
+    Fails if it reports `si=…`, a parameter only human_bytesize has.
+    """
+    with pytest.raises(ValueError, match=rf"\(space=True, system='{system}'\)$"):
+        human_quantity(999_999, BYTES, system=system, precision=-5)
+
+
 # --------------------------------------------------------------------------
 # choose_prefix - one scale for a whole set
 # --------------------------------------------------------------------------

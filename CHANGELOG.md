@@ -161,6 +161,9 @@ All notable changes to `emmykit` are documented here. Format follows
   the small prefix: rontosecond (1e-27) and quectosecond (1e-30), which
   are also accepted by name. Ronnaseconds and quettaseconds are still
   accepted by name.
+- `human_quantity`'s error for a width too narrow for the value named an
+  `si=` setting, which only `human_bytesize` has. It now reports
+  `system='si'` or `system='iec'`; `human_bytesize`'s message is unchanged.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

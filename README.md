@@ -1727,7 +1727,7 @@ Raises:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L607)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L610)
 
 </details>
 
@@ -1803,7 +1803,7 @@ Example:
     '2.0 cm'
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L517)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L520)
 
 </details>
 
@@ -1856,7 +1856,7 @@ Returns:
     float: The rounded number, or the original number if it is smaller than 10^(-max_digits).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L672)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L675)
 
 </details>
 
@@ -1873,7 +1873,7 @@ Return floor(log10(|x|)), clamped to -max_digits for very small |x|.
 For x == 0, returns -max_digits.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L659)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/humanize.py#L662)
 
 </details>
 

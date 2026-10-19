@@ -384,7 +384,7 @@ def choose_prefix(values: Iterable[float | int], unit: Unit | None = None, *,
 def _format_quantity(num: float | int | None, unit: Unit, *, system: str, mode: str,
                      precision: int, space: bool, trim_trailing_zeros: bool,
                      long_units: bool, ascii_micro: bool, submultiples: bool,
-                     promote: bool, clamp_non_finite: bool,
+                     promote: bool, clamp_non_finite: bool, system_note: str,
                      resolved: _ResolvedUnit | None = None) -> str:
     """Shared formatting machinery behind `human_quantity` and `human_bytesize`.
 
@@ -404,6 +404,8 @@ def _format_quantity(num: float | int | None, unit: Unit, *, system: str, mode: 
         clamp_non_finite:    Legacy `human_bytesize` behaviour: let infinity walk
                              the table and clamp to the largest prefix, instead
                              of formatting it unprefixed.
+        system_note:         How the caller's prefix-system argument is reported
+                             if the width is too small, e.g. "si=False".
         resolved:            A prefix the caller pinned by name. When given,
                              automatic selection and promotion are both skipped:
                              a forced scale stays forced, including for zero and
@@ -438,7 +440,7 @@ def _format_quantity(num: float | int | None, unit: Unit, *, system: str, mode: 
     if precision < 0:
         return _format_width_constrained(
             scaled, sign=sign, symbol=symbol, unit=unit, precision=precision,
-            space=space, trim_trailing_zeros=trim_trailing_zeros, system=system,
+            space=space, trim_trailing_zeros=trim_trailing_zeros, system_note=system_note,
         )
 
     text = f"{scaled:.{precision}f}"
@@ -462,7 +464,7 @@ def _format_quantity(num: float | int | None, unit: Unit, *, system: str, mode: 
 
 def _format_width_constrained(scaled: float, *, sign: str, symbol: str, unit: Unit,
                               precision: int, space: bool, trim_trailing_zeros: bool,
-                              system: str) -> str:
+                              system_note: str) -> str:
     """Format into an exact total width, maximizing decimal places.
 
     Args:
@@ -473,7 +475,8 @@ def _format_width_constrained(scaled: float, *, sign: str, symbol: str, unit: Un
         precision:           Negative; `-precision` is the total width.
         space:               Insert a space between number and unit.
         trim_trailing_zeros: Strip trailing zeros and any dangling point.
-        system:              Reported in the error message.
+        system_note:         How the caller's prefix-system argument is reported in the
+                             error message, e.g. "si=False" or "system='iec'".
 
     Returns:
         A string of exactly `-precision` characters.
@@ -510,7 +513,7 @@ def _format_width_constrained(scaled: float, *, sign: str, symbol: str, unit: Un
     min_needed = len(sign) + len(integer_text) + len(separator) + len(unit_text)
     raise ValueError(
         f"precision={precision} is too small for this value; "
-        f"need at least {-min_needed} or less (space={space}, si={system == 'si'})"
+        f"need at least {-min_needed} or less (space={space}, {system_note})"
     )
 
 
@@ -600,7 +603,7 @@ def human_quantity(num: float | int | None, unit: Unit, *, system: str = "si",
         num, unit, system=system, mode=mode, precision=precision, space=space,
         trim_trailing_zeros=trim_trailing_zeros, long_units=use_long,
         ascii_micro=ascii_micro, submultiples=system == "si", promote=True,
-        clamp_non_finite=False, resolved=resolved,
+        clamp_non_finite=False, system_note=f"system={system!r}", resolved=resolved,
     )
 
 
@@ -653,7 +656,7 @@ def human_bytesize(num: float | int | None, *, suffix: str = "B", si: bool = Fal
         precision=precision, space=space,
         trim_trailing_zeros=trim_trailing_zeros, long_units=long_units,
         ascii_micro=False, submultiples=False, promote=False,
-        clamp_non_finite=True,
+        clamp_non_finite=True, system_note=f"si={si}",
     )
 
 def sci_exp(x: float | int, max_digits: int = 15) -> int:
