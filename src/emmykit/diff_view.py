@@ -24,7 +24,7 @@ def _vis_trailing_ws(line: str) -> str:
     """
     core = line.rstrip(" \t")
     trail = line[len(core):]
-    return core + trail.replace(" ", "·").replace("\t", "→")
+    return core + _vis_all_ws(trail)
 
 def _vis_all_ws(s: str) -> str:
     """
