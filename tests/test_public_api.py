@@ -57,6 +57,25 @@ def test_public_name_set_matches_baseline() -> None:
     assert not extra, f"extra public symbols: {sorted(extra)}"
 
 
+def test_all_matches_baseline() -> None:
+    """`__all__` lists exactly the baseline names, once each.
+
+    `dir(emmykit)` also shows names that are imported but left out of
+    `__all__`; `import *` and the README generator go by `__all__`.
+    """
+    assert sorted(emmykit.__all__) == sorted(BASELINE)
+
+
+def test_every_public_name_keeps_its_kind() -> None:
+    """Each name is still the same kind of object, e.g. a tuple constant hasn't become a list."""
+    changed = {
+        name: (entry["kind"], type(getattr(emmykit, name)).__name__)
+        for name, entry in BASELINE.items()
+        if type(getattr(emmykit, name)).__name__ != entry["kind"]
+    }
+    assert changed == {}
+
+
 def test_callable_signatures_match_baseline() -> None:
     """Every callable symbol's str(signature) must equal the baseline string."""
     for name, entry in BASELINE.items():
