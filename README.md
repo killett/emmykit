@@ -3008,7 +3008,7 @@ Raises:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/network.py#L505)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/network.py#L512)
 
 </details>
 

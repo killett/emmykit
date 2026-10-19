@@ -164,6 +164,11 @@ All notable changes to `emmykit` are documented here. Format follows
 - `human_quantity`'s error for a width too narrow for the value named an
   `si=` setting, which only `human_bytesize` has. It now reports
   `system='si'` or `system='iec'`; `human_bytesize`'s message is unchanged.
+- `is_internet_available`'s DNS step looked only at the first lookup to
+  finish, so one test name failing quickly (for example a filtering
+  resolver's NXDOMAIN) gave False although another name would have
+  resolved. Any success now counts. The DNS and TCP steps also return as
+  soon as one attempt succeeds, instead of waiting for the slowest.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

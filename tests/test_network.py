@@ -80,3 +80,66 @@ def test_http_probe_still_runs_after_tcp_uses_its_whole_budget(monkeypatch: pyte
 
     assert network.is_internet_available(timeout_per_step=step, retries=0) is True
     assert len(probes) == 1
+
+
+# --- the DNS and TCP phases --------------------------------------------------
+
+def _timed(fn: object, *args: object, **kwargs: object) -> tuple[object, float]:
+    """Call fn and return its result with the seconds it took."""
+    start = time.monotonic()
+    result = fn(*args, **kwargs)  # type: ignore[operator]
+    return result, time.monotonic() - start
+
+
+def test_dns_success_counts_even_after_another_name_fails_fast(monkeypatch: pytest.MonkeyPatch) -> None:
+    """One name failing quickly doesn't hide another that resolves a moment later.
+
+    Fails if only the first lookup to finish is looked at.
+    """
+    def resolve(name: str, timeout: float) -> bool:
+        if name == "slow-ok":
+            time.sleep(0.2)
+            return True
+        return False
+
+    monkeypatch.setattr(network, "_dns_resolve", resolve)
+    assert network._any_dns_name_resolves(["fast-fail", "slow-ok"], per_name_timeout=2.0) is True
+
+
+def test_dns_answers_without_waiting_for_slow_names(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A quick success returns at once instead of waiting out the slow lookups."""
+    def resolve(name: str, timeout: float) -> bool:
+        if name == "slow":
+            time.sleep(2.0)
+            return False
+        return True
+
+    monkeypatch.setattr(network, "_dns_resolve", resolve)
+    result, seconds = _timed(network._any_dns_name_resolves, ["fast-ok", "slow"], per_name_timeout=3.0)
+    assert result is True
+    assert seconds < 1.0
+
+
+def test_dns_fails_when_every_name_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    """No name resolving means False."""
+    monkeypatch.setattr(network, "_dns_resolve", lambda name, timeout: False)
+    assert network._any_dns_name_resolves(["a", "b", "c"], per_name_timeout=1.0) is False
+
+
+def test_tcp_answers_without_waiting_for_slow_connects(monkeypatch: pytest.MonkeyPatch) -> None:
+    """One quick connection returns True at once instead of waiting out the slow ones.
+
+    Fails if leaving the thread pool waits for every connect still in flight.
+    """
+    def connect(host: str, port: int, timeout: float) -> bool:
+        if host == "fast":
+            return True
+        time.sleep(2.0)
+        return False
+
+    monkeypatch.setattr(network, "_tcp_connect", connect)
+    targets = [("fast", 53), ("slow1", 53), ("slow2", 53)]
+    result, seconds = _timed(network._run_tcp_checks_with_pool,
+                             tcp_targets=targets, timeout=3.0, requested_workers=3)
+    assert result is True
+    assert seconds < 1.0

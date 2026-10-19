@@ -105,25 +105,27 @@ def _any_dns_name_resolves(names: list[str], per_name_timeout: float, max_worker
     Raises:
         None (errors are caught and logged at DEBUG level).
     """
-    from concurrent.futures import wait, FIRST_COMPLETED
+    from concurrent.futures import as_completed
     if not names:
         return False
     n_workers = max(1, min(len(names), max_workers))
     if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("DNS: concurrent phase (%d names, %d workers)", len(names), n_workers)
-    with ThreadPoolExecutor(max_workers=n_workers) as pool:
+    pool = ThreadPoolExecutor(max_workers=n_workers)
+    try:
         futures = [pool.submit(_dns_resolve, n, per_name_timeout) for n in names]
-        # Wait once up to per_name_timeout for *any* to finish successfully:
-        done, not_done = wait(futures, timeout=per_name_timeout, return_when=FIRST_COMPLETED)
-        # Fast check: if any completed True, bail out; otherwise collect late finishes briefly.
-        for f in done:
+        # Every finished lookup counts, not just the first: one name failing fast
+        # mustn't hide another that resolves a moment later.
+        for f in as_completed(futures, timeout=per_name_timeout):
             try:
                 if f.result():
                     return True
-            except Exception:
-                pass
-        # Give remaining futures a tiny grace to finish (but don't block long):
-        for f in not_done:
-            f.cancel()
+            except Exception as exc:
+                if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("DNS: unexpected exception: %s", exc)
+    except TimeoutError:
+        if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("DNS: no name resolved within %.2fs", per_name_timeout)
+    finally:
+        # Don't wait for lookups still in flight; each ends at its own timeout.
+        pool.shutdown(wait=False, cancel_futures=True)
     return False
 
 def _http_probe_with_cap(url: str, method: str, timeout: float,
@@ -406,21 +408,26 @@ def _run_tcp_checks_with_pool(tcp_targets: list[tuple[str, int]],
     backoff_plan: list[int] = [n_workers, max(1, n_workers // 2), 1]
 
     for n in backoff_plan:
+        pool: ThreadPoolExecutor | None = None
         try:
             if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("ThreadPool: attempting max_workers=%d", n)
-            with ThreadPoolExecutor(max_workers=n) as pool:
-                futures = {pool.submit(_tcp_connect, h, p, timeout): (h, p) for (h, p) in tcp_targets}
-                for fut in as_completed(futures):
-                    try:
-                        if fut.result():
-                            pool.shutdown(cancel_futures=True)  # Optional: stop launching/awaiting more work asap
-                            return True
-                    except Exception as exc:
-                        if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("TCP: unexpected exception: %s", exc)
+            pool    = ThreadPoolExecutor(max_workers=n)
+            futures = {pool.submit(_tcp_connect, h, p, timeout): (h, p) for (h, p) in tcp_targets}
+            for fut in as_completed(futures):
+                try:
+                    if fut.result():
+                        return True
+                except Exception as exc:
+                    if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("TCP: unexpected exception: %s", exc)
             return False
         except (RuntimeError, OSError, MemoryError) as exc:
             logging.warning("Could not start thread pool with %d workers (%s). Trying fewer.", n, exc)
             continue
+        finally:
+            if pool is not None:
+                # Not a `with` block, whose exit would wait for every connect still
+                # in flight; once one has succeeded the answer is known.
+                pool.shutdown(wait=False, cancel_futures=True)
 
     # If even 1 worker fails, consider TCP unreachable.
     return False
