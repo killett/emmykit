@@ -39,3 +39,16 @@ def test_verdict_follows_the_documented_aggregation(
     monkeypatch.setattr(network, "_http_probe_with_cap", lambda **_: probe)
 
     assert network.is_internet_available(retries=0) is expected
+
+
+@pytest.mark.parametrize(("strict", "expected"), [(False, True), (True, False)])
+def test_tcp_alone_counts_only_when_not_strict(
+    monkeypatch: pytest.MonkeyPatch, strict: bool, expected: bool
+) -> None:
+    """Raw TCP with no DNS or HTTP is online by default and not enough when strict."""
+    monkeypatch.setattr(network, "_run_tcp_checks_with_pool", lambda **_: True)
+    monkeypatch.setattr(network, "_any_dns_name_resolves", lambda *_, **__: False)
+    monkeypatch.setattr(network, "_build_http_opener", lambda **_: None)
+    monkeypatch.setattr(network, "_http_probe_with_cap", lambda **_: PROBE_FAILS)
+
+    assert network.is_internet_available(retries=0, strict=strict) is expected

@@ -2982,17 +2982,16 @@ Aggregation logic:
     - If captive portal is detected -> return False immediately.
     - If any HTTP probe passes expectations -> return True.
     - Else if TCP OK and DNS OK -> return True.
-    - Else:
-        * If strict is False and TCP OK alone -> return False
-          (raw TCP alone is not considered sufficient for "internet usable").
-        * If strict is True -> still False.
+    - Else if TCP OK alone -> return True unless strict (by default, reaching
+      raw IP addresses counts as online; strict also wants DNS or HTTP).
+    - Otherwise -> return False.
 
 Args:
     timeout_per_step: Timeout (seconds) per individual network attempt.
     retries:          Number of times to repeat the full check if the result is False.
     workers:          Thread pool size for TCP checks.
     include_ipv6:     Whether to include IPv6 targets.
-    strict:           Require stronger evidence of connectivity.
+    strict:           Don't count TCP alone; require HTTP, or TCP plus DNS.
     ignore_proxies:   Disable env proxies for HTTP probes.
 
 Returns:
