@@ -40,7 +40,7 @@ def prompt_then_choose(prompt: str, choices: list[str], default: str | None = No
 
     while True:
         ans = input(prompt).strip()
-        if not ans and default:
+        if not ans and default is not None:
             logging.info("No input provided, using default: %s", default)
             return default
         if ans.isdigit() and 1 <= int(ans) <= len(choices):

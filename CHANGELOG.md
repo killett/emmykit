@@ -137,6 +137,9 @@ All notable changes to `emmykit` are documented here. Format follows
   `str.title()` does: "don't" became "Don'T" and "2nd" became "2Nd". It
   now capitalizes only each word's first letter (and each hyphenated
   part's, so "well-known" is still "Well-Known").
+- `prompt_then_choose(default="")` showed "(default )" but refused
+  Enter. Any default other than `None`, including an empty string, is now
+  returned when Enter is pressed.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.
