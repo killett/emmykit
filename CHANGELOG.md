@@ -56,6 +56,9 @@ All notable changes to `emmykit` are documented here. Format follows
   When no process matched in the first place it raised `ValueError`
   instead of printing "No … process found." and returning. Both now
   behave as written; a real `pgrep` failure still raises `ValueError`.
+- `set_system_volume` raised `UnboundLocalError` instead of falling back
+  to `pactl` when pulsectl was installed but couldn't load, for example
+  without libpulse. It now logs a warning and uses `pactl`.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

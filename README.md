@@ -3756,7 +3756,7 @@ extract_and_concatenate_segments(input_file: 'str | os.PathLike[str]', timestamp
 Extracts segments from a video file and concatenates them into a new file.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L474)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L478)
 
 </details>
 
@@ -3815,7 +3815,7 @@ Raises:
     ValueError:        If a probe returns an invalid or non-positive duration.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L315)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L319)
 
 </details>
 
@@ -3831,7 +3831,7 @@ open_dir_in_VLC(the_dir: 'str | os.PathLike[str]', sort_choice: 'str' = 'sort_by
 Create a playlist of the files in the specified directory, then play that playlist in VLC. By default, don't search the directory recursively and sort the files by name. Optional arguments allow recursive loading or sorting by modification time. If no_start is True, don't start playback in VLC.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L245)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L249)
 
 </details>
 
@@ -3858,7 +3858,7 @@ Raises:
     FileNotFoundError: If the specified path does not exist.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L292)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L296)
 
 </details>
 
@@ -3874,7 +3874,7 @@ open_playlist_in_VLC(playlist: 'str | os.PathLike[str]', no_start: 'bool' = Fals
 Open a playlist in VLC. If no_start is True, don't start playback in VLC.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L237)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/media.py#L241)
 
 </details>
 

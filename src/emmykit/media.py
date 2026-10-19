@@ -180,6 +180,10 @@ def set_system_volume(percent: int, tolerance: int = 1,
                 return  # Successfully set volume and verified
         except ImportError:
             logging.warning("[pulsectl] Not installed; falling back to pactl...")
+        # Before `except PulseError`: when the import itself fails this way
+        # (e.g. libpulse missing), PulseError was never bound.
+        except OSError as e:
+            logging.warning("[pulsectl] Unavailable (%s); falling back to pactl...", e)
         except PulseError as e:
             logging.error("[pulsectl] PulseError: %s; falling back to pactl...", e)
         except RuntimeError as e:
