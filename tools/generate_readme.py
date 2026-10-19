@@ -720,11 +720,9 @@ Apache 2.0 — see [LICENSE](LICENSE). Changelog at [CHANGELOG.md](CHANGELOG.md)
 """
 
 
-_EXTRA_NOTES_BY_MODULE: dict[str, list[str]] = {}
-
-
 def build_readme() -> str:
-    sys.path.insert(0, str(SRC_DIR.parent))
+    if str(SRC_DIR.parent) not in sys.path:
+        sys.path.insert(0, str(SRC_DIR.parent))
     import emmykit  # noqa: WPS433
 
     public = list(emmykit.__all__)
@@ -747,6 +745,8 @@ def build_readme() -> str:
         notes_into.setdefault(dst_mod, []).append(note)
 
     groups: list[tuple[int, str, list[SymbolInfo], list[tuple[CondenseGroup, int, list[str]]]]] = []
+    # Kept beside `groups` rather than in its tuples, whose shape _render_toc expects.
+    extra_notes_by_module: dict[str, list[str]] = {}
     for layer, module in LAYER_ORDER:
         rule = RENDER_RULES.get(module, ModuleRenderRule())
         if rule.drop_section:
@@ -771,14 +771,12 @@ def build_readme() -> str:
             extra_notes.append(rule.section_note)
         extra_notes.extend(notes_into.get(module, []))
         groups.append((layer, module, gathered, condense_blocks))
-        # Stash extra_notes on the tuple for _render_group; use a parallel dict
-        # to keep tuple shape compatible with _render_toc.
-        _EXTRA_NOTES_BY_MODULE[module] = extra_notes
+        extra_notes_by_module[module] = extra_notes
 
     _assign_anchor_ids([s for _, _, symbols, _ in groups for s in symbols])
     toc = _render_toc(groups)
     body = "\n".join(
-        _render_group(m, l, s, c, _EXTRA_NOTES_BY_MODULE.get(m))
+        _render_group(m, l, s, c, extra_notes_by_module.get(m))
         for l, m, s, c in groups
     )
 
