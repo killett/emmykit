@@ -155,6 +155,12 @@ All notable changes to `emmykit` are documented here. Format follows
   `YYYYMMDD-HHMMSS.pkl`. `parse_timezone` rejected a full zone name with
   surrounding spaces (`" America/New_York "`) although abbreviations
   with spaces worked.
+- `seconds_in_unit("rs")` and `("qs")` returned 1e27 and 1e30
+  (ronnasecond, quettasecond). Units are case-folded, so "rs" can't tell
+  ronna (R) from ronto (r); as with "ms", the lowercase symbol now means
+  the small prefix: rontosecond (1e-27) and quectosecond (1e-30), which
+  are also accepted by name. Ronnaseconds and quettaseconds are still
+  accepted by name.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

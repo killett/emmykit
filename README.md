@@ -1947,7 +1947,7 @@ is_float(s: 'str') -> 'bool'
 Check if a string can be parsed as a float.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/numeric_helpers.py#L56)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/numeric_helpers.py#L58)
 
 </details>
 
@@ -1963,7 +1963,7 @@ seconds_in_unit(unit: 'str') -> 'float'
 Return the number of seconds in a given time unit.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/numeric_helpers.py#L49)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/numeric_helpers.py#L51)
 
 </details>
 

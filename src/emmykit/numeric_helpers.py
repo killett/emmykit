@@ -24,6 +24,8 @@ _UNIT_SECONDS = {
     **dict.fromkeys(["attosecond",   "attoseconds",  "as"],            1E-18),
     **dict.fromkeys(["zeptosecond",  "zeptoseconds", "zs"],            1E-21),
     **dict.fromkeys(["yoctosecond",  "yoctoseconds", "ys"],            1E-24),
+    **dict.fromkeys(["rontosecond",  "rontoseconds", "rs"],            1E-27),
+    **dict.fromkeys(["quectosecond", "quectoseconds", "qs"],           1E-30),
     **dict.fromkeys(["planck time",  "planck times", "planck", "plancks", "pt"], 5.391_247E-44),  # Planck time
     **dict.fromkeys(["decade",       "decades"],                                315_569_252.16),  #   10 solar years
     **dict.fromkeys(["century",      "centuries"],                            3_155_692_521.60),  #  100 solar years
@@ -42,8 +44,8 @@ _UNIT_SECONDS = {
     **dict.fromkeys(["exasecond",    "exaseconds",    "es"],  1E18),
     **dict.fromkeys(["zettasecond",  "zettaseconds"],         1E21),  # no Zs because .casefold() would convert it to zs
     **dict.fromkeys(["yottasecond",  "yottaseconds"],         1E24),  # no Ys because .casefold() would convert it to ys
-    **dict.fromkeys(["ronnasecond",  "ronnaseconds",  "rs"],  1E27),
-    **dict.fromkeys(["quettasecond", "quettaseconds", "qs"],  1E30),
+    **dict.fromkeys(["ronnasecond",  "ronnaseconds"],         1E27),  # no Rs because .casefold() would convert it to rs
+    **dict.fromkeys(["quettasecond", "quettaseconds"],        1E30),  # no Qs because .casefold() would convert it to qs
 }
 
 def seconds_in_unit(unit: str) -> float:
