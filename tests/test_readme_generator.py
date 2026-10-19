@@ -1,8 +1,12 @@
 """Sanity tests for tools/generate_readme.py."""
 from __future__ import annotations
 
+import re
 import sys
+from collections.abc import Callable
 from pathlib import Path
+
+import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -97,3 +101,75 @@ def test_section_note_injected_into_downstream_section() -> None:
     expected_text = SECTION_DROP_NOTES["text_constants"][1]
     assert expected_net in text
     assert expected_text in text
+
+
+# ---- table-of-contents link tests ---- #
+
+
+# How each place that shows the README turns a ``](#x)`` link and a raw
+# ``<a id="x">`` into the page's href and id; a browser jumps to the first
+# element whose id matches. Each entry is (link target, page id).
+#   Local previews (VS Code and the like) use both as written.
+#   GitHub prefixes ids with ``user-content-`` unless they already carry it,
+#     keeps links as written, and its page script maps ``#x`` to
+#     ``#user-content-x``.
+#   PyPI's readme_renderer prefixes links, except footnote links (``fn-``,
+#     ``fnref-``), and keeps raw ids as written.
+_PREFIX = "user-content-"
+
+
+def _github_id(anchor_id: str) -> str:
+    """Return the id GitHub gives a raw ``<a id>``."""
+    return anchor_id if anchor_id.startswith(_PREFIX) else _PREFIX + anchor_id
+
+
+def _pypi_link(target: str) -> str:
+    """Return the fragment PyPI links ``#target`` to."""
+    return target if target.startswith(("fn-", "fnref-")) else _PREFIX + target
+
+
+RENDERERS: dict[str, tuple[Callable[[str], str], Callable[[str], str]]] = {
+    "local-preview": (lambda target: target, lambda anchor_id: anchor_id),
+    "github": (lambda target: _PREFIX + target, _github_id),
+    "pypi": (_pypi_link, lambda anchor_id: anchor_id),
+}
+
+_ANCHOR = re.compile(r'<a id="([^"]+)"></a>')
+# What an anchor sits on: any further anchors, then a symbol's <details>
+# block or a module heading.
+_ENTRY = re.compile(
+    r'(?:<a id="[^"]+"></a>)*\n'
+    r"(?:<details>\n<summary><code>([^<]+)</code>|### `([^`]+)`)"
+)
+
+
+def _toc_links(text: str) -> list[tuple[str, str]]:
+    """Return (name shown, link target) for each table-of-contents link."""
+    toc = text.split("## Table of contents", 1)[1].split("## API reference", 1)[0]
+    return re.findall(r"^ *- \[`([^`]+)`[^\]]*\]\(#([^)]+)\)", toc, re.M)
+
+
+def _entry_names_by_id(text: str, page_id: Callable[[str], str]) -> dict[str, str | None]:
+    """Map each page id to the name of the entry under its first anchor."""
+    names: dict[str, str | None] = {}
+    for anchor in _ANCHOR.finditer(text):
+        entry = _ENTRY.match(text, anchor.end())
+        name = (entry.group(1) or entry.group(2)) if entry else None
+        names.setdefault(page_id(anchor.group(1)), name)
+    return names
+
+
+@pytest.mark.parametrize("renderer", RENDERERS)
+def test_every_toc_link_lands_on_the_entry_it_names(renderer: str) -> None:
+    """Each contents link jumps to the entry whose name it shows, wherever the README is read."""
+    link_target, page_id = RENDERERS[renderer]
+    text = build_readme()
+    links = _toc_links(text)
+    names = _entry_names_by_id(text, page_id)
+    misses = [
+        (name, target, names.get(link_target(target), "<no such id>"))
+        for name, target in links
+        if names.get(link_target(target)) != name
+    ]
+    assert ("constants", "m-constants") in links  # the parse found the contents
+    assert misses == []

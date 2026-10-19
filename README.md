@@ -122,7 +122,7 @@ the converters internally.
   - [`contrast_ratio`](#contrast_ratio)
   - [`MIN_CONTRAST_RATIO`](#min_contrast_ratio)
   - [`Palette`](#palette)
-  - [`palette`](#palette)
+  - [`palette`](#palette-1)
   - [`palette_names`](#palette_names)
 - [`_version` — Package and Python version constants](#m-_version)
   - [`PY_VERSION`](#py_version)
@@ -291,14 +291,14 @@ the converters internally.
 
 ## API reference
 
-<a id="m-constants"></a>
+<a id="m-constants"></a><a id="user-content-m-constants"></a>
 ### `constants` — ANSI colors, unicode punctuation, default encoding, ignore-lists
 
 _Layer 0._  `from emmykit.constants import …`
 
 Terminal escape codes, curly quotes, the em-dash, the package's UTF-8 default, the set of errno codes treated as benign by `safe_*`, and the flake8/autopep8 codes Emmy deliberately ignores.
 
-<a id="default_encoding"></a>
+<a id="default_encoding"></a><a id="user-content-default_encoding"></a>
 <details>
 <summary><code>DEFAULT_ENCODING</code> — str = 'utf-8'</summary>
 
@@ -310,7 +310,7 @@ DEFAULT_ENCODING: str = 'utf-8'
 
 </details>
 
-<a id="default_exclude_dirs"></a>
+<a id="default_exclude_dirs"></a><a id="user-content-default_exclude_dirs"></a>
 <details>
 <summary><code>DEFAULT_EXCLUDE_DIRS</code> — set[str] (6 items)</summary>
 
@@ -322,7 +322,7 @@ DEFAULT_EXCLUDE_DIRS: set[str] = {'.git', '.venv', '__pycache__', 'build', 'dist
 
 </details>
 
-<a id="c-constants-ansi-color-escapes"></a>
+<a id="c-constants-ansi-color-escapes"></a><a id="user-content-c-constants-ansi-color-escapes"></a>
 <details>
 <summary><code>ANSI color escapes</code> — 5 terminal-escape strings: ANSI_CYAN / GREEN / RED / RESET / YELLOW.</summary>
 
@@ -332,7 +332,7 @@ DEFAULT_EXCLUDE_DIRS: set[str] = {'.git', '.venv', '__pycache__', 'build', 'dist
 
 </details>
 
-<a id="c-constants-ignored-codes"></a>
+<a id="c-constants-ignored-codes"></a><a id="user-content-c-constants-ignored-codes"></a>
 <details>
 <summary><code>IGNORED_CODES</code> — flake8 + autopep8 codes Emmy deliberately ignores.</summary>
 
@@ -342,7 +342,7 @@ DEFAULT_EXCLUDE_DIRS: set[str] = {'.git', '.venv', '__pycache__', 'build', 'dist
 
 </details>
 
-<a id="c-constants-ignore-these-errors"></a>
+<a id="c-constants-ignore-these-errors"></a><a id="user-content-c-constants-ignore-these-errors"></a>
 <details>
 <summary><code>IGNORE_THESE_ERRORS</code> — errno codes treated as benign by safe_* helpers.</summary>
 
@@ -352,7 +352,7 @@ DEFAULT_EXCLUDE_DIRS: set[str] = {'.git', '.venv', '__pycache__', 'build', 'dist
 
 </details>
 
-<a id="m-extensions"></a>
+<a id="m-extensions"></a><a id="user-content-m-extensions"></a>
 ### `extensions` — File-extension lookup tables (audio / video / image / book / text / html / playlist / archive / subtitle)
 
 _Layer 0._  `from emmykit.extensions import …`
@@ -361,7 +361,7 @@ Lists and frozensets of common file extensions per media kind, plus an `ALL_KNOW
 
 Each `*_EXTENSIONS` list has a `*_EXTENSIONS_SET` frozenset alias for fast membership tests.
 
-<a id="all_known_extensions"></a>
+<a id="all_known_extensions"></a><a id="user-content-all_known_extensions"></a>
 <details>
 <summary><code>ALL_KNOWN_EXTENSIONS</code> — Final[tuple[str, ...]] (979 items)</summary>
 
@@ -375,7 +375,7 @@ ALL_KNOWN_EXTENSIONS: Final[tuple[str, ...]] = ('.py', '.pyw', '.html', '.htm', 
 
 </details>
 
-<a id="archive_extensions"></a>
+<a id="archive_extensions"></a><a id="user-content-archive_extensions"></a>
 <details>
 <summary><code>ARCHIVE_EXTENSIONS</code> — Final[tuple[str, ...]] (376 items)</summary>
 
@@ -389,7 +389,7 @@ ARCHIVE_EXTENSIONS: Final[tuple[str, ...]] = ('.zip', '.rar', '.7z', '.tar', '.g
 
 </details>
 
-<a id="audio_extensions"></a>
+<a id="audio_extensions"></a><a id="user-content-audio_extensions"></a>
 <details>
 <summary><code>AUDIO_EXTENSIONS</code> — Final[tuple[str, ...]] (112 items)</summary>
 
@@ -403,7 +403,7 @@ AUDIO_EXTENSIONS: Final[tuple[str, ...]] = ('.mp3', '.wav', '.flac', '.aac', '.o
 
 </details>
 
-<a id="book_extensions"></a>
+<a id="book_extensions"></a><a id="user-content-book_extensions"></a>
 <details>
 <summary><code>BOOK_EXTENSIONS</code> — Final[tuple[str, ...]] (63 items)</summary>
 
@@ -417,7 +417,7 @@ BOOK_EXTENSIONS: Final[tuple[str, ...]] = ('.epub', '.pdf', '.txt', '.rtf', '.ht
 
 </details>
 
-<a id="html_extensions"></a>
+<a id="html_extensions"></a><a id="user-content-html_extensions"></a>
 <details>
 <summary><code>HTML_EXTENSIONS</code> — Final[tuple[str, ...]] (3 items)</summary>
 
@@ -429,7 +429,7 @@ HTML_EXTENSIONS: Final[tuple[str, ...]] = ('.html', '.htm', '.xhtml')
 
 </details>
 
-<a id="image_extensions"></a>
+<a id="image_extensions"></a><a id="user-content-image_extensions"></a>
 <details>
 <summary><code>IMAGE_EXTENSIONS</code> — Final[tuple[str, ...]] (127 items)</summary>
 
@@ -443,7 +443,7 @@ IMAGE_EXTENSIONS: Final[tuple[str, ...]] = ('.bmp', '.dib', '.gif', '.jpeg', '.j
 
 </details>
 
-<a id="playlist_extensions"></a>
+<a id="playlist_extensions"></a><a id="user-content-playlist_extensions"></a>
 <details>
 <summary><code>PLAYLIST_EXTENSIONS</code> — Final[tuple[str, ...]] (28 items)</summary>
 
@@ -457,7 +457,7 @@ PLAYLIST_EXTENSIONS: Final[tuple[str, ...]] = ('.m3u', '.m3u8', '.pls', '.xspf',
 
 </details>
 
-<a id="python_extensions"></a>
+<a id="python_extensions"></a><a id="user-content-python_extensions"></a>
 <details>
 <summary><code>PYTHON_EXTENSIONS</code> — Final[tuple[str, ...]] (2 items)</summary>
 
@@ -469,7 +469,7 @@ PYTHON_EXTENSIONS: Final[tuple[str, ...]] = ('.py', '.pyw')
 
 </details>
 
-<a id="subtitle_extensions"></a>
+<a id="subtitle_extensions"></a><a id="user-content-subtitle_extensions"></a>
 <details>
 <summary><code>SUBTITLE_EXTENSIONS</code> — Final[tuple[str, ...]] (47 items)</summary>
 
@@ -483,7 +483,7 @@ SUBTITLE_EXTENSIONS: Final[tuple[str, ...]] = ('.srt', '.sub', '.idx', '.ass', '
 
 </details>
 
-<a id="text_encodings"></a>
+<a id="text_encodings"></a><a id="user-content-text_encodings"></a>
 <details>
 <summary><code>TEXT_ENCODINGS</code> — Final[tuple[str, ...]] (146 items)</summary>
 
@@ -497,7 +497,7 @@ TEXT_ENCODINGS: Final[tuple[str, ...]] = ('utf-8', 'latin-1', 'ascii', 'iso-8859
 
 </details>
 
-<a id="text_extensions"></a>
+<a id="text_extensions"></a><a id="user-content-text_extensions"></a>
 <details>
 <summary><code>TEXT_EXTENSIONS</code> — Final[tuple[str, ...]] (143 items)</summary>
 
@@ -511,7 +511,7 @@ TEXT_EXTENSIONS: Final[tuple[str, ...]] = ('.txt', '.html', '.htm', '.csv', '.js
 
 </details>
 
-<a id="video_extensions"></a>
+<a id="video_extensions"></a><a id="user-content-video_extensions"></a>
 <details>
 <summary><code>VIDEO_EXTENSIONS</code> — Final[tuple[str, ...]] (133 items)</summary>
 
@@ -525,7 +525,7 @@ VIDEO_EXTENSIONS: Final[tuple[str, ...]] = ('.mp4', '.mkv', '.mov', '.avi', '.mp
 
 </details>
 
-<a id="m-embedded_scripts"></a>
+<a id="m-embedded_scripts"></a><a id="user-content-m-embedded_scripts"></a>
 ### `embedded_scripts` — Pre-packaged helper-script source-strings
 
 _Layer 0._  `from emmykit.embedded_scripts import …`
@@ -534,7 +534,7 @@ Python script literals shipped as importable strings — used by Emmy's external
 
 The five standalone command-line programs that used to live here (`PRINTALL_SCRIPT`, `MYDIFF_SCRIPT`, `MYAUDIT_SCRIPT`, `MULTIREPLACE_SCRIPT`, `TREEVIEW_SCRIPT`) moved to [killett/utilities](https://github.com/killett/utilities) in 0.4.0; `UNIV_DEFS_SYS_PATH_SCRIPT` was deleted.
 
-<a id="setup_cartopy_script"></a>
+<a id="setup_cartopy_script"></a><a id="user-content-setup_cartopy_script"></a>
 <details>
 <summary><code>SETUP_CARTOPY_SCRIPT</code> — str (532 chars)</summary>
 
@@ -546,14 +546,14 @@ SETUP_CARTOPY_SCRIPT: str = '<532-char Python script source, 16 lines>'
 
 </details>
 
-<a id="m-palette"></a>
+<a id="m-palette"></a><a id="user-content-m-palette"></a>
 ### `palette` — Colourblind-safe figure palettes and WCAG contrast measurement
 
 _Layer 0._  `from emmykit.palette import …`
 
 Frozen `Palette` value objects — an Okabe-Ito-derived qualitative series plus background / foreground / grid roles, every colour an explicit hex string — looked up by name and handed to matplotlib as an rcParams mapping. Stdlib-only except for `Palette.rc_params`.
 
-<a id="contrast_ratio"></a>
+<a id="contrast_ratio"></a><a id="user-content-contrast_ratio"></a>
 <details>
 <summary><code>contrast_ratio</code> — Return the WCAG contrast ratio between two colours.</summary>
 
@@ -587,7 +587,7 @@ Example:
 
 </details>
 
-<a id="min_contrast_ratio"></a>
+<a id="min_contrast_ratio"></a><a id="user-content-min_contrast_ratio"></a>
 <details>
 <summary><code>MIN_CONTRAST_RATIO</code> — Final[float]</summary>
 
@@ -599,7 +599,7 @@ MIN_CONTRAST_RATIO: Final[float] = 4.5
 
 </details>
 
-<a id="palette"></a>
+<a id="palette"></a><a id="user-content-palette"></a>
 <details>
 <summary><code>Palette</code> — An immutable figure theme: qualitative series colours plus semantic roles.</summary>
 
@@ -629,7 +629,7 @@ Attributes:
 
 </details>
 
-<a id="palette"></a>
+<a id="palette-1"></a><a id="user-content-palette-1"></a>
 <details>
 <summary><code>palette</code> — Look up a registered palette by name.</summary>
 
@@ -660,7 +660,7 @@ Example:
 
 </details>
 
-<a id="palette_names"></a>
+<a id="palette_names"></a><a id="user-content-palette_names"></a>
 <details>
 <summary><code>palette_names</code> — Return the names of every registered palette, in registration order.</summary>
 
@@ -679,14 +679,14 @@ Returns:
 
 </details>
 
-<a id="m-_version"></a>
+<a id="m-_version"></a><a id="user-content-m-_version"></a>
 ### `_version` — Package and Python version constants
 
 _Layer 1._  `from emmykit._version import …`
 
 Single source of truth for `emmykit.__version__` (read by hatchling at build-time) and the supported `PY_VERSION` floor.
 
-<a id="py_version"></a>
+<a id="py_version"></a><a id="user-content-py_version"></a>
 <details>
 <summary><code>PY_VERSION</code> — Final[float]</summary>
 
@@ -698,14 +698,14 @@ PY_VERSION: Final[float] = 3.12
 
 </details>
 
-<a id="m-options"></a>
+<a id="m-options"></a><a id="user-content-m-options"></a>
 ### `options` — Options dataclasses for configuration
 
 _Layer 1._  `from emmykit.options import …`
 
 Aggregated runtime/plot-time settings passed through downstream APIs as a single object.
 
-<a id="options"></a>
+<a id="options"></a><a id="user-content-options"></a>
 <details>
 <summary><code>Options</code> — Class that has all global options in one place.</summary>
 
@@ -721,7 +721,7 @@ Class that has all global options in one place.
 
 </details>
 
-<a id="plotoptions"></a>
+<a id="plotoptions"></a><a id="user-content-plotoptions"></a>
 <details>
 <summary><code>PlotOptions</code> — Global figure options.</summary>
 
@@ -743,14 +743,14 @@ marker/linestyle cycles stay here — they are not colour.
 
 </details>
 
-<a id="m-inflect_utils"></a>
+<a id="m-inflect_utils"></a><a id="user-content-m-inflect_utils"></a>
 ### `inflect_utils` — Grammar + pluralization helpers
 
 _Layer 1._  `from emmykit.inflect_utils import …`
 
 Lazy wrapper over the `inflect` package with a stdlib-only fallback table for common nouns when the extra isn't installed.
 
-<a id="inflectengine"></a>
+<a id="inflectengine"></a><a id="user-content-inflectengine"></a>
 <details>
 <summary><code>InflectEngine</code> — Protocol for the 'inflect' library's engine interface.</summary>
 
@@ -768,7 +768,7 @@ Protocol for the 'inflect' library's engine interface.
 
 </details>
 
-<a id="my_plural"></a>
+<a id="my_plural"></a><a id="user-content-my_plural"></a>
 <details>
 <summary><code>my_plural</code> — Return a pluralized version of 'word' preceded by 'n'.</summary>
 
@@ -804,14 +804,14 @@ Raises:
 
 </details>
 
-<a id="m-logging_utils"></a>
+<a id="m-logging_utils"></a><a id="user-content-m-logging_utils"></a>
 ### `logging_utils` — Logging configuration and custom handlers
 
 _Layer 1._  `from emmykit.logging_utils import …`
 
 Drop-in `configure_logging`, level-filtering handlers, an in-memory ring-buffer handler, and an introspection helper (`return_method_name`) used throughout the package for self-naming log messages.
 
-<a id="configure_logging"></a>
+<a id="configure_logging"></a><a id="user-content-configure_logging"></a>
 <details>
 <summary><code>configure_logging</code> — Configure logging to write to files and stdout/stderr, and return a MemoryHandler to capture ERROR logs for later (dupl…</summary>
 
@@ -839,7 +839,7 @@ Raises:
 
 </details>
 
-<a id="fallback_logging_config"></a>
+<a id="fallback_logging_config"></a><a id="user-content-fallback_logging_config"></a>
 <details>
 <summary><code>fallback_logging_config</code> — Configure the root logger with a basic configuration if no handlers are set.</summary>
 
@@ -860,7 +860,7 @@ Args:
 
 </details>
 
-<a id="flushingstreamhandler"></a>
+<a id="flushingstreamhandler"></a><a id="user-content-flushingstreamhandler"></a>
 <details>
 <summary><code>FlushingStreamHandler</code> — A logging handler that flushes the stream after emitting each log so the logs are immediately visible.</summary>
 
@@ -878,7 +878,7 @@ A logging handler that flushes the stream after emitting each log so the logs ar
 
 </details>
 
-<a id="maxlevelfilter"></a>
+<a id="maxlevelfilter"></a><a id="user-content-maxlevelfilter"></a>
 <details>
 <summary><code>MaxLevelFilter</code> — A logging filter that only allows logs up to a certain level to pass through, so that error messages aren't printed mul…</summary>
 
@@ -896,7 +896,7 @@ A logging filter that only allows logs up to a certain level to pass through, so
 
 </details>
 
-<a id="memoryhandler"></a>
+<a id="memoryhandler"></a><a id="user-content-memoryhandler"></a>
 <details>
 <summary><code>MemoryHandler</code> — A logging handler that stores logs in memory so the errors can be printed at the end.</summary>
 
@@ -914,7 +914,7 @@ A logging handler that stores logs in memory so the errors can be printed at the
 
 </details>
 
-<a id="print_all_errors"></a>
+<a id="print_all_errors"></a><a id="user-content-print_all_errors"></a>
 <details>
 <summary><code>print_all_errors</code> — Print all the captured error messages.</summary>
 
@@ -930,7 +930,7 @@ Print all the captured error messages.
 
 </details>
 
-<a id="return_method_name"></a>
+<a id="return_method_name"></a><a id="user-content-return_method_name"></a>
 <details>
 <summary><code>return_method_name</code> — Return the caller's qualified method/function name.</summary>
 
@@ -963,14 +963,14 @@ Raises:
 
 </details>
 
-<a id="m-paths_ensure"></a>
+<a id="m-paths_ensure"></a><a id="user-content-m-paths_ensure"></a>
 ### `paths_ensure` — Path normalization
 
 _Layer 1._  `from emmykit.paths_ensure import …`
 
 Leaf helper that coerces `os.PathLike` / `str` arguments into resolved `Path` objects.
 
-<a id="ensure_path"></a>
+<a id="ensure_path"></a><a id="user-content-ensure_path"></a>
 <details>
 <summary><code>ensure_path</code> — Ensure that the path is a Path. If not, make it a Path.</summary>
 
@@ -993,14 +993,14 @@ Returns:
 
 </details>
 
-<a id="m-safe_paths"></a>
+<a id="m-safe_paths"></a><a id="user-content-m-safe_paths"></a>
 ### `safe_paths` — Exception-swallowing filesystem queries
 
 _Layer 2._  `from emmykit.safe_paths import …`
 
 `safe_*` wrappers around `os.stat`/`Path.exists`/`is_file`/`is_dir` that never raise, plus `ensure_file`/`ensure_dir` builders that compose on top of them.
 
-<a id="ensure_dir"></a>
+<a id="ensure_dir"></a><a id="user-content-ensure_dir"></a>
 <details>
 <summary><code>ensure_dir</code> — Ensure that the given path is an existing directory and return it as a Path object.</summary>
 
@@ -1031,7 +1031,7 @@ Raises:
 
 </details>
 
-<a id="ensure_file"></a>
+<a id="ensure_file"></a><a id="user-content-ensure_file"></a>
 <details>
 <summary><code>ensure_file</code> — Ensure that the given path is an existing file and return it as a Path object.</summary>
 
@@ -1066,7 +1066,7 @@ Raises:
 
 </details>
 
-<a id="safe_ctime"></a>
+<a id="safe_ctime"></a><a id="user-content-safe_ctime"></a>
 <details>
 <summary><code>safe_ctime</code> — Return ctime (seconds float or ns int) or None on errors.</summary>
 
@@ -1093,7 +1093,7 @@ Returns:
 
 </details>
 
-<a id="safe_exists"></a>
+<a id="safe_exists"></a><a id="user-content-safe_exists"></a>
 <details>
 <summary><code>safe_exists</code> — Like Path.exists()/os.path.lexists(), but doesn't raise on permission/loop errors.</summary>
 
@@ -1117,7 +1117,7 @@ Returns:
 
 </details>
 
-<a id="safe_is_dir"></a>
+<a id="safe_is_dir"></a><a id="user-content-safe_is_dir"></a>
 <details>
 <summary><code>safe_is_dir</code> — Like Path.is_dir(), but returns False on permission errors instead of raising.</summary>
 
@@ -1145,7 +1145,7 @@ Raises:
 
 </details>
 
-<a id="safe_is_file"></a>
+<a id="safe_is_file"></a><a id="user-content-safe_is_file"></a>
 <details>
 <summary><code>safe_is_file</code> — Like Path.is_file(), but returns False on permission errors instead of raising.</summary>
 
@@ -1173,7 +1173,7 @@ Raises:
 
 </details>
 
-<a id="safe_mtime"></a>
+<a id="safe_mtime"></a><a id="user-content-safe_mtime"></a>
 <details>
 <summary><code>safe_mtime</code> — Return mtime (seconds float or ns int) or None on errors.</summary>
 
@@ -1198,7 +1198,7 @@ Returns:
 
 </details>
 
-<a id="safe_size"></a>
+<a id="safe_size"></a><a id="user-content-safe_size"></a>
 <details>
 <summary><code>safe_size</code> — Like Path.stat().st_size, but returns None on permission/missing/loop errors.</summary>
 
@@ -1222,7 +1222,7 @@ Returns:
 
 </details>
 
-<a id="safe_stat"></a>
+<a id="safe_stat"></a><a id="user-content-safe_stat"></a>
 <details>
 <summary><code>safe_stat</code> — Like Path.stat()/lstat(), but returns None on permission/missing/loop errors.</summary>
 
@@ -1250,14 +1250,14 @@ Raises:
 
 </details>
 
-<a id="m-file_io"></a>
+<a id="m-file_io"></a><a id="user-content-m-file_io"></a>
 ### `file_io` — Atomic file-write helper
 
 _Layer 2._  `from emmykit.file_io import …`
 
 `my_atomic_write` — lazy `atomicwrites` + `filelock` wrapper that lets you write text to a path with cross-process safety.
 
-<a id="my_atomic_write"></a>
+<a id="my_atomic_write"></a><a id="user-content-my_atomic_write"></a>
 <details>
 <summary><code>my_atomic_write</code> — Atomically write 'data' to 'filepath' with an advisory lock.</summary>
 
@@ -1290,14 +1290,14 @@ Raises:
 
 </details>
 
-<a id="m-io_subprocess"></a>
+<a id="m-io_subprocess"></a><a id="user-content-m-io_subprocess"></a>
 ### `io_subprocess` — Subprocess wrappers + critical-error reporter
 
 _Layer 3._  `from emmykit.io_subprocess import …`
 
 `my_fopen` (smart-encoding text-file opener), `my_popen` (subprocess with timeout + capture), `my_critical_error` (logging + traceback + raise pattern), and the `MyPopenResult` data carrier.
 
-<a id="my_critical_error"></a>
+<a id="my_critical_error"></a><a id="user-content-my_critical_error"></a>
 <details>
 <summary><code>my_critical_error</code> — Log a critical error message and either exit the program or enter a breakpoint.</summary>
 
@@ -1313,7 +1313,7 @@ Log a critical error message and either exit the program or enter a breakpoint.
 
 </details>
 
-<a id="my_fopen"></a>
+<a id="my_fopen"></a><a id="user-content-my_fopen"></a>
 <details>
 <summary><code>my_fopen</code> — Attempt to read a text file with various encodings and return the file content if successful. Optionally, specify numli…</summary>
 
@@ -1344,7 +1344,7 @@ Returns:
 
 </details>
 
-<a id="my_popen"></a>
+<a id="my_popen"></a><a id="user-content-my_popen"></a>
 <details>
 <summary><code>my_popen</code> — Execute a command using subprocess.Popen and capture the output line by line using threads.</summary>
 
@@ -1360,7 +1360,7 @@ Execute a command using subprocess.Popen and capture the output line by line usi
 
 </details>
 
-<a id="mypopenresult"></a>
+<a id="mypopenresult"></a><a id="user-content-mypopenresult"></a>
 <details>
 <summary><code>MyPopenResult</code> — A class to store the results of a customized subprocess.Popen call.</summary>
 
@@ -1376,14 +1376,14 @@ A class to store the results of a customized subprocess.Popen call.
 
 </details>
 
-<a id="m-prompts"></a>
+<a id="m-prompts"></a><a id="user-content-m-prompts"></a>
 ### `prompts` — Interactive Y/N + multi-choice prompts
 
 _Layer 4._  `from emmykit.prompts import …`
 
 Two small helpers that funnel through `input()` with consistent retry behavior.
 
-<a id="prompt_then_choose"></a>
+<a id="prompt_then_choose"></a><a id="user-content-prompt_then_choose"></a>
 <details>
 <summary><code>prompt_then_choose</code> — Show a numbered list of choices and prompt the user to select one.</summary>
 
@@ -1410,7 +1410,7 @@ Raises:
 
 </details>
 
-<a id="prompt_then_confirm"></a>
+<a id="prompt_then_confirm"></a><a id="user-content-prompt_then_confirm"></a>
 <details>
 <summary><code>prompt_then_confirm</code> — Prompt the user with the given message and return True if the user enters 'yes', False otherwise.</summary>
 
@@ -1426,14 +1426,14 @@ Prompt the user with the given message and return True if the user enters 'yes',
 
 </details>
 
-<a id="m-introspection"></a>
+<a id="m-introspection"></a><a id="user-content-m-introspection"></a>
 ### `introspection` — AST + source-code reflection
 
 _Layer 4._  `from emmykit.introspection import …`
 
 Render a function's source with original whitespace, parse module-level constants out of a file, normalize objects into dicts, compile source snippets in-memory, and conditionally read-and-eval embedded scripts.
 
-<a id="compile_code"></a>
+<a id="compile_code"></a><a id="user-content-compile_code"></a>
 <details>
 <summary><code>compile_code</code> — Attempt to compile the given source code in 'exec' mode.</summary>
 
@@ -1461,7 +1461,7 @@ Raises:
 
 </details>
 
-<a id="if_filepath_then_read"></a>
+<a id="if_filepath_then_read"></a><a id="user-content-if_filepath_then_read"></a>
 <details>
 <summary><code>if_filepath_then_read</code> — If given a path, return the file's text; otherwise return the string itself.</summary>
 
@@ -1510,7 +1510,7 @@ Notes:
 
 </details>
 
-<a id="load_ast_var"></a>
+<a id="load_ast_var"></a><a id="user-content-load_ast_var"></a>
 <details>
 <summary><code>load_ast_var</code> — Load a top-level literal Python variable from a module without executing it.</summary>
 
@@ -1539,7 +1539,7 @@ Raises:
 
 </details>
 
-<a id="normalize_to_dict"></a>
+<a id="normalize_to_dict"></a><a id="user-content-normalize_to_dict"></a>
 <details>
 <summary><code>normalize_to_dict</code> — Ensure that 'value' is a dict. If it's a JSON-style string, try to parse it. Otherwise, log a warning and return an emp…</summary>
 
@@ -1555,7 +1555,7 @@ Ensure that 'value' is a dict. If it's a JSON-style string, try to parse it. Oth
 
 </details>
 
-<a id="show_function_source"></a>
+<a id="show_function_source"></a><a id="user-content-show_function_source"></a>
 <details>
 <summary><code>show_function_source</code> — Print the full source text of a Python function (including comments,</summary>
 
@@ -1603,14 +1603,14 @@ Raises:
 
 </details>
 
-<a id="m-humanize"></a>
+<a id="m-humanize"></a><a id="user-content-m-humanize"></a>
 ### `humanize` — Human-readable number formatting
 
 _Layer 4._  `from emmykit.humanize import …`
 
 Any quantity with an SI or IEC prefix (`3.2 ZJ`, `2.0 cm`, `1.0 GiB`), one shared prefix for a whole set of values (`choose_prefix`, for axis and colorbar labels), scientific-notation exponents, and away-from-zero rounding (lazy numpy).
 
-<a id="bytes"></a>
+<a id="bytes"></a><a id="user-content-bytes"></a>
 <details>
 <summary><code>BYTES</code> — Unit</summary>
 
@@ -1622,7 +1622,7 @@ BYTES = Unit(symbol='B', singular='byte', plural='bytes')
 
 </details>
 
-<a id="choose_prefix"></a>
+<a id="choose_prefix"></a><a id="user-content-choose_prefix"></a>
 <details>
 <summary><code>choose_prefix</code> — Pick one prefix for a whole set of values, e.g. every tick on one axis.</summary>
 
@@ -1680,7 +1680,7 @@ Example:
 
 </details>
 
-<a id="grams"></a>
+<a id="grams"></a><a id="user-content-grams"></a>
 <details>
 <summary><code>GRAMS</code> — Unit</summary>
 
@@ -1692,7 +1692,7 @@ GRAMS = Unit(symbol='g', singular='gram', plural='grams')
 
 </details>
 
-<a id="hertz"></a>
+<a id="hertz"></a><a id="user-content-hertz"></a>
 <details>
 <summary><code>HERTZ</code> — Unit</summary>
 
@@ -1704,7 +1704,7 @@ HERTZ = Unit(symbol='Hz', singular='hertz', plural='hertz')
 
 </details>
 
-<a id="human_bytesize"></a>
+<a id="human_bytesize"></a><a id="user-content-human_bytesize"></a>
 <details>
 <summary><code>human_bytesize</code> — Formats a byte count into a human-readable string.</summary>
 
@@ -1743,7 +1743,7 @@ Raises:
 
 </details>
 
-<a id="human_quantity"></a>
+<a id="human_quantity"></a><a id="user-content-human_quantity"></a>
 <details>
 <summary><code>human_quantity</code> — Format one value with the prefix that scales it into [1, step).</summary>
 
@@ -1819,7 +1819,7 @@ Example:
 
 </details>
 
-<a id="joules"></a>
+<a id="joules"></a><a id="user-content-joules"></a>
 <details>
 <summary><code>JOULES</code> — Unit</summary>
 
@@ -1831,7 +1831,7 @@ JOULES = Unit(symbol='J', singular='joule', plural='joules')
 
 </details>
 
-<a id="meters"></a>
+<a id="meters"></a><a id="user-content-meters"></a>
 <details>
 <summary><code>METERS</code> — Unit</summary>
 
@@ -1843,7 +1843,7 @@ METERS = Unit(symbol='m', singular='meter', plural='meters')
 
 </details>
 
-<a id="round_out"></a>
+<a id="round_out"></a><a id="user-content-round_out"></a>
 <details>
 <summary><code>round_out</code> — Round a number away from zero (i.e. rounds up for x>0 and down for x<0) to</summary>
 
@@ -1870,7 +1870,7 @@ Returns:
 
 </details>
 
-<a id="sci_exp"></a>
+<a id="sci_exp"></a><a id="user-content-sci_exp"></a>
 <details>
 <summary><code>sci_exp</code> — Return floor(log10(|x|)), clamped to -max_digits for very small |x|.</summary>
 
@@ -1887,7 +1887,7 @@ For x == 0, returns -max_digits.
 
 </details>
 
-<a id="seconds"></a>
+<a id="seconds"></a><a id="user-content-seconds"></a>
 <details>
 <summary><code>SECONDS</code> — Unit</summary>
 
@@ -1899,7 +1899,7 @@ SECONDS = Unit(symbol='s', singular='second', plural='seconds')
 
 </details>
 
-<a id="unit"></a>
+<a id="unit"></a><a id="user-content-unit"></a>
 <details>
 <summary><code>Unit</code> — A unit of measurement, in the three spellings a formatter needs.</summary>
 
@@ -1926,7 +1926,7 @@ Attributes:
 
 </details>
 
-<a id="watts"></a>
+<a id="watts"></a><a id="user-content-watts"></a>
 <details>
 <summary><code>WATTS</code> — Unit</summary>
 
@@ -1938,14 +1938,14 @@ WATTS = Unit(symbol='W', singular='watt', plural='watts')
 
 </details>
 
-<a id="m-numeric_helpers"></a>
+<a id="m-numeric_helpers"></a><a id="user-content-m-numeric_helpers"></a>
 ### `numeric_helpers` — Numeric parsing + unit-to-seconds conversion
 
 _Layer 1._  `from emmykit.numeric_helpers import …`
 
 Tiny helpers shared by `humanize` and `datetime_utils` so neither has to pull in the other.
 
-<a id="is_float"></a>
+<a id="is_float"></a><a id="user-content-is_float"></a>
 <details>
 <summary><code>is_float</code> — Check if a string can be parsed as a float.</summary>
 
@@ -1961,7 +1961,7 @@ Check if a string can be parsed as a float.
 
 </details>
 
-<a id="seconds_in_unit"></a>
+<a id="seconds_in_unit"></a><a id="user-content-seconds_in_unit"></a>
 <details>
 <summary><code>seconds_in_unit</code> — Return the number of seconds in a given time unit.</summary>
 
@@ -1977,14 +1977,14 @@ Return the number of seconds in a given time unit.
 
 </details>
 
-<a id="m-datetime_utils"></a>
+<a id="m-datetime_utils"></a><a id="user-content-m-datetime_utils"></a>
 ### `datetime_utils` — Date / time parsing, formatting, timezone handling
 
 _Layer 4._  `from emmykit.datetime_utils import …`
 
 `parse_datetime` is the load-bearing dispatcher (handles ISO, JD/MJD, decimal years, dateutil fallbacks); supplemented by `AdaptiveDateFormatter` for matplotlib, `human_timespan` for durations, and a small zoo of tz/JD helpers.
 
-<a id="adaptive_date_labels"></a>
+<a id="adaptive_date_labels"></a><a id="user-content-adaptive_date_labels"></a>
 <details>
 <summary><code>adaptive_date_labels</code> — Format dates at the coarsest precision that produces unique labels.</summary>
 
@@ -2017,7 +2017,7 @@ Returns:
 
 </details>
 
-<a id="adaptivedateformatter"></a>
+<a id="adaptivedateformatter"></a><a id="user-content-adaptivedateformatter"></a>
 <details>
 <summary><code>AdaptiveDateFormatter</code> — Matplotlib Formatter that auto-selects date label precision.</summary>
 
@@ -2067,7 +2067,7 @@ Example:
 
 </details>
 
-<a id="anydatetimetype"></a>
+<a id="anydatetimetype"></a><a id="user-content-anydatetimetype"></a>
 <details>
 <summary><code>AnyDateTimeType</code> — TypeAlias (62 chars)</summary>
 
@@ -2079,7 +2079,7 @@ AnyDateTimeType: TypeAlias = 'str | float | int | np.datetime64 | pd.Timestamp |
 
 </details>
 
-<a id="decimal_year_to_datetime"></a>
+<a id="decimal_year_to_datetime"></a><a id="user-content-decimal_year_to_datetime"></a>
 <details>
 <summary><code>decimal_year_to_datetime</code> — Convert a decimal year to a datetime object.</summary>
 
@@ -2097,7 +2097,7 @@ Usage: new_datetime_datetime_object = decimal_year_to_datetime(2002.291)
 
 </details>
 
-<a id="extract_timestamp"></a>
+<a id="extract_timestamp"></a><a id="user-content-extract_timestamp"></a>
 <details>
 <summary><code>extract_timestamp</code> — Extract timestamp string (in format YYYYMMDD-HHMMSS) from the_string, or None if not found.</summary>
 
@@ -2113,7 +2113,7 @@ Extract timestamp string (in format YYYYMMDD-HHMMSS) from the_string, or None if
 
 </details>
 
-<a id="format_date_range"></a>
+<a id="format_date_range"></a><a id="user-content-format_date_range"></a>
 <details>
 <summary><code>format_date_range</code> — Process a pair of datetime.datetime dates and produce a formatted date range string</summary>
 
@@ -2142,7 +2142,7 @@ Raises:
 
 </details>
 
-<a id="human_timespan"></a>
+<a id="human_timespan"></a><a id="user-content-human_timespan"></a>
 <details>
 <summary><code>human_timespan</code> — Format a time span in seconds into a human-readable string.</summary>
 
@@ -2170,7 +2170,7 @@ Raises:
 
 </details>
 
-<a id="parse_datetime"></a>
+<a id="parse_datetime"></a><a id="user-content-parse_datetime"></a>
 <details>
 <summary><code>parse_datetime</code> — Try parsing the given_date string or number into a datetime.datetime object in the specified timezone.</summary>
 
@@ -2236,7 +2236,7 @@ Raises:
 
 </details>
 
-<a id="parse_timezone"></a>
+<a id="parse_timezone"></a><a id="user-content-parse_timezone"></a>
 <details>
 <summary><code>parse_timezone</code> — Parse the given timezone string or tzinfo object into a datetime.tzinfo object.</summary>
 
@@ -2271,7 +2271,7 @@ Raises:
 
 </details>
 
-<a id="precision"></a>
+<a id="precision"></a><a id="user-content-precision"></a>
 <details>
 <summary><code>Precision</code> — Integer constants representing date-formatting precision levels.</summary>
 
@@ -2289,14 +2289,14 @@ Levels are ordered from coarsest (YEAR=0) to finest (SECOND=4).
 
 </details>
 
-<a id="m-json_io"></a>
+<a id="m-json_io"></a><a id="user-content-m-json_io"></a>
 ### `json_io` — JSON serialization + dataclass conversion
 
 _Layer 4._  `from emmykit.json_io import …`
 
 `to_jsonable`/`from_jsonable` round-trip recursively-typed structures including `Path`, `datetime`, and dataclasses, with paired `save_options_to_json`/`load_options_from_json` helpers for `Options` objects.
 
-<a id="builtin_json_tags"></a>
+<a id="builtin_json_tags"></a><a id="user-content-builtin_json_tags"></a>
 <details>
 <summary><code>BUILTIN_JSON_TAGS</code> — Final[frozenset[str]] (16 items)</summary>
 
@@ -2308,7 +2308,7 @@ BUILTIN_JSON_TAGS: Final[frozenset[str]] = frozenset({'bytearray', 'bytes', 'dat
 
 </details>
 
-<a id="from_jsonable"></a>
+<a id="from_jsonable"></a><a id="user-content-from_jsonable"></a>
 <details>
 <summary><code>from_jsonable</code> — Reconstruct objects encoded with to_jsonable(..., roundtrip=True).</summary>
 
@@ -2325,7 +2325,7 @@ If input was produced with roundtrip=False, this mostly passes values through.
 
 </details>
 
-<a id="load_options_from_json"></a>
+<a id="load_options_from_json"></a><a id="user-content-load_options_from_json"></a>
 <details>
 <summary><code>load_options_from_json</code> — Load the options object from a JSON file.</summary>
 
@@ -2352,7 +2352,7 @@ Raises:
 
 </details>
 
-<a id="register_json_type"></a>
+<a id="register_json_type"></a><a id="user-content-register_json_type"></a>
 <details>
 <summary><code>register_json_type</code> — Teach `to_jsonable` / `from_jsonable` about a type `emmykit` does not know.</summary>
 
@@ -2410,7 +2410,7 @@ Raises:
 
 </details>
 
-<a id="save_options_to_json"></a>
+<a id="save_options_to_json"></a><a id="user-content-save_options_to_json"></a>
 <details>
 <summary><code>save_options_to_json</code> — Save the options object to a JSON file.</summary>
 
@@ -2440,7 +2440,7 @@ Raises:
 
 </details>
 
-<a id="to_jsonable"></a>
+<a id="to_jsonable"></a><a id="user-content-to_jsonable"></a>
 <details>
 <summary><code>to_jsonable</code> — Convert arbitrary Python objects into JSON-serializable primitives.</summary>
 
@@ -2458,7 +2458,7 @@ Types registered via register_json_type() are handled ahead of the built-ins.
 
 </details>
 
-<a id="unregister_json_type"></a>
+<a id="unregister_json_type"></a><a id="user-content-unregister_json_type"></a>
 <details>
 <summary><code>unregister_json_type</code> — Remove a registration made by `register_json_type`.</summary>
 
@@ -2486,14 +2486,14 @@ Raises:
 
 </details>
 
-<a id="m-diff_view"></a>
+<a id="m-diff_view"></a><a id="user-content-m-diff_view"></a>
 ### `diff_view` — Diff rendering with visible whitespace
 
 _Layer 4._  `from emmykit.diff_view import …`
 
 `my_diff` (color unified diff), `diff_and_confirm` (interactive accept/reject loop), `highlight_changes` (per-line intra-word emphasis), and `is_python_script` (the heuristic that decides whether a path holds Python source).
 
-<a id="diff_and_confirm"></a>
+<a id="diff_and_confirm"></a><a id="user-content-diff_and_confirm"></a>
 <details>
 <summary><code>diff_and_confirm</code> — Show a unified diff of orig_text → changed_text with a number of context lines</summary>
 
@@ -2532,7 +2532,7 @@ Raises:
 
 </details>
 
-<a id="highlight_changes"></a>
+<a id="highlight_changes"></a><a id="user-content-highlight_changes"></a>
 <details>
 <summary><code>highlight_changes</code> — Compare 'orig' and 'new' strings and return a tuple</summary>
 
@@ -2565,7 +2565,7 @@ Raises:
 
 </details>
 
-<a id="is_python_script"></a>
+<a id="is_python_script"></a><a id="user-content-is_python_script"></a>
 <details>
 <summary><code>is_python_script</code> — Return True if 'path' looks like a Python script:</summary>
 
@@ -2594,7 +2594,7 @@ Raises:
 
 </details>
 
-<a id="my_diff"></a>
+<a id="my_diff"></a><a id="user-content-my_diff"></a>
 <details>
 <summary><code>my_diff</code> — Show a diff between 'orig_text' and 'changed_text' in the console,</summary>
 
@@ -2628,7 +2628,7 @@ Raises:
 
 </details>
 
-<a id="m-text"></a>
+<a id="m-text"></a><a id="user-content-m-text"></a>
 ### `text` — Mojibake fixing, encoding detection, casing helpers
 
 _Layer 5._  `from emmykit.text import …`
@@ -2637,7 +2637,7 @@ ftfy-based `fix_text`/`fix_mojibake` (with an atomic write-back), explicit UTF-8
 
 Translation tables live in `emmykit.text_constants` (`CHARACTERS_TO_SPACE` / `QUOTES_TO_DELETE` / `REPLACE_WITH_SPACE` / `TRANSLATION_TABLE`) and feed `normalize_for_search`.
 
-<a id="contains_mojibake"></a>
+<a id="contains_mojibake"></a><a id="user-content-contains_mojibake"></a>
 <details>
 <summary><code>contains_mojibake</code> — Use ftfy.badness.is_bad() to detect any likely mojibake in the text.</summary>
 
@@ -2653,7 +2653,7 @@ Use ftfy.badness.is_bad() to detect any likely mojibake in the text.
 
 </details>
 
-<a id="decode_cp1252"></a>
+<a id="decode_cp1252"></a><a id="user-content-decode_cp1252"></a>
 <details>
 <summary><code>decode_cp1252</code> — Attempt to decode CP1252 bytes and return as a string.</summary>
 
@@ -2670,7 +2670,7 @@ If it fails, return None.
 
 </details>
 
-<a id="decode_utf8"></a>
+<a id="decode_utf8"></a><a id="user-content-decode_utf8"></a>
 <details>
 <summary><code>decode_utf8</code> — If the file at 'path' is valid UTF-8 without lone C1 controls,</summary>
 
@@ -2687,7 +2687,7 @@ return the decoded string. Otherwise, return None.
 
 </details>
 
-<a id="ensure_utf8_meta"></a>
+<a id="ensure_utf8_meta"></a><a id="user-content-ensure_utf8_meta"></a>
 <details>
 <summary><code>ensure_utf8_meta</code> — Ensure the HTML text has a <meta charset="utf-8"> tag.</summary>
 
@@ -2707,7 +2707,7 @@ after the opening <head> tag.
 
 </details>
 
-<a id="fix_mojibake"></a>
+<a id="fix_mojibake"></a><a id="user-content-fix_mojibake"></a>
 <details>
 <summary><code>fix_mojibake</code> — Fix mojibake in a text file, recoding from CP1252 to UTF-8 if necessary.</summary>
 
@@ -2724,7 +2724,7 @@ If the file is already valid UTF-8, it will only fix mojibake.
 
 </details>
 
-<a id="fix_text"></a>
+<a id="fix_text"></a><a id="user-content-fix_text"></a>
 <details>
 <summary><code>fix_text</code> — Fix mojibake in a string using ftfy.fix_encoding().</summary>
 
@@ -2740,7 +2740,7 @@ Fix mojibake in a string using ftfy.fix_encoding().
 
 </details>
 
-<a id="my_capitalize"></a>
+<a id="my_capitalize"></a><a id="user-content-my_capitalize"></a>
 <details>
 <summary><code>my_capitalize</code> — Capitalize ONLY the first letter of a string and DON'T modify the rest of it.</summary>
 
@@ -2756,7 +2756,7 @@ Capitalize ONLY the first letter of a string and DON'T modify the rest of it.
 
 </details>
 
-<a id="my_title_case"></a>
+<a id="my_title_case"></a><a id="user-content-my_title_case"></a>
 <details>
 <summary><code>my_title_case</code> — Capitalize the first letter of each word, but if a word already has ANY uppercase letters, leave it as is. This way, wo…</summary>
 
@@ -2772,7 +2772,7 @@ Capitalize the first letter of each word, but if a word already has ANY uppercas
 
 </details>
 
-<a id="normalize_for_search"></a>
+<a id="normalize_for_search"></a><a id="user-content-normalize_for_search"></a>
 <details>
 <summary><code>normalize_for_search</code> — Convert text to ASCII and lowercase for case- and diacritic-insensitive comparison. Also treat some characters such as …</summary>
 
@@ -2788,14 +2788,14 @@ Convert text to ASCII and lowercase for case- and diacritic-insensitive comparis
 
 </details>
 
-<a id="m-hosts"></a>
+<a id="m-hosts"></a><a id="user-content-m-hosts"></a>
 ### `hosts` — Hostname + computer-name detection
 
 _Layer 5._  `from emmykit.hosts import …`
 
 Five strategies for retrieving a hostname (socket / platform / uname / `hostname` / scutil), aggregated by `get_computer_name` with a NASA-prefix detector.
 
-<a id="analyze_computer_name_results"></a>
+<a id="analyze_computer_name_results"></a><a id="user-content-analyze_computer_name_results"></a>
 <details>
 <summary><code>analyze_computer_name_results</code> — Analyzes the retrieved computer names.</summary>
 
@@ -2823,7 +2823,7 @@ Raises:
 
 </details>
 
-<a id="computer_name"></a>
+<a id="computer_name"></a><a id="user-content-computer_name"></a>
 <details>
 <summary><code>COMPUTER_NAME</code> — str = 'b5ac839dd662'</summary>
 
@@ -2835,7 +2835,7 @@ COMPUTER_NAME: str = 'b5ac839dd662'
 
 </details>
 
-<a id="get_computer_name"></a>
+<a id="get_computer_name"></a><a id="user-content-get_computer_name"></a>
 <details>
 <summary><code>get_computer_name</code> — Attempts multiple methods to retrieve the computer's name and returns the most common one.</summary>
 
@@ -2861,7 +2861,7 @@ Raises:
 
 </details>
 
-<a id="get_hostname_os_uname"></a>
+<a id="get_hostname_os_uname"></a><a id="user-content-get_hostname_os_uname"></a>
 <details>
 <summary><code>get_hostname_os_uname</code> — Retrieves the hostname using os.uname().nodename.</summary>
 
@@ -2877,7 +2877,7 @@ Retrieves the hostname using os.uname().nodename.
 
 </details>
 
-<a id="get_hostname_platform"></a>
+<a id="get_hostname_platform"></a><a id="user-content-get_hostname_platform"></a>
 <details>
 <summary><code>get_hostname_platform</code> — Retrieves the hostname using platform.node().</summary>
 
@@ -2893,7 +2893,7 @@ Retrieves the hostname using platform.node().
 
 </details>
 
-<a id="get_hostname_socket"></a>
+<a id="get_hostname_socket"></a><a id="user-content-get_hostname_socket"></a>
 <details>
 <summary><code>get_hostname_socket</code> — Retrieves the hostname using socket.gethostname().</summary>
 
@@ -2909,7 +2909,7 @@ Retrieves the hostname using socket.gethostname().
 
 </details>
 
-<a id="get_hostname_subprocess_hostname"></a>
+<a id="get_hostname_subprocess_hostname"></a><a id="user-content-get_hostname_subprocess_hostname"></a>
 <details>
 <summary><code>get_hostname_subprocess_hostname</code> — Retrieves the hostname using the 'hostname' system command via subprocess.</summary>
 
@@ -2925,7 +2925,7 @@ Retrieves the hostname using the 'hostname' system command via subprocess.
 
 </details>
 
-<a id="get_hostname_subprocess_scutil"></a>
+<a id="get_hostname_subprocess_scutil"></a><a id="user-content-get_hostname_subprocess_scutil"></a>
 <details>
 <summary><code>get_hostname_subprocess_scutil</code> — Retrieves the hostname using the 'scutil --get ComputerName' command on macOS via subprocess.</summary>
 
@@ -2941,7 +2941,7 @@ Retrieves the hostname using the 'scutil --get ComputerName' command on macOS vi
 
 </details>
 
-<a id="is_nasa_computer"></a>
+<a id="is_nasa_computer"></a><a id="user-content-is_nasa_computer"></a>
 <details>
 <summary><code>IS_NASA_COMPUTER</code> — bool = False</summary>
 
@@ -2953,7 +2953,7 @@ IS_NASA_COMPUTER: bool = False
 
 </details>
 
-<a id="c-hosts-nasa-computer-name-prefixes"></a>
+<a id="c-hosts-nasa-computer-name-prefixes"></a><a id="user-content-c-hosts-nasa-computer-name-prefixes"></a>
 <details>
 <summary><code>NASA computer-name prefixes</code> — Prefix lists feeding `IS_NASA_COMPUTER` detection.</summary>
 
@@ -2963,7 +2963,7 @@ IS_NASA_COMPUTER: bool = False
 
 </details>
 
-<a id="m-network"></a>
+<a id="m-network"></a><a id="user-content-m-network"></a>
 ### `network` — Internet-connectivity probes
 
 _Layer 5._  `from emmykit.network import …`
@@ -2972,7 +2972,7 @@ _Layer 5._  `from emmykit.network import …`
 
 Probe targets live in `emmykit.net_targets` (`IPV4_TARGETS` / `IPV6_TARGETS` / `HTTP_PROBES` / `DNS_TEST_NAMES`) and feed `is_internet_available`.
 
-<a id="checkresult"></a>
+<a id="checkresult"></a><a id="user-content-checkresult"></a>
 <details>
 <summary><code>CheckResult</code> — Aggregate results from the multi-strategy connectivity check.</summary>
 
@@ -2990,7 +2990,7 @@ Aggregate results from the multi-strategy connectivity check.
 
 </details>
 
-<a id="is_internet_available"></a>
+<a id="is_internet_available"></a><a id="user-content-is_internet_available"></a>
 <details>
 <summary><code>is_internet_available</code> — Determine if the internet is available using multiple methods.</summary>
 
@@ -3034,14 +3034,14 @@ Raises:
 
 </details>
 
-<a id="m-python_env"></a>
+<a id="m-python_env"></a><a id="user-content-m-python_env"></a>
 ### `python_env` — Python interpreter discovery
 
 _Layer 2._  `from emmykit.python_env import …`
 
 `find_preferred_python_version` locates the preferred interpreter on PATH; `check_python_version` confirms a given python command meets the minimum version.
 
-<a id="check_python_version"></a>
+<a id="check_python_version"></a><a id="user-content-check_python_version"></a>
 <details>
 <summary><code>check_python_version</code> — Check if the given Python command is available and has a version of PY_VERSION or higher.</summary>
 
@@ -3057,7 +3057,7 @@ Check if the given Python command is available and has a version of PY_VERSION o
 
 </details>
 
-<a id="find_preferred_python_version"></a>
+<a id="find_preferred_python_version"></a><a id="user-content-find_preferred_python_version"></a>
 <details>
 <summary><code>find_preferred_python_version</code> — Find the command for the preferred version of python (stored here as PY_VERSION).</summary>
 
@@ -3073,14 +3073,14 @@ Find the command for the preferred version of python (stored here as PY_VERSION)
 
 </details>
 
-<a id="m-files"></a>
+<a id="m-files"></a><a id="user-content-m-files"></a>
 ### `files` — Checksums, downloads, filename formatting, free-space queries
 
 _Layer 5._  `from emmykit.files import …`
 
 `download_file` with progress, `calculate_checksum`, `query_free_space` via shutil, `filename_format` for legal-on-most-OSes name munging, and `verify_script` to confirm a shell script is well-formed.
 
-<a id="calculate_checksum"></a>
+<a id="calculate_checksum"></a><a id="user-content-calculate_checksum"></a>
 <details>
 <summary><code>calculate_checksum</code> — Calculate the SHA256 checksum of a file.</summary>
 
@@ -3096,7 +3096,7 @@ Calculate the SHA256 checksum of a file.
 
 </details>
 
-<a id="download_file"></a>
+<a id="download_file"></a><a id="user-content-download_file"></a>
 <details>
 <summary><code>download_file</code> — Download a file to 'dest' with retry + exponential backoff.</summary>
 
@@ -3130,7 +3130,7 @@ Raises:
 
 </details>
 
-<a id="filename_format"></a>
+<a id="filename_format"></a><a id="user-content-filename_format"></a>
 <details>
 <summary><code>filename_format</code> — Turn arbitrary text into an ASCII-only, filesystem‐safe base filename.</summary>
 
@@ -3171,7 +3171,7 @@ Raises:
 
 </details>
 
-<a id="query_free_space"></a>
+<a id="query_free_space"></a><a id="user-content-query_free_space"></a>
 <details>
 <summary><code>query_free_space</code> — Return the free space (in bytes) available to the current user on the</summary>
 
@@ -3199,7 +3199,7 @@ Raises:
 
 </details>
 
-<a id="verify_script"></a>
+<a id="verify_script"></a><a id="user-content-verify_script"></a>
 <details>
 <summary><code>verify_script</code> — Ensure that 'thepath' exists and contains exactly 'thescript'.</summary>
 
@@ -3218,14 +3218,14 @@ Ensure that 'thepath' exists and contains exactly 'thescript'.
 
 </details>
 
-<a id="m-lint"></a>
+<a id="m-lint"></a><a id="user-content-m-lint"></a>
 ### `lint` — flake8 / autopep8 / mypy interactive runners + multireplace
 
 _Layer 6._  `from emmykit.lint import …`
 
 Run linters, gather + display findings with color, prompt-and-apply autopep8 fixes, and the `multireplace` regex-driven search-and-replace tool that shares lint internals.
 
-<a id="ask_and_autopep8"></a>
+<a id="ask_and_autopep8"></a><a id="user-content-ask_and_autopep8"></a>
 <details>
 <summary><code>ask_and_autopep8</code> — Prompt the user about fixing ALL occurrences of 'code' in 'path',</summary>
 
@@ -3260,7 +3260,7 @@ Raises:
 
 </details>
 
-<a id="ask_and_replace"></a>
+<a id="ask_and_replace"></a><a id="user-content-ask_and_replace"></a>
 <details>
 <summary><code>ask_and_replace</code> — Read 'path', do orig.replace(old, new), then show a diff and ask to confirm.</summary>
 
@@ -3297,7 +3297,7 @@ Raises:
 
 </details>
 
-<a id="check_python_formatting"></a>
+<a id="check_python_formatting"></a><a id="user-content-check_python_formatting"></a>
 <details>
 <summary><code>check_python_formatting</code> — Reads a .py file at 'path' via my_fopen, makes sure it compiles, parses it with AST,</summary>
 
@@ -3326,7 +3326,7 @@ Raises:
 
 </details>
 
-<a id="formatchecker"></a>
+<a id="formatchecker"></a><a id="user-content-formatchecker"></a>
 <details>
 <summary><code>FormatChecker</code> — Walks a module AST and collects formatting violations:</summary>
 
@@ -3346,7 +3346,7 @@ Walks a module AST and collects formatting violations:
 
 </details>
 
-<a id="get_autopep8_fixable_codes"></a>
+<a id="get_autopep8_fixable_codes"></a><a id="user-content-get_autopep8_fixable_codes"></a>
 <details>
 <summary><code>get_autopep8_fixable_codes</code> — Run 'autopep8 --list-fixes' (via subprocess) to discover exactly</summary>
 
@@ -3364,7 +3364,7 @@ Returns a set like {"E101","E111", ...}.
 
 </details>
 
-<a id="interactive_flake8"></a>
+<a id="interactive_flake8"></a><a id="user-content-interactive_flake8"></a>
 <details>
 <summary><code>interactive_flake8</code> — 1) Run the flake8 API for summary counts.</summary>
 
@@ -3398,7 +3398,7 @@ Returns:
 
 </details>
 
-<a id="multireplace"></a>
+<a id="multireplace"></a><a id="user-content-multireplace"></a>
 <details>
 <summary><code>multireplace</code> — Perform a multi-file replace operation.</summary>
 
@@ -3431,7 +3431,7 @@ Raises:
 
 </details>
 
-<a id="run_flake8"></a>
+<a id="run_flake8"></a><a id="user-content-run_flake8"></a>
 <details>
 <summary><code>run_flake8</code> — Run Flake8 on 'path', but:</summary>
 
@@ -3461,7 +3461,7 @@ Raises:
 
 </details>
 
-<a id="run_mypy"></a>
+<a id="run_mypy"></a><a id="user-content-run_mypy"></a>
 <details>
 <summary><code>run_mypy</code> — Run basic mypy static analysis on the specified file.</summary>
 
@@ -3484,14 +3484,14 @@ Returns:
 
 </details>
 
-<a id="m-treeview"></a>
+<a id="m-treeview"></a><a id="user-content-m-treeview"></a>
 ### `treeview` — Directory tree with new-file highlighting
 
 _Layer 7._  `from emmykit.treeview import …`
 
 Renders a colored ASCII tree starting at a directory, marking files newer than a cutoff.
 
-<a id="treeview_new_files"></a>
+<a id="treeview_new_files"></a><a id="user-content-treeview_new_files"></a>
 <details>
 <summary><code>treeview_new_files</code> — Recursively scan the directory, print the contents of files newer than last_file_path (if provided- if so store its mod…</summary>
 
@@ -3531,14 +3531,14 @@ Raises:
 
 </details>
 
-<a id="m-docker_utils"></a>
+<a id="m-docker_utils"></a><a id="user-content-m-docker_utils"></a>
 ### `docker_utils` — Docker daemon + image lifecycle helpers
 
 _Layer 7._  `from emmykit.docker_utils import …`
 
 Ensure the docker daemon is running, the requested image is built, and rerun a command with auto-fixes when daemon or image is missing.
 
-<a id="ensure_daemon_running"></a>
+<a id="ensure_daemon_running"></a><a id="user-content-ensure_daemon_running"></a>
 <details>
 <summary><code>ensure_daemon_running</code> — Check if the Docker daemon is running; if not, attempt to start it.</summary>
 
@@ -3554,7 +3554,7 @@ Check if the Docker daemon is running; if not, attempt to start it.
 
 </details>
 
-<a id="ensure_docker_installed"></a>
+<a id="ensure_docker_installed"></a><a id="user-content-ensure_docker_installed"></a>
 <details>
 <summary><code>ensure_docker_installed</code> — Check if the Docker CLI is installed; if not, raise an error.</summary>
 
@@ -3570,7 +3570,7 @@ Check if the Docker CLI is installed; if not, raise an error.
 
 </details>
 
-<a id="ensure_image_built"></a>
+<a id="ensure_image_built"></a><a id="user-content-ensure_image_built"></a>
 <details>
 <summary><code>ensure_image_built</code> — Ensure that a Docker image with the given name exists; if not, build it.</summary>
 
@@ -3589,7 +3589,7 @@ the function will raise an error.
 
 </details>
 
-<a id="run_with_docker_fixes"></a>
+<a id="run_with_docker_fixes"></a><a id="user-content-run_with_docker_fixes"></a>
 <details>
 <summary><code>run_with_docker_fixes</code> — Run a command (typically 'docker run ...') and if it fails, attempt to fix</summary>
 
@@ -3618,14 +3618,14 @@ Raises:
 
 </details>
 
-<a id="m-system"></a>
+<a id="m-system"></a><a id="user-content-m-system"></a>
 ### `system` — OS-level process + resource helpers
 
 _Layer 7._  `from emmykit.system import …`
 
 `kill_process`, `is_process_running`, `start_only_one_instance` (PID-lock idempotency), `detect_country` (IP geoloc), and file-manager / terminal-launcher entry points.
 
-<a id="check_if_command_exists"></a>
+<a id="check_if_command_exists"></a><a id="user-content-check_if_command_exists"></a>
 <details>
 <summary><code>check_if_command_exists</code> — Check if a command exists on the system.</summary>
 
@@ -3647,7 +3647,7 @@ Returns:
 
 </details>
 
-<a id="detect_country"></a>
+<a id="detect_country"></a><a id="user-content-detect_country"></a>
 <details>
 <summary><code>detect_country</code> — Detect the country of the IP address using ipinfo.io service.</summary>
 
@@ -3673,7 +3673,7 @@ Raises:
 
 </details>
 
-<a id="get_effective_free_memory"></a>
+<a id="get_effective_free_memory"></a><a id="user-content-get_effective_free_memory"></a>
 <details>
 <summary><code>get_effective_free_memory</code> — Return the "effective" free memory in bytes: free memory plus buffers plus cache.</summary>
 
@@ -3689,7 +3689,7 @@ Return the "effective" free memory in bytes: free memory plus buffers plus cache
 
 </details>
 
-<a id="is_process_running"></a>
+<a id="is_process_running"></a><a id="user-content-is_process_running"></a>
 <details>
 <summary><code>is_process_running</code> — Check if a process with the given name is running.</summary>
 
@@ -3705,7 +3705,7 @@ Check if a process with the given name is running.
 
 </details>
 
-<a id="kill_process"></a>
+<a id="kill_process"></a><a id="user-content-kill_process"></a>
 <details>
 <summary><code>kill_process</code> — Kill a process by its name, then check if it is still running and retry if needed. Make sure the process name is unique…</summary>
 
@@ -3721,7 +3721,7 @@ Kill a process by its name, then check if it is still running and retry if neede
 
 </details>
 
-<a id="open_filemanager_with_dirs"></a>
+<a id="open_filemanager_with_dirs"></a><a id="user-content-open_filemanager_with_dirs"></a>
 <details>
 <summary><code>open_filemanager_with_dirs</code> — Open the file manager with the specified directories.</summary>
 
@@ -3738,7 +3738,7 @@ Note: Most file managers don't support multiple tabs via command line, so open s
 
 </details>
 
-<a id="open_terminal_and_run_command"></a>
+<a id="open_terminal_and_run_command"></a><a id="user-content-open_terminal_and_run_command"></a>
 <details>
 <summary><code>open_terminal_and_run_command</code> — Open a GNOME terminal, source ~/.bashrc (via bash -i), run the_command,</summary>
 
@@ -3755,7 +3755,7 @@ and optionally close or keep the window open. Optionally, maximize it.
 
 </details>
 
-<a id="start_only_one_instance"></a>
+<a id="start_only_one_instance"></a><a id="user-content-start_only_one_instance"></a>
 <details>
 <summary><code>start_only_one_instance</code> — Start a process, but only if it's not already running.</summary>
 
@@ -3771,14 +3771,14 @@ Start a process, but only if it's not already running.
 
 </details>
 
-<a id="m-media"></a>
+<a id="m-media"></a><a id="user-content-m-media"></a>
 ### `media` — Video / audio helpers (ffmpeg, VLC, system volume)
 
 _Layer 7._  `from emmykit.media import …`
 
 Open paths in VLC, find the bundled ffmpeg, query video duration, slice + concatenate video segments, and set the system volume via pulsectl.
 
-<a id="ensure_even_dimensions"></a>
+<a id="ensure_even_dimensions"></a><a id="user-content-ensure_even_dimensions"></a>
 <details>
 <summary><code>ensure_even_dimensions</code> — Ensure the image at 'image_path' has dimensions divisible by 2, by resizing if necessary.</summary>
 
@@ -3794,7 +3794,7 @@ Ensure the image at 'image_path' has dimensions divisible by 2, by resizing if n
 
 </details>
 
-<a id="extract_and_concatenate_segments"></a>
+<a id="extract_and_concatenate_segments"></a><a id="user-content-extract_and_concatenate_segments"></a>
 <details>
 <summary><code>extract_and_concatenate_segments</code> — Extracts segments from a video file and concatenates them into a new file.</summary>
 
@@ -3810,7 +3810,7 @@ Extracts segments from a video file and concatenates them into a new file.
 
 </details>
 
-<a id="find_ffmpeg"></a>
+<a id="find_ffmpeg"></a><a id="user-content-find_ffmpeg"></a>
 <details>
 <summary><code>find_ffmpeg</code> — Return a full path string to an ffmpeg executable if found, else None.</summary>
 
@@ -3837,7 +3837,7 @@ Raises:
 
 </details>
 
-<a id="get_video_duration_seconds"></a>
+<a id="get_video_duration_seconds"></a><a id="user-content-get_video_duration_seconds"></a>
 <details>
 <summary><code>get_video_duration_seconds</code> — Return the duration of a video file in seconds, using fast and reliable probes.</summary>
 
@@ -3869,7 +3869,7 @@ Raises:
 
 </details>
 
-<a id="open_dir_in_vlc"></a>
+<a id="open_dir_in_vlc"></a><a id="user-content-open_dir_in_vlc"></a>
 <details>
 <summary><code>open_dir_in_VLC</code> — Create a playlist of the files in the specified directory, then play that playlist in VLC. By default, don't search the…</summary>
 
@@ -3885,7 +3885,7 @@ Create a playlist of the files in the specified directory, then play that playli
 
 </details>
 
-<a id="open_in_vlc"></a>
+<a id="open_in_vlc"></a><a id="user-content-open_in_vlc"></a>
 <details>
 <summary><code>open_in_vlc</code> — Open a file or directory in VLC. If it's a directory, create a playlist of its contents first. If no_start is True, don…</summary>
 
@@ -3912,7 +3912,7 @@ Raises:
 
 </details>
 
-<a id="open_playlist_in_vlc"></a>
+<a id="open_playlist_in_vlc"></a><a id="user-content-open_playlist_in_vlc"></a>
 <details>
 <summary><code>open_playlist_in_VLC</code> — Open a playlist in VLC. If no_start is True, don't start playback in VLC.</summary>
 
@@ -3928,7 +3928,7 @@ Open a playlist in VLC. If no_start is True, don't start playback in VLC.
 
 </details>
 
-<a id="set_system_volume"></a>
+<a id="set_system_volume"></a><a id="user-content-set_system_volume"></a>
 <details>
 <summary><code>set_system_volume</code> — Set the system volume to a specific level.</summary>
 
@@ -3961,14 +3961,14 @@ Raises:
 
 </details>
 
-<a id="m-html_files"></a>
+<a id="m-html_files"></a><a id="user-content-m-html_files"></a>
 ### `html_files` — HTML filename munging + multi-file combination
 
 _Layer 7._  `from emmykit.html_files import …`
 
 Strip a leading prefix from filenames or `<title>` tags, and concatenate multiple HTML files into one.
 
-<a id="combine_html_files"></a>
+<a id="combine_html_files"></a><a id="user-content-combine_html_files"></a>
 <details>
 <summary><code>combine_html_files</code> — Combine multiple HTML files into a single HTML file.</summary>
 
@@ -4000,7 +4000,7 @@ Raises:
 
 </details>
 
-<a id="remove_prefix_from_filename"></a>
+<a id="remove_prefix_from_filename"></a><a id="user-content-remove_prefix_from_filename"></a>
 <details>
 <summary><code>remove_prefix_from_filename</code> — If the given filepath's base filename starts with the given prefix:</summary>
 
@@ -4030,7 +4030,7 @@ Raises:
 
 </details>
 
-<a id="remove_prefix_from_html_title"></a>
+<a id="remove_prefix_from_html_title"></a><a id="user-content-remove_prefix_from_html_title"></a>
 <details>
 <summary><code>remove_prefix_from_html_title</code> — If the given filepath is an HTML file and its title starts with the given prefix, remove the prefix from the title and …</summary>
 
@@ -4046,14 +4046,14 @@ If the given filepath is an HTML file and its title starts with the given prefix
 
 </details>
 
-<a id="m-llm"></a>
+<a id="m-llm"></a><a id="user-content-m-llm"></a>
 ### `llm` — LLM wrapper, config dataclasses, model selection
 
 _Layer 8._  `from emmykit.llm import …`
 
 The 2 000-LOC `LLMs` class wraps `litellm`/`tiktoken` with `LLMConfig`/`ModelInfo` dataclasses, a `SelectionStrategy` enum, and lazy backoff via tenacity.
 
-<a id="llmconfig"></a>
+<a id="llmconfig"></a><a id="user-content-llmconfig"></a>
 <details>
 <summary><code>LLMConfig</code> — Configuration for LLM selection and usage. Data only.</summary>
 
@@ -4068,7 +4068,7 @@ Configuration for LLM selection and usage. Data only.
 
 </details>
 
-<a id="llms"></a>
+<a id="llms"></a><a id="user-content-llms"></a>
 <details>
 <summary><code>LLMs</code> — - Routes via LiteLLM</summary>
 
@@ -4089,7 +4089,7 @@ LLMs() -> 'None'
 
 </details>
 
-<a id="modelinfo"></a>
+<a id="modelinfo"></a><a id="user-content-modelinfo"></a>
 <details>
 <summary><code>ModelInfo</code> — Information about a candidate Large Language Model (LLM).</summary>
 
@@ -4106,7 +4106,7 @@ Information about a candidate Large Language Model (LLM).
 
 </details>
 
-<a id="selectioncontext"></a>
+<a id="selectioncontext"></a><a id="user-content-selectioncontext"></a>
 <details>
 <summary><code>SelectionContext</code> — Context passed to strategy functions.</summary>
 
@@ -4124,7 +4124,7 @@ Context passed to strategy functions.
 
 </details>
 
-<a id="selectionstrategy"></a>
+<a id="selectionstrategy"></a><a id="user-content-selectionstrategy"></a>
 <details>
 <summary><code>SelectionStrategy</code> — Enumeration of selection strategies for model selection.</summary>
 
@@ -4142,7 +4142,7 @@ Enumeration of selection strategies for model selection.
 
 </details>
 
-<a id="strategyfn"></a>
+<a id="strategyfn"></a><a id="user-content-strategyfn"></a>
 <details>
 <summary><code>StrategyFn</code> — TypeAlias</summary>
 

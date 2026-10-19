@@ -6,6 +6,17 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- The README's table of contents did nothing when clicked on PyPI. PyPI
+  points every in-page link at an id starting with `user-content-` but
+  keeps the README's own anchors as written, so all 191 links missed.
+  Each anchor now also carries the `user-content-` form, and the links
+  work on PyPI, GitHub and in local previews.
+- The README's `palette` link opened the `Palette` class, because both
+  names had the anchor `palette`. The function's anchor is now
+  `palette-1`; all other anchors are unchanged.
+
 ## [0.6.3] - 2026-10-17
 
 ### Fixed

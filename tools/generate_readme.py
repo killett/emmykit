@@ -164,6 +164,12 @@ MODULE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
 
 GITHUB_BASE: Final[str] = "https://github.com/killett/emmykit/blob/main"
 
+# PyPI's README renderer points every ``#x`` link at ``#user-content-x`` but
+# leaves raw-HTML ids as written, so a lone ``<a id="x">`` is unreachable there.
+# GitHub prefixes ids itself and maps ``#x`` onto them; local previews use ids
+# as written. Each anchor is emitted in both forms so all three resolve.
+ANCHOR_ID_PREFIX: Final[str] = "user-content-"
+
 
 @dataclasses.dataclass(frozen=True)
 class CondenseGroup:
@@ -286,6 +292,12 @@ class SymbolInfo:
     method_names: list[str] | None
     dataclass_field_names: list[str] | None
     source_line: int
+    # The lowercased name unless _assign_anchor_ids has to tell clashing names apart.
+    anchor_id: str = ""
+
+    def __post_init__(self) -> None:
+        """Default `anchor_id` to the lowercased name."""
+        self.anchor_id = self.anchor_id or self.name.lower()
 
 
 def _read_module_source(module: str) -> tuple[str, list[str], ast.Module, dict[str, ast.AST]]:
@@ -471,9 +483,32 @@ def _gather(module: str, names: list[str], emmykit: Any) -> list[SymbolInfo]:
 # -------- rendering -------- #
 
 
+def _assign_anchor_ids(symbols: list[SymbolInfo]) -> None:
+    """Make anchor ids unique across the README, in rendering order.
+
+    Names that differ only in case (``Palette``, ``palette``) lowercase to the
+    same id; the second gets ``-1``, the third ``-2``. Python names can't
+    contain hyphens, so a suffixed id never matches another symbol's.
+
+    Args:
+        symbols: Every symbol rendered individually, in README order.
+    """
+    seen: dict[str, int] = {}
+    for s in symbols:
+        base = s.name.lower()
+        count = seen.get(base, 0)
+        s.anchor_id = f"{base}-{count}" if count else base
+        seen[base] = count + 1
+
+
+def _anchor(anchor_id: str) -> str:
+    """Return the anchors a contents link to ``#anchor_id`` lands on; see ANCHOR_ID_PREFIX."""
+    return f'<a id="{anchor_id}"></a><a id="{ANCHOR_ID_PREFIX}{anchor_id}"></a>'
+
+
 def _render_symbol(s: SymbolInfo) -> str:
     parts: list[str] = []
-    parts.append(f'<a id="{s.name.lower()}"></a>')
+    parts.append(_anchor(s.anchor_id))
     parts.append("<details>")
     parts.append(f"<summary><code>{s.name}</code> — {s.summary}</summary>")
     parts.append("")
@@ -517,7 +552,7 @@ def _render_condense_group(module: str, group: "CondenseGroup", source_line: int
     """
     slug = _slug(group.label)
     parts: list[str] = []
-    parts.append(f'<a id="c-{module}-{slug}"></a>')
+    parts.append(_anchor(f"c-{module}-{slug}"))
     parts.append("<details>")
     parts.append(f"<summary><code>{group.label}</code> — {group.summary}</summary>")
     parts.append("")
@@ -541,7 +576,7 @@ def _render_group(
     chunks: list[str] = []
     # `m-` prefix on module anchors avoids collision with same-case-folded symbol names
     # (e.g. `options` module vs `Options` class).
-    chunks.append(f'<a id="m-{module}"></a>')
+    chunks.append(_anchor(f"m-{module}"))
     chunks.append(f"### `{module}` — {subtitle}")
     chunks.append("")
     chunks.append(f"_Layer {layer}._  `from emmykit.{module} import …`")
@@ -568,7 +603,7 @@ def _render_toc(groups: list[tuple[int, str, list[SymbolInfo], list[tuple["Conde
         subtitle, _ = MODULE_DESCRIPTIONS[module]
         out.append(f"- [`{module}` — {subtitle}](#m-{module})")
         for s in symbols:
-            out.append(f"  - [`{s.name}`](#{s.name.lower()})")
+            out.append(f"  - [`{s.name}`](#{s.anchor_id})")
         for group, _src_line, _present in condense_blocks:
             slug = _slug(group.label)
             out.append(f"  - [`{group.label}`](#c-{module}-{slug})")
@@ -735,6 +770,7 @@ def build_readme() -> str:
         # to keep tuple shape compatible with _render_toc.
         _EXTRA_NOTES_BY_MODULE[module] = extra_notes
 
+    _assign_anchor_ids([s for _, _, symbols, _ in groups for s in symbols])
     toc = _render_toc(groups)
     body = "\n".join(
         _render_group(m, l, s, c, _EXTRA_NOTES_BY_MODULE.get(m))
