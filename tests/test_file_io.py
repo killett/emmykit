@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import os
 import stat
 from pathlib import Path
@@ -13,10 +14,15 @@ filelock = pytest.importorskip("filelock")
 from emmykit.file_io import my_atomic_write  # noqa: E402
 
 
+def _expected_lock(cache: Path, target: Path) -> Path:
+    """Return where the lock for `target` should live: named by its resolved path's SHA-256."""
+    digest = hashlib.sha256(os.fsencode(target.resolve())).hexdigest()
+    return cache / "emmykit" / "locks" / f"{digest}.lock"
+
+
 def _strays(directory: Path, target: Path) -> list[str]:
-    """Return files left in `directory` besides `target` and its lock file."""
-    keep = {target.name, target.name + ".lock"}
-    return sorted(p.name for p in directory.iterdir() if p.name not in keep)
+    """Return everything left in `directory` besides `target`, lock files included."""
+    return sorted(p.name for p in directory.iterdir() if p.name != target.name)
 
 
 def test_write_mode_replaces_the_contents(tmp_path: Path) -> None:
@@ -108,13 +114,45 @@ def test_failed_write_leaves_the_original_and_no_temp_file(
     assert _strays(tmp_path, path) == []
 
 
-def test_lock_held_elsewhere_times_out_with_runtime_error(tmp_path: Path) -> None:
-    """With the lock taken, a timeout ends in the documented RuntimeError and no write."""
+def test_lock_held_elsewhere_times_out_with_runtime_error(tmp_path: Path, cache_home: Path) -> None:
+    """The lock lives in the cache folder; while it's taken, a timeout ends in RuntimeError.
+
+    Fails if the lock is taken anywhere else, e.g. as a `.lock` file beside the
+    target, since then this lock doesn't stop the write.
+    """
     path = tmp_path / "f.txt"
     path.write_text("original\n")
 
-    with filelock.FileLock(os.fspath(path) + ".lock"):
+    with filelock.FileLock(os.fspath(_expected_lock(cache_home, path))):
         with pytest.raises(RuntimeError, match="Could not acquire lock"):
             my_atomic_write(path, "new\n", "w", lock_timeout=0.05)
 
     assert path.read_text() == "original\n"
+
+
+def test_write_through_a_symlink_updates_the_target_and_keeps_the_link(tmp_path: Path) -> None:
+    """The real file gets the data; the symlink stays a symlink.
+
+    Fails if the temp file is renamed over the link instead of over its target.
+    """
+    path = tmp_path / "f.txt"
+    path.write_text("original\n")
+    link = tmp_path / "link.txt"
+    link.symlink_to(path)
+
+    my_atomic_write(link, "new\n", "w")
+
+    assert link.is_symlink()
+    assert path.read_text() == "new\n"
+
+
+def test_writes_through_a_symlink_share_the_target_lock(tmp_path: Path, cache_home: Path) -> None:
+    """A write through a symlink waits for the same lock as a write to the real path."""
+    path = tmp_path / "f.txt"
+    path.write_text("original\n")
+    link = tmp_path / "link.txt"
+    link.symlink_to(path)
+
+    with filelock.FileLock(os.fspath(_expected_lock(cache_home, path))):
+        with pytest.raises(RuntimeError, match="Could not acquire lock"):
+            my_atomic_write(link, "new\n", "w", lock_timeout=0.05)

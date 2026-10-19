@@ -26,7 +26,10 @@ def my_atomic_write(filepath: str | Path | os.PathLike[str], data: str | bytes |
     - If write_mode="a" and file exists, data is appended (the old contents
       and the new data are written out together).
     - If write_mode="a" and file does *not* exist, file is created.
-    - A '.lock' file beside 'filepath' prevents concurrent writers.
+    - Symlinks are resolved: the real file is replaced and the link is kept.
+    - A lock file in <cache>/emmykit/locks/ ($XDG_CACHE_HOME, else
+      ~/Library/Caches on macOS or ~/.cache) prevents concurrent writers;
+      nothing is left beside 'filepath'.
 
     Args:
         filepath:     Path to the file to write.
@@ -43,18 +46,44 @@ def my_atomic_write(filepath: str | Path | os.PathLike[str], data: str | bytes |
         OSError:      If writing fails; 'filepath' is then left as it was.
     """
     from filelock import FileLock, Timeout
-    path = ensure_path(filepath)
+    # Resolved, so the rename replaces the real file rather than a symlink to
+    # it, and every path to the same file shares one lock.
+    path = ensure_path(filepath).resolve()
     # ensure parent directory exists
     path.parent.mkdir(parents=True, exist_ok=True)
-    payload       = bytes(data) if isinstance(data, (bytes, bytearray)) else data.encode(encoding)
-    lock_path_str = os.fspath(path) + ".lock"
+    payload   = bytes(data) if isinstance(data, (bytes, bytearray)) else data.encode(encoding)
+    lock_path = _lock_path(path)
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
     # filelock waits indefinitely for a negative timeout and rejects None.
-    lock          = FileLock(lock_path_str, timeout=-1 if lock_timeout is None else lock_timeout)
+    lock      = FileLock(os.fspath(lock_path), timeout=-1 if lock_timeout is None else lock_timeout)
     try:
         with lock:
             _replace_atomically(path, payload, append=(write_mode == "a"))
     except Timeout as e:
-        raise RuntimeError(f"Could not acquire lock on {lock_path_str!r} within {lock_timeout} seconds") from e
+        raise RuntimeError(f"Could not acquire lock for {os.fspath(path)!r} ({os.fspath(lock_path)}) "
+                           f"within {lock_timeout} seconds") from e
+
+def _lock_path(path: Path) -> Path:
+    """
+    Return the lock file that guards writes to 'path', in emmykit's cache folder.
+
+    Lock files are named by the SHA-256 of the resolved path and never deleted.
+    Deleting a lock file as it is released lets a waiter lock the deleted copy
+    while another process locks a new file of the same name (filelock issue
+    #574); keeping them in the cache leaves nothing beside the files written.
+
+    Args:
+        path: The resolved path of the file being written.
+
+    Returns:
+        <cache>/emmykit/locks/<sha256>.lock, where <cache> is $XDG_CACHE_HOME if
+        set, else ~/Library/Caches on macOS and ~/.cache elsewhere.
+    """
+    import hashlib
+    import sys
+    cache = os.environ.get("XDG_CACHE_HOME") or Path.home() / ("Library/Caches" if sys.platform == "darwin" else ".cache")
+    digest = hashlib.sha256(os.fsencode(path)).hexdigest()
+    return Path(cache) / "emmykit" / "locks" / f"{digest}.lock"
 
 def _replace_atomically(path: Path, payload: bytes, append: bool) -> None:
     """

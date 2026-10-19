@@ -1254,7 +1254,10 @@ new one, never a partial write. An existing file keeps its permissions.
 - If write_mode="a" and file exists, data is appended (the old contents
   and the new data are written out together).
 - If write_mode="a" and file does *not* exist, file is created.
-- A '.lock' file beside 'filepath' prevents concurrent writers.
+- Symlinks are resolved: the real file is replaced and the link is kept.
+- A lock file in <cache>/emmykit/locks/ ($XDG_CACHE_HOME, else
+  ~/Library/Caches on macOS or ~/.cache) prevents concurrent writers;
+  nothing is left beside 'filepath'.
 
 Args:
     filepath:     Path to the file to write.

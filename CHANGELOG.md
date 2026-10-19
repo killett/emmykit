@@ -23,7 +23,12 @@ All notable changes to `emmykit` are documented here. Format follows
   are flushed to disk and are renamed over the target. An existing file
   keeps its permissions, append mode writes the old contents and the new
   data together, and `lock_timeout=None` waits for the lock indefinitely,
-  as documented.
+  as documented. Writing through a symlink updates the file it points to
+  and keeps the link. The lock file now lives in
+  `<cache>/emmykit/locks/`, named by a hash of the target's path, instead
+  of beside the target: current filelock versions leave lock files in
+  place, deliberately, because deleting them can let two processes hold
+  the lock at once (filelock issue #574).
 - `fix_mojibake` could lose the file it was fixing. With
   `make_backup=True`, the default, it renamed the original to the backup
   name before writing the fixed text, so when that write failed (and it
