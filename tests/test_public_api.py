@@ -5,8 +5,11 @@ from __future__ import annotations
 import importlib
 import inspect
 import json
+import os
 import pkgutil
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 import emmykit
@@ -22,8 +25,21 @@ PUBLIC_NAMES = sorted(n for n in dir(emmykit) if not n.startswith("_"))
 _ADDR_RE = re.compile(r"0x[0-9a-fA-F]+")
 
 
-def _normalize_sig(sig: str) -> str:
-    """Strip non-reproducible memory addresses from a signature string."""
+def _normalize_sig(sig: str, home: Path | None = None) -> str:
+    """Strip what varies between machines and processes from a signature string.
+
+    Memory addresses become ``0xADDR``. The home directory, which
+    `LLMConfig`'s default database path is built from, becomes ``~``.
+
+    Args:
+        sig: A signature as ``str(inspect.signature(obj))`` gives it.
+        home: The home directory the signature was computed under; defaults
+            to this process's.
+
+    Returns:
+        The signature with both replaced.
+    """
+    sig = sig.replace(str((home or Path.home()).resolve()), "~")
     return _ADDR_RE.sub("0xADDR", sig)
 
 
@@ -53,6 +69,33 @@ def test_callable_signatures_match_baseline() -> None:
             f"signature drift for {name!r}: baseline={baseline_sig!r} "
             f"actual={actual_sig!r}"
         )
+
+
+def test_signatures_match_baseline_under_another_home(tmp_path: Path) -> None:
+    """The baseline names no machine's home directory, so the check passes anywhere.
+
+    `LLMConfig`'s default database path is built from the home directory when
+    emmykit is imported, so this imports it afresh with HOME pointing elsewhere.
+    """
+    names = [n for n, entry in BASELINE.items() if entry.get("signature") is not None]
+    script = (
+        "import inspect, json, sys, emmykit\n"
+        "names = json.loads(sys.stdin.read())\n"
+        "print(json.dumps({n: str(inspect.signature(getattr(emmykit, n))) for n in names}))\n"
+    )
+    src = Path(emmykit.__file__).parent.parent
+    result = subprocess.run(
+        [sys.executable, "-c", script],
+        input=json.dumps(names), capture_output=True, text=True, check=True,
+        env={**os.environ, "HOME": str(tmp_path), "PYTHONPATH": str(src)},
+    )
+    actual = json.loads(result.stdout)
+    drift = {
+        n: actual[n] for n in names
+        if _normalize_sig(actual[n], home=tmp_path)
+        != _normalize_sig(BASELINE[n]["signature"], home=tmp_path)
+    }
+    assert drift == {}
 
 
 def test_every_submodule_imports() -> None:
