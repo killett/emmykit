@@ -1326,7 +1326,7 @@ Returns:
      - cannot be read with any of the specified encodings
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L124)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L127)
 
 </details>
 

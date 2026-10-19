@@ -66,6 +66,9 @@ def my_popen(command_list: list, suppress_info: bool = False,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
+            # A strict decode error would kill the reader thread, leave the
+            # pipe undrained and block the child, so wait() never returns.
+            errors="replace",
             bufsize=1  # Line-buffered
         )
 

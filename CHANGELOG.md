@@ -59,6 +59,10 @@ All notable changes to `emmykit` are documented here. Format follows
 - `set_system_volume` raised `UnboundLocalError` instead of falling back
   to `pactl` when pulsectl was installed but couldn't load, for example
   without libpulse. It now logs a warning and uses `pactl`.
+- `my_popen` hung forever when a command printed bytes that aren't valid
+  in the locale's encoding and then more than a pipe's worth of output:
+  the reader thread died on the decode error, the pipe filled, and the
+  command blocked. Undecodable bytes now come through as U+FFFD (�).
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.
