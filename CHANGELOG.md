@@ -283,6 +283,17 @@ All notable changes to `emmykit` are documented here. Format follows
   - `multireplace` raises the `ValueError`, `FileNotFoundError` and
     `NotADirectoryError` its docstring lists instead of `sys.exit(2)`, and
     passes Ctrl-C on as `KeyboardInterrupt` instead of `sys.exit(130)`.
+- `TEXT_ENCODINGS`, the encodings `my_fopen` tries in turn, is now four:
+  UTF-8 (a leading BOM is removed), UTF-16 (only for a file that starts
+  with a UTF-16 BOM), CP1252, then latin-1. The old 146-item list had
+  latin-1 second, and latin-1 accepts any bytes, so nothing after it was
+  ever tried. Every file that wasn't UTF-8 was read as latin-1, which
+  turned CP1252's curly quotes and euro sign into control characters and
+  left a NUL after every letter of a UTF-16 file. The list also named
+  codecs that don't decode text (base64, bz2, hex, quopri, rot-13, uu,
+  zlib). Because the UTF-8 BOM no longer reaches the text, `multireplace`
+  and `ask_and_replace` now write such a file back without it.
+  `TEXT_ENCODINGS_SET` follows the new list.
 
 ## [0.6.3] - 2026-10-17
 

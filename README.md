@@ -369,7 +369,7 @@ ALL_KNOWN_EXTENSIONS: Final[tuple[str, ...]] = ('.py', '.pyw', '.html', '.htm', 
  '.properties', '.rtf', '.rst', ...)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L319)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L292)
 
 </details>
 
@@ -383,7 +383,7 @@ ARCHIVE_EXTENSIONS: Final[tuple[str, ...]] = ('.zip', '.rar', '.7z', '.tar', '.g
  '.ear', '.iso', ...)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L308)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L281)
 
 </details>
 
@@ -397,7 +397,7 @@ AUDIO_EXTENSIONS: Final[tuple[str, ...]] = ('.mp3', '.wav', '.flac', '.aac', '.o
  '.ra', '.rm', '.oga', ...)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L206)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L179)
 
 </details>
 
@@ -411,7 +411,7 @@ BOOK_EXTENSIONS: Final[tuple[str, ...]] = ('.epub', '.pdf', '.txt', '.rtf', '.ht
  '.fb2', '.fbz', ...)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L80)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L53)
 
 </details>
 
@@ -423,7 +423,7 @@ BOOK_EXTENSIONS: Final[tuple[str, ...]] = ('.epub', '.pdf', '.txt', '.rtf', '.ht
 HTML_EXTENSIONS: Final[tuple[str, ...]] = ('.html', '.htm', '.xhtml')
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L47)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L20)
 
 </details>
 
@@ -437,7 +437,7 @@ IMAGE_EXTENSIONS: Final[tuple[str, ...]] = ('.bmp', '.dib', '.gif', '.jpeg', '.j
  '.hdr', '.exr', '.webp', ...)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L243)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L216)
 
 </details>
 
@@ -451,7 +451,7 @@ PLAYLIST_EXTENSIONS: Final[tuple[str, ...]] = ('.m3u', '.m3u8', '.pls', '.xspf',
  '.aimppl4', '.pla', '.xml', ...)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L270)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L243)
 
 </details>
 
@@ -463,7 +463,7 @@ PLAYLIST_EXTENSIONS: Final[tuple[str, ...]] = ('.m3u', '.m3u8', '.pls', '.xspf',
 PYTHON_EXTENSIONS: Final[tuple[str, ...]] = ('.py', '.pyw')
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L43)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L16)
 
 </details>
 
@@ -477,21 +477,19 @@ SUBTITLE_EXTENSIONS: Final[tuple[str, ...]] = ('.srt', '.sub', '.idx', '.ass', '
  '.mpl2', '.sbt', ...)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L230)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L203)
 
 </details>
 
 <a id="text_encodings"></a><a id="user-content-text_encodings"></a>
 <details>
-<summary><code>TEXT_ENCODINGS</code> — Final[tuple[str, ...]] (146 items)</summary>
+<summary><code>TEXT_ENCODINGS</code> — Final[tuple[str, ...]] (4 items)</summary>
 
 ```python
-TEXT_ENCODINGS: Final[tuple[str, ...]] = ('utf-8', 'latin-1', 'ascii', 'iso-8859-1', 'big5', 'utf-8-sig', 'utf-16', 'utf-16-be',
- 'utf-16-le', 'utf-32', 'utf-32-be', 'utf-32-le', 'cp1252', 'cp1251', 'cp1250',
- 'cp1253', 'cp1254', ...)
+TEXT_ENCODINGS: Final[tuple[str, ...]] = ('utf-8-sig', 'utf-16', 'cp1252', 'latin-1')
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L8)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L12)
 
 </details>
 
@@ -505,7 +503,7 @@ TEXT_EXTENSIONS: Final[tuple[str, ...]] = ('.txt', '.html', '.htm', '.csv', '.js
  '.sgml', '.tex', ...)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L51)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L24)
 
 </details>
 
@@ -519,7 +517,7 @@ VIDEO_EXTENSIONS: Final[tuple[str, ...]] = ('.mp4', '.mkv', '.mov', '.avi', '.mp
  '.asf', '.f4v', '.mxf', ...)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L177)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/extensions.py#L150)
 
 </details>
 
@@ -1299,7 +1297,7 @@ my_critical_error(message: 'str' = 'A critical error occurred.', choose_breakpoi
 Log a critical error message and either exit the program or enter a breakpoint.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L20)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L21)
 
 </details>
 
@@ -1314,6 +1312,10 @@ my_fopen(file_path: 'str | os.PathLike[str]', suppress_errors: 'bool' = False, r
 ```text
 Attempt to read a text file with various encodings and return the file content if successful. Optionally, specify numlines to limit the number of lines read.
 
+The encodings are tried in TEXT_ENCODINGS order: UTF-8 (a leading BOM is removed),
+UTF-16 (only if the file starts with a UTF-16 BOM), CP1252, then latin-1, which
+accepts any bytes.
+
 Args:
     file_path:       Path to the file to read.
     suppress_errors: If True, suppress error messages by logging them as info instead of as error.
@@ -1327,10 +1329,10 @@ Returns:
      - if the file does not exist
      - is empty
      - is a non-text file (video, audio, image, archive)
-     - cannot be read with any of the specified encodings
+     - cannot be read (for example, permission denied)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L127)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L128)
 
 </details>
 
@@ -1346,7 +1348,7 @@ my_popen(command_list: 'list', suppress_info: 'bool' = False, suppress_error: 'b
 Execute a command using subprocess.Popen and capture the output line by line using threads.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L49)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L50)
 
 </details>
 
@@ -1362,7 +1364,7 @@ MyPopenResult(stdout: 'str', stderr: 'str', returncode: 'int') -> 'None'
 A class to store the results of a customized subprocess.Popen call.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L39)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/io_subprocess.py#L40)
 
 </details>
 

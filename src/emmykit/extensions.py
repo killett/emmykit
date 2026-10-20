@@ -5,38 +5,11 @@ from __future__ import annotations
 from itertools import chain
 from typing import Final
 
-TEXT_ENCODINGS: Final[tuple[str, ...]] = (
-    "utf-8",           "latin-1",        "ascii",           "iso-8859-1",         "big5",
-    "utf-8-sig",       "utf-16",         "utf-16-be",       "utf-16-le",          "utf-32",
-    "utf-32-be",       "utf-32-le",      "cp1252",          "cp1251",             "cp1250",
-    "cp1253",          "cp1254",         "cp1255",          "cp1256",             "cp1257",
-    "cp1258",          "iso-8859-2",     "iso-8859-3",      "iso-8859-4",         "iso-8859-5",
-    "iso-8859-6",      "iso-8859-7",     "iso-8859-8",      "iso-8859-9",         "iso-8859-10",
-    "iso-8859-11",     "iso-8859-13",    "iso-8859-14",     "iso-8859-15",        "iso-8859-16",
-    "cp437",           "cp850",          "cp852",           "cp855",              "cp857",
-    "cp858",           "cp860",          "cp861",           "cp862",              "cp863",
-    "cp864",           "cp865",          "cp866",           "cp869",              "cp037",
-    "cp424",           "cp500",          "cp720",           "cp737",              "cp775",
-    "cp874",           "cp875",          "cp932",           "cp949",              "cp950",
-    "cp1006",          "cp1026",         "cp1125",          "cp1140",             "big5hkscs",
-    "gb2312",          "gbk",            "gb18030",         "euc-jp",             "euc-jis-2004",
-    "euc-jisx0213",    "euc-kr",         "iso2022-jp",      "iso2022-jp-1",       "iso2022-jp-2",
-    "iso2022-jp-2004", "iso2022-jp-3",   "iso2022-jp-ext",  "iso2022-kr",         "johab",
-    "koi8-r",          "koi8-t",         "koi8-u",          "kz1048",             "mac-cyrillic",
-    "mac-greek",       "mac-iceland",    "mac-latin2",      "mac-roman",          "mac-turkish",
-    "ptcp154",         "shift-jis",      "shift-jis-2004",  "shift-jisx0213",     "hz",
-    "tis-620",         "utf-7",          "base64",          "bz2",                "charmap",
-    "cp273",           "cp856",          "euc_jis_2004",    "euc_jisx0213",       "euc_jp",
-    "euc_kr",          "hex",            "hp-roman8",       "idna",               "iso2022_jp",
-    "iso2022_jp_1",    "iso2022_jp_2",   "iso2022_jp_2004", "iso2022_jp_3",       "iso2022_jp_ext",
-    "iso2022_kr",      "iso8859-1",      "iso8859-10",      "iso8859-11",         "iso8859-13",
-    "iso8859-14",      "iso8859-15",     "iso8859-16",      "iso8859-2",          "iso8859-3",
-    "iso8859-4",       "iso8859-5",      "iso8859-6",       "iso8859-7",          "iso8859-8",
-    "iso8859-9",       "mac-arabic",     "mac-croatian",    "mac-farsi",          "mac-romanian",
-    "palmos",          "punycode",       "quopri",          "raw-unicode-escape", "rot-13",
-    "shift_jis",       "shift_jis_2004", "shift_jisx0213",  "unicode-escape",     "uu",
-    "zlib",
-)
+# The encodings my_fopen tries, in order. "utf-8-sig" is UTF-8 that drops a
+# leading BOM. "utf-16" is tried only on a file that starts with a UTF-16 BOM,
+# because almost any even-length byte string decodes as UTF-16. latin-1 maps
+# every byte to a character, so it never fails and must stay last.
+TEXT_ENCODINGS: Final[tuple[str, ...]] = ("utf-8-sig", "utf-16", "cp1252", "latin-1")
 
 TEXT_ENCODINGS_SET: Final[frozenset[str]] = frozenset(TEXT_ENCODINGS)  # sets are faster
 

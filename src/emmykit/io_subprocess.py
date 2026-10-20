@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import codecs
 import logging
 import os
 import sys
@@ -132,6 +133,10 @@ def my_fopen(file_path: str | os.PathLike[str],
     """
     Attempt to read a text file with various encodings and return the file content if successful. Optionally, specify numlines to limit the number of lines read.
 
+    The encodings are tried in TEXT_ENCODINGS order: UTF-8 (a leading BOM is removed),
+    UTF-16 (only if the file starts with a UTF-16 BOM), CP1252, then latin-1, which
+    accepts any bytes.
+
     Args:
         file_path:       Path to the file to read.
         suppress_errors: If True, suppress error messages by logging them as info instead of as error.
@@ -145,7 +150,7 @@ def my_fopen(file_path: str | os.PathLike[str],
          - if the file does not exist
          - is empty
          - is a non-text file (video, audio, image, archive)
-         - cannot be read with any of the specified encodings
+         - cannot be read (for example, permission denied)
     """
     fallback_logging_config(log_level=logging.INFO if not suppress_errors else logging.CRITICAL,
                             rawlog=rawlog)
@@ -204,7 +209,15 @@ def my_fopen(file_path: str | os.PathLike[str],
             if not suppress_errors: logging.error(this_message)
             else:                   logging.info( this_message)
         return None
+    # UTF-16 decodes almost any even-length byte string, so try it only after a UTF-16 BOM.
+    try:
+        with open(file_path, "rb") as file:
+            has_utf16_bom = file.read(2) in (codecs.BOM_UTF16_LE, codecs.BOM_UTF16_BE)
+    except OSError:
+        has_utf16_bom = False  # the text read below reports the error
     for encoding in TEXT_ENCODINGS:  # use the (ordered) tuple so more common encodings are tried first.
+        if encoding == "utf-16" and not has_utf16_bom:
+            continue
         try:
             with open(file_path, "r", encoding=encoding) as file:
                 if numlines is None:
