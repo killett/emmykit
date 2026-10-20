@@ -126,7 +126,7 @@ the converters internally.
   - [`palette`](#palette-1)
   - [`palette_names`](#palette_names)
 - [`_version` — Package and Python version constants](#m-_version)
-  - [`PY_VERSION`](#py_version)
+  - [`MIN_PYTHON_VERSION`](#min_python_version)
 - [`options` — Options dataclasses for configuration](#m-options)
   - [`Options`](#options)
   - [`PlotOptions`](#plotoptions)
@@ -680,17 +680,17 @@ Returns:
 
 _Layer 1._  `from emmykit._version import …`
 
-Single source of truth for `emmykit.__version__` (read by hatchling at build-time) and the supported `PY_VERSION` floor.
+Single source of truth for `emmykit.__version__` (read by hatchling at build-time) and `MIN_PYTHON_VERSION`, the oldest supported (major, minor).
 
-<a id="py_version"></a><a id="user-content-py_version"></a>
+<a id="min_python_version"></a><a id="user-content-min_python_version"></a>
 <details>
-<summary><code>PY_VERSION</code> — Final[float] = 3.12</summary>
+<summary><code>MIN_PYTHON_VERSION</code> — oldest (major, minor) emmykit supports</summary>
 
 ```python
-PY_VERSION: Final[float] = 3.12
+MIN_PYTHON_VERSION: Final[tuple[int, int]] = (3, 12)
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/_version.py#L13)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/_version.py#L15)
 
 </details>
 
@@ -3030,33 +3030,42 @@ _Layer 2._  `from emmykit.python_env import …`
 
 <a id="check_python_version"></a><a id="user-content-check_python_version"></a>
 <details>
-<summary><code>check_python_version</code> — Check if the given Python command is available and has a version of PY_VERSION or higher.</summary>
+<summary><code>check_python_version</code> — Check whether a Python command exists and is at least a given (major, minor) version.</summary>
 
 ```python
-check_python_version(command: 'str') -> 'bool'
+check_python_version(command: 'str', minimum: 'tuple[int, int]' = (3, 12)) -> 'bool'
 ```
 
 ```text
-Check if the given Python command is available and has a version of PY_VERSION or higher.
+Check whether a Python command exists and is at least a given (major, minor) version.
+
+Args:
+    command: A command name looked up on PATH (e.g. "python3"), or a path to an interpreter.
+    minimum: The lowest acceptable (major, minor) version (default MIN_PYTHON_VERSION).
+             There is no upper bound.
+
+Returns:
+    True if the interpreter runs and its version is at or above 'minimum'; False if it is
+    older, isn't found, or can't report its version within 10 seconds.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L9)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L38)
 
 </details>
 
 <a id="find_preferred_python_version"></a><a id="user-content-find_preferred_python_version"></a>
 <details>
-<summary><code>find_preferred_python_version</code> — Find the command for the preferred version of python (stored here as PY_VERSION).</summary>
+<summary><code>find_preferred_python_version</code> — Find the command for the preferred version of python (stored here as MIN_PYTHON_VERSION).</summary>
 
 ```python
 find_preferred_python_version() -> 'str | None'
 ```
 
 ```text
-Find the command for the preferred version of python (stored here as PY_VERSION).
+Find the command for the preferred version of python (stored here as MIN_PYTHON_VERSION).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L22)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L54)
 
 </details>
 

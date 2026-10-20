@@ -65,7 +65,7 @@ from emmykit.palette import (
 )
 
 # === Layer 1 ===
-from emmykit._version import PY_VERSION, __version__
+from emmykit._version import MIN_PYTHON_VERSION, __version__
 from emmykit.options import Options, PlotOptions
 from emmykit.text_constants import (
     CHARACTERS_TO_SPACE,
@@ -302,6 +302,7 @@ __all__ = [
     "LSQUOTE",
     "METERS",
     "MIN_CONTRAST_RATIO",
+    "MIN_PYTHON_VERSION",
     "MaxLevelFilter",
     "MemoryHandler",
     "ModelInfo",
@@ -313,7 +314,6 @@ __all__ = [
     "PLAYLIST_EXTENSIONS_SET",
     "PYTHON_EXTENSIONS",
     "PYTHON_EXTENSIONS_SET",
-    "PY_VERSION",
     "Palette",
     "PlotOptions",
     "Precision",

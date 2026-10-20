@@ -84,7 +84,7 @@ MODULE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
                          "foreground / grid roles, every colour an explicit hex string — looked up by name and handed "
                          "to matplotlib as an rcParams mapping. Stdlib-only except for `Palette.rc_params`."),
     "_version":         ("Package and Python version constants",
-                         "Single source of truth for `emmykit.__version__` (read by hatchling at build-time) and the supported `PY_VERSION` floor."),
+                         "Single source of truth for `emmykit.__version__` (read by hatchling at build-time) and `MIN_PYTHON_VERSION`, the oldest supported (major, minor)."),
     "options":          ("Options dataclasses for configuration",
                          "Aggregated runtime/plot-time settings passed through downstream APIs as a single object."),
     "text_constants":   ("Translation tables for text normalization",

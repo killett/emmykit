@@ -249,6 +249,15 @@ All notable changes to `emmykit` are documented here. Format follows
   are compiled from their bytes, so a file Python itself can't decode
   (not UTF-8, and no coding line) is False too. A folder raises
   `IsADirectoryError` whether given as a string or a `Path`.
+- `check_python_version` misread most minimum versions, because it stored
+  them as a float and took the minor version as `int((v - 3) * 100)`:
+  3.13 gave 12 and 3.11 gave 10, so it accepted a Python one minor
+  version too old. It also raised `FileNotFoundError` for a command that
+  wasn't installed and could crash on unexpected `--version` output. It
+  now asks the interpreter for `sys.version_info` (in isolated mode, with
+  a 10-second timeout), compares `(major, minor)` tuples, and returns False
+  for a missing, failing or slow interpreter. A newer major version now
+  passes too, matching `requires-python`, which has no upper bound.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.
@@ -304,6 +313,11 @@ All notable changes to `emmykit` are documented here. Format follows
   zlib). Because the UTF-8 BOM no longer reaches the text, `multireplace`
   and `ask_and_replace` now write such a file back without it.
   `TEXT_ENCODINGS_SET` follows the new list.
+- `PY_VERSION`, the float `3.12`, is now `MIN_PYTHON_VERSION`, the tuple
+  `(3, 12)`, which compares correctly with `sys.version_info` (as a float,
+  3.10 is 3.1). A test keeps it equal to `requires-python`.
+  `check_python_version` takes it as the default for its new `minimum`
+  argument.
 
 ## [0.6.3] - 2026-10-17
 

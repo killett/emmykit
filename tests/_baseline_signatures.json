@@ -141,6 +141,9 @@
   "MIN_CONTRAST_RATIO": {
     "kind": "float"
   },
+  "MIN_PYTHON_VERSION": {
+    "kind": "tuple"
+  },
   "MaxLevelFilter": {
     "kind": "type",
     "signature": "(max_level: 'int') -> 'None'"
@@ -178,9 +181,6 @@
   },
   "PYTHON_EXTENSIONS_SET": {
     "kind": "frozenset"
-  },
-  "PY_VERSION": {
-    "kind": "float"
   },
   "Palette": {
     "kind": "type",
@@ -288,7 +288,7 @@
   },
   "check_python_version": {
     "kind": "function",
-    "signature": "(command: 'str') -> 'bool'"
+    "signature": "(command: 'str', minimum: 'tuple[int, int]' = (3, 12)) -> 'bool'"
   },
   "choose_prefix": {
     "kind": "function",
