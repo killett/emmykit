@@ -6,6 +6,8 @@ All notable changes to `emmykit` are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-19
+
 ### Fixed
 
 - The README's table of contents did nothing when clicked on PyPI. PyPI
