@@ -51,17 +51,22 @@ def check_python_version(command: str, minimum: tuple[int, int] = MIN_PYTHON_VER
     version = _python_version_of(command)
     return version is not None and version >= minimum
 
-def find_preferred_python_version() -> str | None:
-    """Find the command for the preferred version of python (stored here as MIN_PYTHON_VERSION)."""
-    # Check if the preferred python command (only specifying integer part of the preferred version) exists and returns a valid path
-    preferred_major, preferred_minor = MIN_PYTHON_VERSION
-    preferred_python_path = subprocess.run(["which", f"python{preferred_major}"],
-                                           capture_output=True, text=True).stdout.strip()
-    if preferred_python_path and check_python_version(f"python{preferred_major}"):
-        return os.path.basename(preferred_python_path)
-    # Check if the preferred python command (with complete version specified) exists and returns a valid path
-    preferred_python_path = subprocess.run(["which", f"python{preferred_major}.{preferred_minor}"],
-                                           capture_output=True, text=True).stdout.strip()
-    if preferred_python_path and check_python_version(f"python{preferred_major}.{preferred_minor}"):
-        return os.path.basename(preferred_python_path)
+def find_python(minimum: tuple[int, int] = MIN_PYTHON_VERSION) -> str | None:
+    """
+    Find a Python interpreter on PATH that is at least a given (major, minor) version.
+
+    Tries "python<major>" (e.g. "python3") first, then "python<major>.<minor>"
+    (e.g. "python3.12"), and returns the first that passes check_python_version.
+
+    Args:
+        minimum: The lowest acceptable (major, minor) version (default MIN_PYTHON_VERSION).
+
+    Returns:
+        The interpreter's absolute path, or None if neither command qualifies.
+    """
+    major, minor = minimum
+    for name in (f"python{major}", f"python{major}.{minor}"):
+        path = shutil.which(name)
+        if path is not None and check_python_version(path, minimum):
+            return os.path.abspath(path)
     return None

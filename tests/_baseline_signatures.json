@@ -390,9 +390,9 @@
     "kind": "function",
     "signature": "() -> 'str | None'"
   },
-  "find_preferred_python_version": {
+  "find_python": {
     "kind": "function",
-    "signature": "() -> 'str | None'"
+    "signature": "(minimum: 'tuple[int, int]' = (3, 12)) -> 'str | None'"
   },
   "fix_mojibake": {
     "kind": "function",

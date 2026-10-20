@@ -189,7 +189,7 @@ from emmykit.hosts import (
 from emmykit.network import is_internet_available
 from emmykit.python_env import (
     check_python_version,
-    find_preferred_python_version,
+    find_python,
 )
 from emmykit.files import (
     calculate_checksum,
@@ -370,7 +370,7 @@ __all__ = [
     "fallback_logging_config",
     "filename_format",
     "find_ffmpeg",
-    "find_preferred_python_version",
+    "find_python",
     "fix_mojibake",
     "fix_text",
     "format_date_range",

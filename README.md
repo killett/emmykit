@@ -234,7 +234,7 @@ the converters internally.
   - [`is_internet_available`](#is_internet_available)
 - [`python_env` — Python interpreter discovery](#m-python_env)
   - [`check_python_version`](#check_python_version)
-  - [`find_preferred_python_version`](#find_preferred_python_version)
+  - [`find_python`](#find_python)
 - [`files` — Checksums, downloads, filename formatting, free-space queries](#m-files)
   - [`calculate_checksum`](#calculate_checksum)
   - [`download_file`](#download_file)
@@ -3026,7 +3026,7 @@ Raises:
 
 _Layer 2._  `from emmykit.python_env import …`
 
-`find_preferred_python_version` locates the preferred interpreter on PATH; `check_python_version` confirms a given python command meets the minimum version.
+`find_python` returns the absolute path of an interpreter on PATH that meets the minimum version; `check_python_version` confirms a given python command does.
 
 <a id="check_python_version"></a><a id="user-content-check_python_version"></a>
 <details>
@@ -3053,16 +3053,25 @@ Returns:
 
 </details>
 
-<a id="find_preferred_python_version"></a><a id="user-content-find_preferred_python_version"></a>
+<a id="find_python"></a><a id="user-content-find_python"></a>
 <details>
-<summary><code>find_preferred_python_version</code> — Find the command for the preferred version of python (stored here as MIN_PYTHON_VERSION).</summary>
+<summary><code>find_python</code> — Find a Python interpreter on PATH that is at least a given (major, minor) version.</summary>
 
 ```python
-find_preferred_python_version() -> 'str | None'
+find_python(minimum: 'tuple[int, int]' = (3, 12)) -> 'str | None'
 ```
 
 ```text
-Find the command for the preferred version of python (stored here as MIN_PYTHON_VERSION).
+Find a Python interpreter on PATH that is at least a given (major, minor) version.
+
+Tries "python<major>" (e.g. "python3") first, then "python<major>.<minor>"
+(e.g. "python3.12"), and returns the first that passes check_python_version.
+
+Args:
+    minimum: The lowest acceptable (major, minor) version (default MIN_PYTHON_VERSION).
+
+Returns:
+    The interpreter's absolute path, or None if neither command qualifies.
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/python_env.py#L54)

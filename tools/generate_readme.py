@@ -136,7 +136,7 @@ MODULE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
                          "`is_internet_available` runs a multi-strategy DNS + HTTP + TCP check against `net_targets` with a captive-portal sniff "
                          "and a shared `ThreadPoolExecutor`."),
     "python_env":       ("Python interpreter discovery",
-                         "`find_preferred_python_version` locates the preferred interpreter on PATH; `check_python_version` confirms a given python command meets the minimum version."),
+                         "`find_python` returns the absolute path of an interpreter on PATH that meets the minimum version; `check_python_version` confirms a given python command does."),
     "files":            ("Checksums, downloads, filename formatting, free-space queries",
                          "`download_file` with progress, `calculate_checksum`, `query_free_space` (statvfs, else shutil), `filename_format` for "
                          "legal-on-most-OSes name munging, and `verify_script`, which creates or overwrites a file so it holds exactly the given text."),

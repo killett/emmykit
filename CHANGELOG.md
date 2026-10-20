@@ -318,6 +318,12 @@ All notable changes to `emmykit` are documented here. Format follows
   3.10 is 3.1). A test keeps it equal to `requires-python`.
   `check_python_version` takes it as the default for its new `minimum`
   argument.
+- `find_preferred_python_version` is now `find_python`, since it returns
+  an interpreter rather than a version. It returns the interpreter's
+  absolute path instead of a bare command name, finds it with
+  `shutil.which` instead of running `which`, and takes a `minimum`
+  argument (default `MIN_PYTHON_VERSION`). With a floor such as 3.10, it
+  now looks for `python3.10`; the float version made that `python3.1`.
 
 ## [0.6.3] - 2026-10-17
 

@@ -125,3 +125,37 @@ def test_interpreter_that_hangs_is_false_after_the_timeout(
     start = time.monotonic()
     assert check_python_version("python3", minimum=(3, 0)) is False
     assert time.monotonic() - start < 10
+
+
+# --- find_python --------------------------------------------------------------
+
+def test_find_python_prefers_the_major_version_command(bindir: Path) -> None:
+    """When `python3` and `python3.12` both qualify, `python3` is returned, as an absolute path."""
+    python3 = _python(bindir, "python3", (3, 13))
+    _python(bindir, "python3.12", (3, 12))
+
+    assert python_env.find_python(minimum=(3, 12)) == os.fspath(python3)
+
+
+def test_find_python_falls_back_to_the_exact_minor_command(bindir: Path) -> None:
+    """A too-old `python3` is skipped for `python3.10`, named from the tuple (not `python3.1`)."""
+    _python(bindir, "python3", (3, 9))
+    python310 = _python(bindir, "python3.10", (3, 10))
+
+    assert python_env.find_python(minimum=(3, 10)) == os.fspath(python310)
+
+
+def test_find_python_returns_none_when_nothing_qualifies(bindir: Path) -> None:
+    """A too-old `python3` and no `python3.12` is None, not the old interpreter."""
+    _python(bindir, "python3", (3, 11))
+
+    assert python_env.find_python(minimum=(3, 12)) is None
+
+
+def test_find_python_defaults_to_min_python_version(bindir: Path) -> None:
+    """Without `minimum`, it looks for MIN_PYTHON_VERSION."""
+    major, minor = MIN_PYTHON_VERSION
+    _python(bindir, f"python{major}", (major, minor - 1))
+    exact = _python(bindir, f"python{major}.{minor}", (major, minor))
+
+    assert python_env.find_python() == os.fspath(exact)
