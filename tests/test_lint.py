@@ -170,3 +170,19 @@ def test_multireplace_passes_ctrl_c_on(
 
     assert "Interrupted by user." in [r.getMessage() for r in caplog.records if r.levelno == logging.WARNING]
     assert path.read_text() == "old\n"
+
+
+def test_one_line_file_with_a_slash_is_compiled_as_code(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """check_python_formatting compiles the file, not its text taken as a path.
+
+    `x = 1/2` with no newline looks like a path to compile_code, so passing
+    the text instead of the file would raise FileNotFoundError.
+    """
+    path = tmp_path / "one.py"
+    path.write_text("x = 1/2")
+    caplog.set_level(logging.INFO)
+
+    assert check_python_formatting(path) is True
+    assert f"✅ {path} compiled successfully." in caplog.text

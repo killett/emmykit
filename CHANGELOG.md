@@ -239,6 +239,16 @@ All notable changes to `emmykit` are documented here. Format follows
   `-show_streams` and so reported no streams.
 - `ensure_image_built` read the Dockerfile's first line without closing
   the file, in the locale's encoding. It now closes it and reads UTF-8.
+- `compile_code` said a missing file compiled. Given `"scripts/build.py"`
+  and no such file, it compiled the text itself (`scripts / build.py` is
+  a valid expression) and returned True. A one-line string that ends in
+  `.py` or contains a path separator is now a file path, and a missing
+  one raises `FileNotFoundError`; one-line code such as `x = 1/2` needs
+  `force_source=True`. A file that couldn't be read compiled as an empty
+  module and returned True; it is now False, with the error logged. Files
+  are compiled from their bytes, so a file Python itself can't decode
+  (not UTF-8, and no coding line) is False too. A folder raises
+  `IsADirectoryError` whether given as a string or a `Path`.
 - `fix_mojibake` left CP1252 files as CP1252 unless they also contained
   mojibake, although its docstring promises to recode them to UTF-8. A
   file that isn't valid UTF-8 is now always written back as UTF-8.

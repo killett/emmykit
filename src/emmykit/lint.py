@@ -272,7 +272,7 @@ def check_python_formatting(path: str | os.PathLike[str], diff_choice: int = 1) 
         logging.error("❌ Failed to open file: %s", os.fspath(path))
         return False
 
-    if compile_code(src):
+    if compile_code(path):
         logging.info("✅ %s compiled successfully.", os.fspath(path))
 
     if BACKTICK in src:

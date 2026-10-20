@@ -1427,29 +1427,36 @@ Render a function's source with original whitespace, parse module-level constant
 
 <a id="compile_code"></a><a id="user-content-compile_code"></a>
 <details>
-<summary><code>compile_code</code> — Attempt to compile the given source code in 'exec' mode.</summary>
+<summary><code>compile_code</code> — Attempt to compile the given source code, or the Python file it names, in 'exec' mode.</summary>
 
 ```python
 compile_code(source_or_filepath: 'str | os.PathLike[str]', force_source: 'bool' = False) -> 'bool'
 ```
 
 ```text
-Attempt to compile the given source code in 'exec' mode.
-If 'source_or_filepath' is a file path, read its contents first.
+Attempt to compile the given source code, or the Python file it names, in 'exec' mode.
+
+A PathLike is always a file. A string is a file path if it is one line and ends in
+".py", contains a path separator, or names an existing file; any other string is
+source. A file is compiled from its bytes, so Python's own rules decide its encoding
+(UTF-8 unless a PEP 263 coding line says otherwise).
 
 Args:
     source_or_filepath: The source code string or file path to compile.
-    force_source:       If True, treat 'source_or_filepath' as a source code string even if it looks like a file path.
+    force_source:       If True, treat a string as source code even if it looks like a file path.
 
 Returns:
-    True if compilation succeeds, False if it fails with a SyntaxError or other exception
+    True if compilation succeeds. False if it fails with a SyntaxError (including a
+    file Python can't decode) or the file can't be read; the error is logged.
 
 Raises:
-    SyntaxError: If the source code has a syntax error, it will be logged and False is returned.
-    TypeError:   If 'source_or_filepath' is not a string or a file path.
+    FileNotFoundError: If a file path is given and the file does not exist.
+    IsADirectoryError: If a file path is given and it is not a regular file.
+    TypeError:         If 'source_or_filepath' is neither a string nor a PathLike, or
+                       is a PathLike while 'force_source' is True.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L415)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L423)
 
 </details>
 
@@ -1498,7 +1505,7 @@ Notes:
     result in an empty string.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L309)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L310)
 
 </details>
 
@@ -1527,7 +1534,7 @@ Raises:
     ValueError:        If the value of the variable cannot be evaluated as a literal expression.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L20)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L21)
 
 </details>
 
@@ -1543,7 +1550,7 @@ normalize_to_dict(value: 'Any', var_name: 'str', script_path: 'str | os.PathLike
 Ensure that 'value' is a dict. If it's a JSON-style string, try to parse it. Otherwise, log a warning and return an empty dict.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L288)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L289)
 
 </details>
 
@@ -1591,7 +1598,7 @@ Raises:
     TypeError: If the resolved object isn't suitable for source extraction.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L134)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/introspection.py#L135)
 
 </details>
 

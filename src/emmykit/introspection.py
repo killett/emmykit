@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import errno
 import logging
 import os
 import re
@@ -412,33 +413,61 @@ def if_filepath_then_read(input_string_or_filepath: str | os.PathLike[str],
                         f"got {type(input_string_or_filepath).__name__!r}")
     return input_string_or_filepath
 
+def _names_a_file(text: str) -> bool:
+    """True if a one-line string ends in .py, contains a path separator, or is an existing file."""
+    if "\n" in text or len(text) > 4096:
+        return False
+    separators = [sep for sep in (os.sep, os.altsep) if sep]
+    return text.endswith(".py") or any(sep in text for sep in separators) or safe_is_file(ensure_path(text))
+
 def compile_code(source_or_filepath: str | os.PathLike[str],
                  force_source: bool = False) -> bool:
     """
-    Attempt to compile the given source code in 'exec' mode.
-    If 'source_or_filepath' is a file path, read its contents first.
+    Attempt to compile the given source code, or the Python file it names, in 'exec' mode.
+
+    A PathLike is always a file. A string is a file path if it is one line and ends in
+    ".py", contains a path separator, or names an existing file; any other string is
+    source. A file is compiled from its bytes, so Python's own rules decide its encoding
+    (UTF-8 unless a PEP 263 coding line says otherwise).
 
     Args:
         source_or_filepath: The source code string or file path to compile.
-        force_source:       If True, treat 'source_or_filepath' as a source code string even if it looks like a file path.
+        force_source:       If True, treat a string as source code even if it looks like a file path.
 
     Returns:
-        True if compilation succeeds, False if it fails with a SyntaxError or other exception
+        True if compilation succeeds. False if it fails with a SyntaxError (including a
+        file Python can't decode) or the file can't be read; the error is logged.
 
     Raises:
-        SyntaxError: If the source code has a syntax error, it will be logged and False is returned.
-        TypeError:   If 'source_or_filepath' is not a string or a file path.
+        FileNotFoundError: If a file path is given and the file does not exist.
+        IsADirectoryError: If a file path is given and it is not a regular file.
+        TypeError:         If 'source_or_filepath' is neither a string nor a PathLike, or
+                           is a PathLike while 'force_source' is True.
     """
     fallback_logging_config()
-    # Read from file if source is a file path
-    source = if_filepath_then_read(source_or_filepath, force_string=force_source)
-    file_path: str | os.PathLike[str] = ""
-    if source != source_or_filepath:
-        file_path = ensure_path(source_or_filepath)
+    if isinstance(source_or_filepath, os.PathLike):
+        if force_source:
+            raise TypeError(f"compile_code was given a file path ({source_or_filepath!r}) "
+                            "but force_source is True.")
+    elif not isinstance(source_or_filepath, str):
+        raise TypeError("Expected 'source_or_filepath' to be a string or file path, "
+                        f"got {type(source_or_filepath).__name__!r}")
+
+    source: str | bytes
+    if isinstance(source_or_filepath, str) and (force_source or not _names_a_file(source_or_filepath)):
+        source, file_path = source_or_filepath, "<string>"
     else:
-        # If it's a string, we need to provide a dummy file path for the compiler.
-        # This is just to satisfy the compiler, it won't be used.
-        file_path = "<string>"
+        path      = ensure_path(source_or_filepath)
+        file_path = os.fspath(path)
+        if not safe_exists(path):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), file_path)
+        if not safe_is_file(path):
+            raise IsADirectoryError(errno.EISDIR, "Not a regular file", file_path)
+        try:
+            source = path.read_bytes()
+        except OSError as e:
+            logging.error("Could not read %s: %s", file_path, e)
+            return False
     try:
         compile(source, file_path, "exec")
     except SyntaxError as e:
