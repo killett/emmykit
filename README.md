@@ -3070,7 +3070,7 @@ calculate_checksum(file_path: 'str | os.PathLike[str]') -> 'str'
 Calculate the SHA256 checksum of a file.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L319)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L323)
 
 </details>
 
@@ -3101,10 +3101,12 @@ Returns:
     None. Writes the file to 'dest'.
 
 Raises:
-    SystemExit on failure after retries or if insufficient free space is detected.
+    OSError: If there isn't enough free space for the advertised size (errno ENOSPC,
+             not retried), if 'dest' exists but its size can't be read, or if every
+             attempt fails (the last attempt's error is the cause).
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L19)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L22)
 
 </details>
 
@@ -3145,7 +3147,7 @@ Raises:
     None: If the input text is None, it will return an empty string.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L212)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L216)
 
 </details>
 
@@ -3173,7 +3175,7 @@ Raises:
     OSError:           If the filesystem information cannot be retrieved.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L176)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L180)
 
 </details>
 
@@ -3192,7 +3194,7 @@ Ensure that 'thepath' exists and contains exactly 'thescript'.
 - Otherwise, nothing happens.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L290)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/files.py#L294)
 
 </details>
 

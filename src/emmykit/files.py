@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+import errno
 import logging
 import os
 import re
-import sys
 
 from emmykit.constants import DEFAULT_ENCODING
 from emmykit.extensions import ALL_KNOWN_EXTENSIONS
@@ -15,6 +15,9 @@ from emmykit.paths_ensure import ensure_path
 from emmykit.safe_paths import ensure_file, safe_exists, safe_is_dir, safe_is_file, safe_size
 from emmykit.diff_view import my_diff
 from emmykit.humanize import human_bytesize
+
+class _NotEnoughSpace(OSError):
+    """Too little free space for a download; download_file raises it past its retries."""
 
 def download_file(url: str, dest: str | os.PathLike[str], retries: int = 5,
                   chunk_size: int = 1 << 20, timeout: int = 30,
@@ -38,7 +41,9 @@ def download_file(url: str, dest: str | os.PathLike[str], retries: int = 5,
         None. Writes the file to 'dest'.
 
     Raises:
-        SystemExit on failure after retries or if insufficient free space is detected.
+        OSError: If there isn't enough free space for the advertised size (errno ENOSPC,
+                 not retried), if 'dest' exists but its size can't be read, or if every
+                 attempt fails (the last attempt's error is the cause).
     """
     import time
     from urllib.request import Request, urlopen
@@ -81,21 +86,18 @@ def download_file(url: str, dest: str | os.PathLike[str], retries: int = 5,
     if expected is not None:
         # Skip re-download if size matches on disk already.
         if safe_exists(dest):
-            try:
-                if (dest_size := safe_size(dest)) is not None and dest_size == expected:
-                    logging.info("File already present with expected size; skipping: %s", os.fspath(dest))
-                    return
-                elif dest_size is not None:
-                    logging.info("File already present but size mismatch (have %s, need %s); re-downloading: %s",
-                                 human_bytesize(dest_size), human_bytesize(expected), os.fspath(dest))
-                elif dest_size is None:
-                    logging.warning("File size is unknown (permissions?): %s", os.fspath(dest))
-                    sys.exit(1)
-            except OSError as e:
-                if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Could not remove stale partial file %s: %s", os.fspath(temp), e)
+            if (dest_size := safe_size(dest)) is None:
+                raise OSError(f"File size is unknown (permissions?): {os.fspath(dest)}")
+            if dest_size == expected:
+                logging.info("File already present with expected size; skipping: %s", os.fspath(dest))
+                return
+            logging.info("File already present but size mismatch (have %s, need %s); re-downloading: %s",
+                         human_bytesize(dest_size), human_bytesize(expected), os.fspath(dest))
         free_bytes = query_free_space(dest)
         if free_bytes < expected:
-            raise SystemExit(f"Not enough disk space: need {human_bytesize(expected)}, have {human_bytesize(free_bytes)}")
+            raise _NotEnoughSpace(errno.ENOSPC,
+                                  f"Not enough disk space: need {human_bytesize(expected)}, have {human_bytesize(free_bytes)}",
+                                  os.fspath(dest))
 
     backoff = 1.0
     last_err: Exception | None = None
@@ -116,9 +118,9 @@ def download_file(url: str, dest: str | os.PathLike[str], retries: int = 5,
                 if total_i is not None:
                     free_bytes = query_free_space(dest)
                     if free_bytes < total_i:
-                        raise SystemExit(
-                            f"Not enough disk space: need {human_bytesize(total_i)}, have {human_bytesize(free_bytes)}"
-                        )
+                        raise _NotEnoughSpace(errno.ENOSPC,
+                                              f"Not enough disk space: need {human_bytesize(total_i)}, have {human_bytesize(free_bytes)}",
+                                              os.fspath(dest))
 
                 with temp.open("wb") as f:
                     downloaded = 0
@@ -150,6 +152,8 @@ def download_file(url: str, dest: str | os.PathLike[str], retries: int = 5,
             logging.info("Saved %s (%s)", os.fspath(dest), human_bytesize(safe_size(dest)))
             succeeded = True
             return
+        except _NotEnoughSpace:
+            raise  # retrying won't free any space
         except (HTTPError, URLError, socket.timeout, IOError) as e:
             last_err = e
             logging.warning("Download failed (%s).", e)
@@ -171,7 +175,7 @@ def download_file(url: str, dest: str | os.PathLike[str], retries: int = 5,
             except OSError as e:
                 if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Failed to remove temporary file %s: %s", os.fspath(temp), e)
 
-    raise SystemExit(f"Failed to download {url} after {retries} attempts. Last error: {last_err}")
+    raise OSError(f"Failed to download {url} after {retries} attempts. Last error: {last_err}") from last_err
 
 def query_free_space(path: str | os.PathLike[str]) -> int:
     """

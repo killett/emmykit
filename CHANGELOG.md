@@ -275,6 +275,11 @@ All notable changes to `emmykit` are documented here. Format follows
   - `LLMs.send_prompt` raises `ImportError` when litellm isn't installed,
     and `RuntimeError` when the request and every failover attempt fail,
     with the last attempt's error as the cause.
+  - `download_file` raises `OSError` instead of `SystemExit` (and, when
+    the existing file's size couldn't be read, `sys.exit(1)` with the
+    message only logged). Too little free space is `errno.ENOSPC` and is
+    still not retried. When every attempt fails, the last error is the
+    cause.
 
 ## [0.6.3] - 2026-10-17
 
