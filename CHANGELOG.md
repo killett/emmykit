@@ -280,6 +280,9 @@ All notable changes to `emmykit` are documented here. Format follows
     message only logged). Too little free space is `errno.ENOSPC` and is
     still not retried. When every attempt fails, the last error is the
     cause.
+  - `multireplace` raises the `ValueError`, `FileNotFoundError` and
+    `NotADirectoryError` its docstring lists instead of `sys.exit(2)`, and
+    passes Ctrl-C on as `KeyboardInterrupt` instead of `sys.exit(130)`.
 
 ## [0.6.3] - 2026-10-17
 

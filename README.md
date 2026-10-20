@@ -3354,7 +3354,7 @@ Returns:
     False if the user chose to quit during any replacement prompts, True otherwise.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L686)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L678)
 
 </details>
 
@@ -3385,6 +3385,7 @@ Raises:
     ValueError:         If the glob pattern is invalid.
     FileNotFoundError:  If the specified directory does not exist.
     NotADirectoryError: If the specified path is not a directory.
+    KeyboardInterrupt:  If the user presses Ctrl-C at a prompt (logged, then re-raised).
 ```
 
 [source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L619)
@@ -3440,7 +3441,7 @@ Returns:
     None.
 ```
 
-[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L743)
+[source ↗](https://github.com/killett/emmykit/blob/main/src/emmykit/lint.py#L735)
 
 </details>
 

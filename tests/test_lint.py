@@ -1,7 +1,9 @@
-"""`check_python_formatting`: the custom rules it reports through logging."""
+"""`lint`: `check_python_formatting`'s rules, the flake8/autopep8 helpers and `multireplace`."""
 
 from __future__ import annotations
 
+import argparse
+import builtins
 import logging
 import os
 import subprocess
@@ -9,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from emmykit.lint import ask_and_autopep8, check_python_formatting, interactive_flake8
+from emmykit.lint import ask_and_autopep8, check_python_formatting, interactive_flake8, multireplace
 from emmykit.options import Options
 
 
@@ -121,3 +123,50 @@ def test_flake8_that_cannot_run_is_an_error_not_a_clean_bill(
     monkeypatch.setattr(subprocess, "run", no_flake8)
     with pytest.raises(RuntimeError, match="No module named flake8"):
         interactive_flake8(Options(), path)
+
+
+# --- multireplace raises instead of exiting the process ----------------------
+
+def _replace_options(glob_pattern: str, directory: Path) -> Options:
+    """Options as multireplace's command line would set them: replace "old" with "new"."""
+    options = Options()
+    options.args = argparse.Namespace(old_str="old", new_str="new", glob_pattern=glob_pattern,
+                                      dir=os.fspath(directory), recursive=False)
+    return options
+
+
+@pytest.mark.parametrize(
+    ("glob_pattern", "where", "error", "message"),
+    [
+        ("  ", ".", ValueError, r"^glob_pattern must be a non-empty string\.$"),
+        ("*.txt", "missing", FileNotFoundError, r"^Directory does not exist: .*missing$"),
+        ("*.txt", "a.txt", NotADirectoryError, r"^Path is not a directory: .*a\.txt$"),
+    ],
+    ids=["blank-glob", "missing-dir", "file-as-dir"],
+)
+def test_multireplace_raises_the_documented_errors(
+    tmp_path: Path, glob_pattern: str, where: str, error: type[Exception], message: str
+) -> None:
+    """Bad arguments raise the errors the docstring lists, instead of sys.exit(2)."""
+    (tmp_path / "a.txt").write_text("old\n")
+
+    with pytest.raises(error, match=message):
+        multireplace(_replace_options(glob_pattern, tmp_path / where))
+
+
+def test_multireplace_passes_ctrl_c_on(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    """Ctrl-C at the confirmation prompt is re-raised as KeyboardInterrupt, not sys.exit(130)."""
+    path = tmp_path / "a.txt"
+    path.write_text("old\n")
+
+    def interrupt(prompt: str = "") -> str:
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(builtins, "input", interrupt)
+    with pytest.raises(KeyboardInterrupt):
+        multireplace(_replace_options("*.txt", tmp_path))
+
+    assert "Interrupted by user." in [r.getMessage() for r in caplog.records if r.levelno == logging.WARNING]
+    assert path.read_text() == "old\n"

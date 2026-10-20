@@ -636,19 +636,11 @@ def multireplace(options: Options, verbose: bool = True) -> None:
         ValueError:         If the glob pattern is invalid.
         FileNotFoundError:  If the specified directory does not exist.
         NotADirectoryError: If the specified path is not a directory.
+        KeyboardInterrupt:  If the user presses Ctrl-C at a prompt (logged, then re-raised).
     """
     fallback_logging_config()
-    try:
-        _validate_glob_pattern(options.args.glob_pattern)
-    except Exception as e:
-        logging.error(f"Invalid glob pattern: {e}")
-        sys.exit(2)
-
-    try:
-        dir = _resolve_dir(options.args.dir)
-    except Exception as e:
-        logging.error(str(e))
-        sys.exit(2)
+    _validate_glob_pattern(options.args.glob_pattern)
+    dir = _resolve_dir(options.args.dir)
 
     if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Directory: %s", dir)
     if logging.getLogger().isEnabledFor(logging.DEBUG): logging.debug("Glob pattern: %s", options.args.glob_pattern)
@@ -676,7 +668,7 @@ def multireplace(options: Options, verbose: bool = True) -> None:
                 break
         except KeyboardInterrupt:
             logging.warning("Interrupted by user.")
-            sys.exit(130)
+            raise
         except Exception as e:
             if verbose:
                 logging.error(f"Error processing {f}: {e}")
